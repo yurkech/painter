@@ -12,7 +12,7 @@ public class ToolButtonPanel extends JPanel
 	 */
 	private static final long serialVersionUID = 7917208796965969921L;
 
-	private JButton dragBtn, lineBtn, squareBtn, ovalBtn, polygonBtn, freeHandBtn, undoBtn, redoBtn, clearBtn;		
+	private JButton dragBtn, lineBtn, squareBtn, ovalBtn, polygonBtn, curveLine3PBtn, freeHandBtn, undoBtn, redoBtn, clearBtn;		
 	
 	private JCheckBox fullChk;
 	private CanvasPanel canvasPanel;
@@ -29,6 +29,8 @@ public class ToolButtonPanel extends JPanel
 		ovalBtn	 		= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("polygonBtn.gif");
 		polygonBtn		= new JButton("",new ImageIcon(imgURL));
+		imgURL = getClass().getResource("polygonBtn.gif");
+		curveLine3PBtn		= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("freeHandBtn.gif");
 		freeHandBtn		= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("undoBtn.gif");
@@ -48,6 +50,8 @@ public class ToolButtonPanel extends JPanel
 		ovalBtn.setToolTipText("Oval");
 		polygonBtn.addActionListener(new ToolButtonListener());
 		polygonBtn.setToolTipText("Polygon");
+		curveLine3PBtn.addActionListener(new ToolButtonListener());
+		curveLine3PBtn.setToolTipText("CurveLine 3-Points");
 		freeHandBtn.addActionListener(new ToolButtonListener());
 		freeHandBtn.setToolTipText("Free Hand");
 		undoBtn.addActionListener(new ToolButtonListener());
@@ -73,12 +77,13 @@ public class ToolButtonPanel extends JPanel
 			}
 		);
 /*----------------------------------------------------------------------------*/		
-		this.setLayout(new GridLayout(1,10)); // 9 Buttons & 1 CheckBox
+		this.setLayout(new GridLayout(1,11)); // 9 Buttons & 1 CheckBox
 		this.add(dragBtn);
 		this.add(lineBtn);
 		this.add(squareBtn);
 		this.add(ovalBtn);
 		this.add(polygonBtn);
+		this.add(curveLine3PBtn);
 		this.add(freeHandBtn);
 		this.add(undoBtn);
 		this.add(redoBtn);
@@ -90,10 +95,8 @@ public class ToolButtonPanel extends JPanel
 	{
 		public void actionPerformed(ActionEvent event)
 		{	
-			if(canvasPanel.isDrawingPolygon())
-			{
-				canvasPanel.flushPolygonBuffer();
-			}
+			canvasPanel.flushDrawing();
+			
 			if(event.getSource() == lineBtn)
 			{
 				canvasPanel.setDrawMode(CanvasPanel.LINE);		
@@ -109,6 +112,10 @@ public class ToolButtonPanel extends JPanel
 			if(event.getSource() == polygonBtn)
 			{
 				canvasPanel.setDrawMode(CanvasPanel.POLYGON);
+			}
+			if(event.getSource() == curveLine3PBtn)
+			{
+				canvasPanel.setDrawMode(CanvasPanel.CURVE_LINE_3P);
 			}
 			if(event.getSource() == freeHandBtn)
 			{

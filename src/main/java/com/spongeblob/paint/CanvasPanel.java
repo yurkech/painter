@@ -9,6 +9,7 @@ import java.io.*;
 import javax.swing.*;
 import javax.imageio.*;
 
+import com.spongeblob.paint.model.CurveLine3Points;
 import com.spongeblob.paint.model.HandLine;
 import com.spongeblob.paint.model.Line;
 import com.spongeblob.paint.model.Oval;
@@ -24,9 +25,8 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	protected final static int RADIUS = 10;
 
 	private static final long serialVersionUID = -3371112021797757444L;
-	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4,
-			FREE_HAND = 6, SOLID_POLYGON = 44,
-			DRAG = 7;
+	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4, CURVE_LINE_3P = 5,
+			FREE_HAND = 6, DRAG = 7;
 	protected static Vector<Serializable> vFile;
 	protected static LinkedList<Shape> vObjects, redoStack;
 
@@ -38,7 +38,8 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	private Point currentDragPoint;
 	private HandLine currentHandLine;
 	private Polygon currentPolygon;
-
+	private CurveLine3Points currentCurveLine3Points;
+	
 	private File fileName;
 
 	public CanvasPanel() {
@@ -78,6 +79,17 @@ public class CanvasPanel extends JPanel implements MouseListener,
 				currentPolygon.addPoint(event.getX(), event.getY());
 				if (!vObjects.contains(currentPolygon)){
 					vObjects.add(currentPolygon);
+				}
+				repaint();
+			}
+		}
+		if (drawMode == CanvasPanel.CURVE_LINE_3P) {
+			if (currentCurveLine3Points == null)
+				currentCurveLine3Points = new CurveLine3Points(event.getX(), event.getY(), foreGroundColor);
+			else{
+				currentCurveLine3Points.addPoint(event.getX(), event.getY());
+				if (!vObjects.contains(currentCurveLine3Points)){
+					vObjects.add(currentCurveLine3Points);
 				}
 				repaint();
 			}
@@ -365,15 +377,11 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		repaint();
 	}
 
-	/*----------------------------------------------------------------------------*/
-	public boolean isDrawingPolygon() {
-		return (currentPolygon != null);
-	}
-
-	/*----------------------------------------------------------------------------*/
-	public void flushPolygonBuffer() {
-		currentPolygon.setClosed(Boolean.TRUE);
+	public void flushDrawing() {
+		if (currentPolygon != null)
+			currentPolygon.setClosed(Boolean.TRUE);
 		currentPolygon = null;
+		currentCurveLine3Points = null;
 		repaint();
 	}
 
