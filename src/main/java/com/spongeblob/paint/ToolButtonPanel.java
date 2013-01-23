@@ -90,7 +90,7 @@ public class ToolButtonPanel extends JPanel
 	{
 		public void actionPerformed(ActionEvent event)
 		{	
-			if(canvasPanel.isExistPolygonBuffer()!= false)
+			if(canvasPanel.isDrawingPolygon())
 			{
 				canvasPanel.flushPolygonBuffer();
 			}

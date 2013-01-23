@@ -13,6 +13,7 @@ import com.spongeblob.paint.model.HandLine;
 import com.spongeblob.paint.model.Line;
 import com.spongeblob.paint.model.Oval;
 import com.spongeblob.paint.model.Rectangle;
+import com.spongeblob.paint.model.Polygon;
 import com.spongeblob.paint.model.Shape;
 
 public class CanvasPanel extends JPanel implements MouseListener,
@@ -26,32 +27,28 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4,
 			FREE_HAND = 6, SOLID_POLYGON = 44,
 			DRAG = 7;
-	protected static Vector<Serializable> vPolygon, vSolidPolygon, vFile, xPolygon, yPolygon;
+	protected static Vector<Serializable> vFile;
 	protected static LinkedList<Shape> vObjects, redoStack;
 
 	private Color foreGroundColor, backGroundColor;
 
 	private int x1, y1, x2, y2, drawMode = 0;
-	private boolean solidMode, polygonBuffer;
+	private boolean solidMode;
 
 	private Point currentDragPoint;
 	private HandLine currentHandLine;
+	private Polygon currentPolygon;
 
 	private File fileName;
 
 	public CanvasPanel() {
 		vObjects = new LinkedList<Shape>();
-		vPolygon = new Vector<Serializable>();
-		vSolidPolygon = new Vector<Serializable>();
 		vFile = new Vector<Serializable>();
-		xPolygon = new Vector<Serializable>();
-		yPolygon = new Vector<Serializable>();
 
 		addMouseListener(this);
 		addMouseMotionListener(this);
 
 		solidMode = false;
-		polygonBuffer = false;
 
 		foreGroundColor = Color.BLACK;
 		backGroundColor = Color.WHITE;
@@ -74,6 +71,17 @@ public class CanvasPanel extends JPanel implements MouseListener,
 
 	/*----------------------------------------------------------------------------*/
 	public void mouseClicked(MouseEvent event) {
+		if (drawMode == CanvasPanel.POLYGON) {
+			if (currentPolygon == null)
+				currentPolygon = new Polygon(event.getX(), event.getY(), foreGroundColor, solidMode);
+			else{
+				currentPolygon.addPoint(event.getX(), event.getY());
+				if (!vObjects.contains(currentPolygon)){
+					vObjects.add(currentPolygon);
+				}
+				repaint();
+			}
+		}
 	}
 
 	public void mouseMoved(MouseEvent event) {
@@ -89,49 +97,22 @@ public class CanvasPanel extends JPanel implements MouseListener,
 					foreGroundColor));
 		}
 		if (drawMode == SQUARE) {
-			if (solidMode) {
-				if (x1 > event.getX() || y1 > event.getY()) {
-					vObjects.add(new Rectangle(event.getX(), event.getY(), x1,
-							y1, foreGroundColor, Boolean.TRUE));
-				} else {
-					vObjects.add(new Rectangle(x1, y1, event.getX(), event
-							.getY(), foreGroundColor, Boolean.TRUE));
-				}
+			if (x1 > event.getX() || y1 > event.getY()) {
+				vObjects.add(new Rectangle(event.getX(), event.getY(), x1,
+						y1, foreGroundColor, solidMode));
 			} else {
-				if (x1 > event.getX() || y1 > event.getY()) {
-					vObjects.add(new Rectangle(event.getX(), event.getY(), x1,
-							y1, foreGroundColor));
-				} else {
-					vObjects.add(new Rectangle(x1, y1, event.getX(), event
-							.getY(), foreGroundColor));
-				}
+				vObjects.add(new Rectangle(x1, y1, event.getX(), event
+						.getY(), foreGroundColor, solidMode));
 			}
 		}
 		if (drawMode == CanvasPanel.OVAL) {
-			if (solidMode) {
-				if (x1 > event.getX() || y1 > event.getY()) {
-					vObjects.add(new Oval(event.getX(), event.getY(), x1, y1,
-							foreGroundColor, Boolean.TRUE));
-				} else {
-					vObjects.add(new Oval(x1, y1, event.getX(), event.getY(),
-							foreGroundColor, Boolean.TRUE));
-				}
+			if (x1 > event.getX() || y1 > event.getY()) {
+				vObjects.add(new Oval(event.getX(), event.getY(), x1, y1,
+						foreGroundColor, solidMode));
 			} else {
-				if (x1 > event.getX() || y1 > event.getY()) {
-					vObjects.add(new Oval(event.getX(), event.getY(), x1, y1,
-							foreGroundColor));
-				} else {
-					vObjects.add(new Oval(x1, y1, event.getX(), event.getY(),
-							foreGroundColor));
-				}
+				vObjects.add(new Oval(x1, y1, event.getX(), event.getY(),
+						foreGroundColor, solidMode));
 			}
-		}
-		if (drawMode == CanvasPanel.POLYGON
-				|| drawMode == CanvasPanel.SOLID_POLYGON) {
-			xPolygon.add(new Integer(event.getX()));
-			yPolygon.add(new Integer(event.getY()));
-			polygonBuffer = true;
-			repaint();
 		}
 		if (drawMode == CanvasPanel.FREE_HAND) {
 			vObjects.add(currentHandLine);
@@ -207,19 +188,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 			r.draw(g);
 			r.drawPathPoints(g);
 		}
-		if (drawMode == POLYGON || drawMode == SOLID_POLYGON) {
-			int xPos[] = new int[xPolygon.size()];
-			int yPos[] = new int[yPolygon.size()];
-
-			for (int count = 0; count < xPos.length; count++) {
-				xPos[count] = ((Integer) (xPolygon.elementAt(count)))
-						.intValue();
-				yPos[count] = ((Integer) (yPolygon.elementAt(count)))
-						.intValue();
-			}
-			g.drawPolyline(xPos, yPos, xPos.length);
-			polygonBuffer = true;
-		}
 		if (drawMode == FREE_HAND) {
 			if (currentHandLine != null){
 				currentHandLine.draw(g);
@@ -294,8 +262,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	/*----------------------------------------------------------------------------*/
 	public void clearCanvas() {
 		vObjects.clear();
-		vPolygon.removeAllElements();
-		vSolidPolygon.removeAllElements();
 		redoStack.clear();
 		repaint();
 	}
@@ -305,8 +271,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		if (fileName != null) {
 			vFile.removeAllElements();
 			vFile.addElement(vObjects);
-			vFile.addElement(vPolygon);
-			vFile.addElement(vSolidPolygon);
 			vFile.addElement(new Color(backGroundColor.getRGB()));
 			RenderedImage rendImage = myCreateImage();
 
@@ -347,8 +311,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		else {
 			vFile.removeAllElements();
 			vFile.addElement(vObjects);
-			vFile.addElement(vPolygon);
-			vFile.addElement(vSolidPolygon);
 			vFile.addElement(new Color(backGroundColor.getRGB()));
 
 			RenderedImage rendImage = myCreateImage();
@@ -390,8 +352,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 
 				this.clearCanvas();
 				vObjects = (LinkedList<Shape>) vFile.elementAt(1);
-				vPolygon = (Vector<Serializable>) vFile.elementAt(3);
-				vSolidPolygon = (Vector<Serializable>) vFile.elementAt(6);
 				backGroundColor = (Color) vFile.elementAt(10);
 
 				this.setBackground(backGroundColor);
@@ -406,53 +366,15 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	}
 
 	/*----------------------------------------------------------------------------*/
-	public boolean isExistPolygonBuffer() {
-		return polygonBuffer;
+	public boolean isDrawingPolygon() {
+		return (currentPolygon != null);
 	}
 
 	/*----------------------------------------------------------------------------*/
 	public void flushPolygonBuffer() {
-		if (!solidMode) {
-			vPolygon.add(new Coordinate(xPolygon, yPolygon, foreGroundColor));
-		} else {
-			vSolidPolygon.add(new Coordinate(xPolygon, yPolygon,
-					foreGroundColor));
-		}
-
-		xPolygon.removeAllElements();
-		yPolygon.removeAllElements();
-
-		polygonBuffer = false;
+		currentPolygon.setClosed(Boolean.TRUE);
+		currentPolygon = null;
 		repaint();
-	}
-
-	/*----------------------------------------------------------------------------*/
-	private class Coordinate implements Serializable {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 4142607983957465035L;
-		private Color foreColor;
-		private Vector<Serializable> xPoly, yPoly;
-
-		public Coordinate(Vector<Serializable> inXPolygon,
-				Vector<Serializable> inYPolygon, Color color) {
-			xPoly = (Vector<Serializable>) inXPolygon.clone();
-			yPoly = (Vector<Serializable>) inYPolygon.clone();
-			foreColor = color;
-		}
-
-		public Color colour() {
-			return foreColor;
-		}
-
-		public Vector<Serializable> getXPolygon() {
-			return xPoly;
-		}
-
-		public Vector<Serializable> getYPolygon() {
-			return yPoly;
-		}
 	}
 
 	/*----------------------------------------------------------------------------*/
@@ -471,39 +393,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	private void redrawVectorBuffer(Graphics g) {
 		for (int i = 0; i < vObjects.size(); i++) {
 			((Shape) vObjects.get(i)).draw(g);
-			// ((Shape)vObjects.get(i)).drawPathPoints(g);
-		}
-		for (int i = 0; i < vPolygon.size(); i++) {
-			int xPos[] = new int[((Coordinate) vPolygon.elementAt(i))
-					.getXPolygon().size()];
-			int yPos[] = new int[((Coordinate) vPolygon.elementAt(i))
-					.getYPolygon().size()];
-
-			for (int count = 0; count < xPos.length; count++) {
-				xPos[count] = ((Integer) ((Coordinate) vPolygon.elementAt(i))
-						.getXPolygon().elementAt(count)).intValue();
-				yPos[count] = ((Integer) ((Coordinate) vPolygon.elementAt(i))
-						.getYPolygon().elementAt(count)).intValue();
-			}
-			g.setColor(((Coordinate) vPolygon.elementAt(i)).colour());
-			g.drawPolygon(xPos, yPos, xPos.length);
-		}
-		for (int i = 0; i < vSolidPolygon.size(); i++) {
-			int xPos[] = new int[((Coordinate) vSolidPolygon.elementAt(i))
-					.getXPolygon().size()];
-			int yPos[] = new int[((Coordinate) vSolidPolygon.elementAt(i))
-					.getYPolygon().size()];
-
-			for (int count = 0; count < xPos.length; count++) {
-				xPos[count] = ((Integer) ((Coordinate) vSolidPolygon
-						.elementAt(i)).getXPolygon().elementAt(count))
-						.intValue();
-				yPos[count] = ((Integer) ((Coordinate) vSolidPolygon
-						.elementAt(i)).getYPolygon().elementAt(count))
-						.intValue();
-			}
-			g.setColor(((Coordinate) vSolidPolygon.elementAt(i)).colour());
-			g.fillPolygon(xPos, yPos, xPos.length);
+			((Shape)vObjects.get(i)).drawPathPoints(g);
 		}
 	}
 
