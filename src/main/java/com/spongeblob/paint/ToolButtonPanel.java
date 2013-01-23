@@ -12,7 +12,7 @@ public class ToolButtonPanel extends JPanel
 	 */
 	private static final long serialVersionUID = 7917208796965969921L;
 
-	private JButton dragBtn, lineBtn, squareBtn, ovalBtn, polygonBtn, roundRectBtn, freeHandBtn, undoBtn, redoBtn, clearBtn;		
+	private JButton dragBtn, lineBtn, squareBtn, ovalBtn, polygonBtn, freeHandBtn, undoBtn, redoBtn, clearBtn;		
 	
 	private JCheckBox fullChk;
 	private CanvasPanel canvasPanel;
@@ -29,8 +29,6 @@ public class ToolButtonPanel extends JPanel
 		ovalBtn	 		= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("polygonBtn.gif");
 		polygonBtn		= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("roundRectBtn.gif");
-		roundRectBtn	= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("freeHandBtn.gif");
 		freeHandBtn		= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("undoBtn.gif");
@@ -50,8 +48,6 @@ public class ToolButtonPanel extends JPanel
 		ovalBtn.setToolTipText("Oval");
 		polygonBtn.addActionListener(new ToolButtonListener());
 		polygonBtn.setToolTipText("Polygon");
-		roundRectBtn.addActionListener(new ToolButtonListener());
-		roundRectBtn.setToolTipText("Rounded Rectangle");
 		freeHandBtn.addActionListener(new ToolButtonListener());
 		freeHandBtn.setToolTipText("Free Hand");
 		undoBtn.addActionListener(new ToolButtonListener());
@@ -83,7 +79,6 @@ public class ToolButtonPanel extends JPanel
 		this.add(squareBtn);
 		this.add(ovalBtn);
 		this.add(polygonBtn);
-		this.add(roundRectBtn);
 		this.add(freeHandBtn);
 		this.add(undoBtn);
 		this.add(redoBtn);
@@ -114,10 +109,6 @@ public class ToolButtonPanel extends JPanel
 			if(event.getSource() == polygonBtn)
 			{
 				canvasPanel.setDrawMode(CanvasPanel.POLYGON);
-			}
-			if(event.getSource() == roundRectBtn)
-			{
-				canvasPanel.setDrawMode(CanvasPanel.ROUND_RECT);
 			}
 			if(event.getSource() == freeHandBtn)
 			{
