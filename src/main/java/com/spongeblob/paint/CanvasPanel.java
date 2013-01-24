@@ -25,20 +25,17 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	protected final static int RADIUS = 10;
 
 	private static final long serialVersionUID = -3371112021797757444L;
-	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4, CURVE_LINE_3P = 5,
-			FREE_HAND = 6, DRAG = 7;
+	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4, CURVE_LINE_3P = 5, FREE_HAND = 6, DRAG = 7;
 	protected static Vector<Serializable> vFile;
 	protected static LinkedList<Shape> vObjects, redoStack;
 
 	private Color foreGroundColor, backGroundColor;
 
-	private int x1, y1, x2, y2, drawMode = 0;
+	private int drawMode = 0;
 	private boolean solidMode;
 
 	private Point currentDragPoint;
-	private HandLine currentHandLine;
-	private Polygon currentPolygon;
-	private CurveLine3Points currentCurveLine3Points;
+	private Shape currentShape;
 	
 	private File fileName;
 
@@ -62,74 +59,65 @@ public class CanvasPanel extends JPanel implements MouseListener,
 
 	/*----------------------------------------------------------------------------*/
 	public void mousePressed(MouseEvent event) {
-		x1 = event.getX();
-		y1 = event.getY();
-
-		if (drawMode == CanvasPanel.FREE_HAND) {
-			currentHandLine = new HandLine(x1, y1, foreGroundColor);
+		if (drawMode == DRAG) {
+			for (int i = 0; i < vObjects.size(); i++) {
+				Point p = ((Shape) vObjects.get(i)).contains(new Point(event.getX(), event.getY()), RADIUS);
+				if (p != null) {
+					currentDragPoint = p;
+				}
+			}
+		}
+		if (drawMode == FREE_HAND) {
+			currentShape = new HandLine(event.getX(), event.getY(), foreGroundColor);
+			vObjects.add(currentShape);
+		}
+		if (drawMode == LINE) {
+			currentShape = new Line(event.getX(), event.getY(), event.getX(), event.getY(), foreGroundColor);
+			vObjects.add(currentShape);
+		}
+		if (drawMode == SQUARE) {
+			currentShape = new Rectangle(event.getX(), event.getY(), event.getX(), event.getY(), foreGroundColor, solidMode);
+			vObjects.add(currentShape);
+		}
+		if (drawMode == OVAL) {
+			currentShape = new Oval(event.getX(), event.getY(), event.getX(), event.getY(), foreGroundColor, solidMode);
+			vObjects.add(currentShape);
 		}
 	}
 
-	/*----------------------------------------------------------------------------*/
 	public void mouseClicked(MouseEvent event) {
-		if (drawMode == CanvasPanel.POLYGON) {
-			if (currentPolygon == null)
-				currentPolygon = new Polygon(event.getX(), event.getY(), foreGroundColor, solidMode);
-			else{
-				currentPolygon.addPoint(event.getX(), event.getY());
-				if (!vObjects.contains(currentPolygon)){
-					vObjects.add(currentPolygon);
-				}
-				repaint();
-			}
-		}
-		if (drawMode == CanvasPanel.CURVE_LINE_3P) {
-			if (currentCurveLine3Points == null)
-				currentCurveLine3Points = new CurveLine3Points(event.getX(), event.getY(), foreGroundColor);
-			else{
-				currentCurveLine3Points.addPoint(event.getX(), event.getY());
-				if (!vObjects.contains(currentCurveLine3Points)){
-					vObjects.add(currentCurveLine3Points);
-				}
-				repaint();
-			}
-		}
 	}
 
 	public void mouseMoved(MouseEvent event) {
 	}
 
-	/*----------------------------------------------------------------------------*/
 	public void mouseReleased(MouseEvent event) {
 		if (drawMode == DRAG) {
 			currentDragPoint = null;
 		}
-		if (drawMode == LINE) {
-			vObjects.add(new Line(x1, y1, event.getX(), event.getY(),
-					foreGroundColor));
+		if (drawMode == FREE_HAND) {
+			currentShape = null;
 		}
-		if (drawMode == SQUARE) {
-			if (x1 > event.getX() || y1 > event.getY()) {
-				vObjects.add(new Rectangle(event.getX(), event.getY(), x1,
-						y1, foreGroundColor, solidMode));
-			} else {
-				vObjects.add(new Rectangle(x1, y1, event.getX(), event
-						.getY(), foreGroundColor, solidMode));
+		
+		if (drawMode == POLYGON) {
+			if (currentShape == null){
+				currentShape = new Polygon(event.getX(), event.getY(), foreGroundColor, solidMode);
+				vObjects.add(currentShape);
+			}
+			else{
+				((Polygon)currentShape).addPoint(event.getX(), event.getY());
 			}
 		}
-		if (drawMode == CanvasPanel.OVAL) {
-			if (x1 > event.getX() || y1 > event.getY()) {
-				vObjects.add(new Oval(event.getX(), event.getY(), x1, y1,
-						foreGroundColor, solidMode));
-			} else {
-				vObjects.add(new Oval(x1, y1, event.getX(), event.getY(),
-						foreGroundColor, solidMode));
+		if (drawMode == CURVE_LINE_3P) {
+			if (currentShape == null){
+				currentShape = new CurveLine3Points(event.getX(), event.getY(), foreGroundColor);
+				vObjects.add(currentShape);
+			}
+			else{
+				((CurveLine3Points)currentShape).addPoint(event.getX(), event.getY());
 			}
 		}
-		if (drawMode == CanvasPanel.FREE_HAND) {
-			vObjects.add(currentHandLine);
-			currentHandLine = null;
-		}
+		repaint();
 	}
 
 	/*----------------------------------------------------------------------------*/
@@ -144,27 +132,17 @@ public class CanvasPanel extends JPanel implements MouseListener,
 
 	/*----------------------------------------------------------------------------*/
 	public void mouseDragged(MouseEvent event) {
-		x2 = event.getX();
-		y2 = event.getY();
 
-		if (drawMode == CanvasPanel.DRAG) {
-			if (currentDragPoint == null) {
-				for (int i = 0; i < vObjects.size(); i++) {
-					Point p = ((Shape) vObjects.get(i)).contains(new Point(x1,
-							y1), RADIUS);
-					if (p != null) {
-						currentDragPoint = p;
-					}
-				}
-			}
+		if (drawMode == DRAG) {
 			if (currentDragPoint != null) {
-				currentDragPoint.setLocation(x2, y2);
+				currentDragPoint.setLocation(event.getX(), event.getY());
 			}
 		}
-		if (drawMode == CanvasPanel.FREE_HAND) {
-			currentHandLine.addPoint(x2, y2);
-			x1 = x2;
-			y1 = y2;
+		if (drawMode == LINE || drawMode == SQUARE || drawMode == OVAL) {
+			currentShape.getPathPoints().get(1).setLocation(event.getX(), event.getY());
+		}
+		if (drawMode == FREE_HAND) {
+			((HandLine)currentShape).addPoint(event.getX(), event.getY());
 		}
 		repaint();
 	}
@@ -174,39 +152,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
 		redrawVectorBuffer(g);
-
-		g.setColor(foreGroundColor);
-
-		if (drawMode == LINE) {
-			Line l = new Line(x1, y1, x2, y2, foreGroundColor);
-			l.draw(g);
-			l.drawPathPoints(g);
-		}
-		if (drawMode == OVAL) {
-			Oval o = new Oval(x1, y1, x2, y2, foreGroundColor);
-			if (solidMode) {
-				o.setSolid(Boolean.TRUE);
-			}
-			o.draw(g);
-			o.drawPathPoints(g);
-		}
-		if (drawMode == SQUARE) {
-			Rectangle r = new Rectangle(x1, y1, x2, y2, foreGroundColor);
-			if (solidMode) {
-				r.setSolid(Boolean.TRUE);
-			}
-			r.draw(g);
-			r.drawPathPoints(g);
-		}
-		if (drawMode == FREE_HAND) {
-			if (currentHandLine != null){
-				currentHandLine.draw(g);
-				currentHandLine.drawPathPoints(g);
-			}
-		}
-
 	}
 
 	/*----------------------------------------------------------------------------*/
@@ -378,10 +324,11 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	}
 
 	public void flushDrawing() {
-		if (currentPolygon != null)
-			currentPolygon.setClosed(Boolean.TRUE);
-		currentPolygon = null;
-		currentCurveLine3Points = null;
+		if (drawMode == CanvasPanel.POLYGON) {
+			if (currentShape != null)
+				((Polygon)currentShape).setClosed(Boolean.TRUE);
+		}
+		currentShape = null;
 		repaint();
 	}
 
