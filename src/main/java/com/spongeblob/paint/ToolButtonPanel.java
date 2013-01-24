@@ -23,6 +23,7 @@ public class ToolButtonPanel extends JPanel
 /*----------------------------------------------------------------------------*/	
 		java.net.URL imgURL = getClass().getResource("lineBtn.gif");
 		lineBtn			= new JButton("",new ImageIcon(imgURL));
+		lineBtn.setSize(10, 10);
 		imgURL = getClass().getResource("squareBtn.gif");
 		squareBtn		= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("ovalBtn.gif");
@@ -77,7 +78,7 @@ public class ToolButtonPanel extends JPanel
 			}
 		);
 /*----------------------------------------------------------------------------*/		
-		this.setLayout(new GridLayout(1,11)); // 9 Buttons & 1 CheckBox
+		this.setLayout(new GridLayout(1,20)); // 9 Buttons & 1 CheckBox
 		this.add(dragBtn);
 		this.add(lineBtn);
 		this.add(squareBtn);

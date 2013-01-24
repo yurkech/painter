@@ -99,7 +99,7 @@ public class Painter extends JFrame
 		mainContainer.add(canvasPanel,BorderLayout.CENTER);
 		mainContainer.add(colorButtonPanel,BorderLayout.SOUTH);
 		
-		setSize(600,500);
+		setSize(1400,800);
 		this.setResizable(true);
 		setVisible(true);
 		

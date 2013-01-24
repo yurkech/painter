@@ -8,14 +8,13 @@ import java.util.List;
 
 import com.spongeblob.paint.utils.PointUtil;
 
-public class CurveLine3Points extends AbstractShape implements Shape{
+public class CurveLine3Points extends MultipointsShape implements Shape{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3456072526729463848L;
 	private static float STEP = 0.1f;
-	private LinkedList<Point> points;
 	
 	
 	public CurveLine3Points(int x, int y, Color c){
@@ -24,30 +23,14 @@ public class CurveLine3Points extends AbstractShape implements Shape{
 		color = c;
 	}
 	
-	public void addPoint(int x, int y){
-		points.add(new Point(x, y));
-	}
-	
 	public void draw(Graphics g) {
 		g.setColor(getColor());
-		for (int i = 0; i < points.size() - 1; i++) {
-			g.drawLine(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y);			
-		}
-		drawCurve(g);
+		g.drawPolyline(PointUtil.getXs(points), PointUtil.getYs(points), points.size());
+		List<Point> curvePoints = getCurvePoints();
+		g.drawPolyline(PointUtil.getXs(curvePoints), PointUtil.getYs(curvePoints), curvePoints.size());
 	}
 
-	private void drawCurve(Graphics g){
-		List<Point> pathPoints = getCurvePoints();
-		for (int i = 0; i < pathPoints.size() - 1; i++) {
-			g.drawLine(pathPoints.get(i).x, pathPoints.get(i).y, pathPoints.get(i + 1).x, pathPoints.get(i + 1).y);			
-		}
-	}
-	public void drawPathPoints(Graphics g) {
-		for (Point point : points) {
-			PointUtil.paintCircleAroundPoint(g, point);
-		}
-	}
-
+	
 	public List<Point> getCurvePoints() {
 		List<Point> pathPoints = new LinkedList<Point>();
 		if (points.size() > 2){
@@ -58,18 +41,6 @@ public class CurveLine3Points extends AbstractShape implements Shape{
 			}
 		}
 		return pathPoints;
-	}
-	
-	public List<Point> getPathPoints() {
-		return points;
-	}
-
-	public Point contains(Point p, int radius) {
-		for (Point point : points) {
-			if (PointUtil.isPointInRadius(point, p, radius))
-				return point;
-		}
-		return null;	
 	}
 	
 
