@@ -100,7 +100,7 @@ public class Painter extends JFrame
 		mainContainer.add(colorButtonPanel,BorderLayout.SOUTH);
 		
 		setSize(1400,800);
-		this.setResizable(true);
+		setResizable(true);
 		setVisible(true);
 		
 		addWindowListener (
@@ -130,8 +130,8 @@ public class Painter extends JFrame
 			{
 				canvasPanel.clearCanvas();
 				canvasPanel.setDrawMode(0);
-				canvasPanel.setForeGroundColor(Color.WHITE);
-				canvasPanel.setBackGroundColor(Color.BLACK);
+				canvasPanel.setForeGroundColor(Color.BLACK);
+				canvasPanel.setBackGroundColor(Color.WHITE);
 				canvasPanel.repaint();
 			}
 			if(event.getSource() == exitMenuItem)
@@ -176,6 +176,7 @@ public class Painter extends JFrame
 		}
 	}
 /*----------------------------------------------------------------------------*/
+	@SuppressWarnings("deprecation")
 	public static void main(String args[])
 	{
 		Painter application = new Painter();

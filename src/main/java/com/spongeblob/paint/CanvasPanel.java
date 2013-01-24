@@ -7,9 +7,12 @@ import java.util.*;
 import java.io.*;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.imageio.*;
 
 import com.spongeblob.paint.model.CurveLine3Points;
+import com.spongeblob.paint.model.CurveLine4Points;
 import com.spongeblob.paint.model.HandLine;
 import com.spongeblob.paint.model.Line;
 import com.spongeblob.paint.model.Oval;
@@ -25,14 +28,14 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	protected final static int RADIUS = 10;
 
 	private static final long serialVersionUID = -3371112021797757444L;
-	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4, CURVE_LINE_3P = 5, FREE_HAND = 6, DRAG = 7;
+	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4, CURVE_LINE_3P = 5, FREE_HAND = 6, DRAG = 7, CURVE_LINE_4P = 8;
 	protected static Vector<Serializable> vFile;
 	protected static LinkedList<Shape> vObjects, redoStack;
 
 	private Color foreGroundColor, backGroundColor;
 
 	private int drawMode = 0;
-	private boolean solidMode;
+	private boolean solidMode, showPathMode;
 
 	private Point currentDragPoint;
 	private Shape currentShape;
@@ -47,13 +50,13 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		addMouseMotionListener(this);
 
 		solidMode = false;
+		showPathMode = true;
 
 		foreGroundColor = Color.BLACK;
 		backGroundColor = Color.WHITE;
 		setBackground(backGroundColor);
 
 		redoStack = new LinkedList<Shape>();
-
 		repaint();
 	}
 
@@ -115,6 +118,15 @@ public class CanvasPanel extends JPanel implements MouseListener,
 			}
 			else{
 				((CurveLine3Points)currentShape).addPoint(event.getX(), event.getY());
+			}
+		}
+		if (drawMode == CURVE_LINE_4P) {
+			if (currentShape == null){
+				currentShape = new CurveLine4Points(event.getX(), event.getY(), foreGroundColor);
+				vObjects.add(currentShape);
+			}
+			else{
+				((CurveLine4Points)currentShape).addPoint(event.getX(), event.getY());
 			}
 		}
 		repaint();
@@ -272,18 +284,30 @@ public class CanvasPanel extends JPanel implements MouseListener,
 			vFile.addElement(new Color(backGroundColor.getRGB()));
 
 			RenderedImage rendImage = myCreateImage();
-
+			
+			ObjectOutputStream oos = null;
+			FileOutputStream fos = null;
+			File file = new File(fileName.toString() + ".vec");
 			try {
-				FileOutputStream fos = new FileOutputStream(fileName);
-				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				fos = new FileOutputStream(file);
+				oos = new ObjectOutputStream(fos);
 				oos.writeObject(vFile);
 				JOptionPane.showMessageDialog(null, "File Saved", "Painter",
 						JOptionPane.INFORMATION_MESSAGE);
-			} catch (Exception exp) {
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally{
+				try {
+					oos.close();
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
+			
 
 			try {
-				File file = new File(fileName.toString() + ".jpg");
+				file = new File(fileName.toString() + ".jpg");
 				ImageIO.write(rendImage, "jpg", file);
 			} catch (IOException e) {
 			}
@@ -292,9 +316,11 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	}
 
 	/*----------------------------------------------------------------------------*/
+	@SuppressWarnings("unchecked")
 	public void OpenCanvasFile() {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileChooser.setFileFilter(new FileNameExtensionFilter("VEC Images", "vec"));
 
 		int result = fileChooser.showOpenDialog(null);
 		if (result == JFileChooser.CANCEL_OPTION)
@@ -302,21 +328,30 @@ public class CanvasPanel extends JPanel implements MouseListener,
 
 		fileName = fileChooser.getSelectedFile();
 
+		ObjectInputStream ois = null;
 		if (fileName != null) {
 			try {
 				FileInputStream fis = new FileInputStream(fileName);
-				ObjectInputStream ois = new ObjectInputStream(fis);
+				ois = new ObjectInputStream(fis);
 				vFile = (Vector<Serializable>) ois.readObject();
 
 				this.clearCanvas();
-				vObjects = (LinkedList<Shape>) vFile.elementAt(1);
-				backGroundColor = (Color) vFile.elementAt(10);
+				vObjects = (LinkedList<Shape>) vFile.elementAt(0);
+				backGroundColor = (Color) vFile.elementAt(1);
 
 				this.setBackground(backGroundColor);
-			} catch (Exception exp) {
+			} catch (Exception e) {
+				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, "Can't Open File",
 						"Painter", JOptionPane.INFORMATION_MESSAGE);
+			}finally{
+				try {
+					ois.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
+			
 		} else {
 			fileName = null;
 		}
@@ -348,8 +383,18 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	private void redrawVectorBuffer(Graphics g) {
 		for (int i = 0; i < vObjects.size(); i++) {
 			((Shape) vObjects.get(i)).draw(g);
-			((Shape)vObjects.get(i)).drawPathPoints(g);
+			if (isShowPathMode())
+				((Shape)vObjects.get(i)).drawPathPoints(g);
 		}
+	}
+
+	public boolean isShowPathMode() {
+		return showPathMode;
+	}
+
+	public void setShowPathMode(boolean showPathMode) {
+		this.showPathMode = showPathMode;
+		repaint();
 	}
 
 }

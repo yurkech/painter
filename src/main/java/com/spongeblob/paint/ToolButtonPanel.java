@@ -12,9 +12,9 @@ public class ToolButtonPanel extends JPanel
 	 */
 	private static final long serialVersionUID = 7917208796965969921L;
 
-	private JButton dragBtn, lineBtn, squareBtn, ovalBtn, polygonBtn, curveLine3PBtn, freeHandBtn, undoBtn, redoBtn, clearBtn;		
+	private JButton dragBtn, lineBtn, squareBtn, ovalBtn, polygonBtn, curveLine3PBtn, curveLine4PBtn, freeHandBtn, undoBtn, redoBtn, clearBtn;		
 	
-	private JCheckBox fullChk;
+	private JCheckBox solidChk, showPath;
 	private CanvasPanel canvasPanel;
 	
 	public ToolButtonPanel(CanvasPanel inCanvasPanel)
@@ -23,7 +23,6 @@ public class ToolButtonPanel extends JPanel
 /*----------------------------------------------------------------------------*/	
 		java.net.URL imgURL = getClass().getResource("lineBtn.gif");
 		lineBtn			= new JButton("",new ImageIcon(imgURL));
-		lineBtn.setSize(10, 10);
 		imgURL = getClass().getResource("squareBtn.gif");
 		squareBtn		= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("ovalBtn.gif");
@@ -32,6 +31,8 @@ public class ToolButtonPanel extends JPanel
 		polygonBtn		= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("polygonBtn.gif");
 		curveLine3PBtn		= new JButton("",new ImageIcon(imgURL));
+		imgURL = getClass().getResource("polygonBtn.gif");
+		curveLine4PBtn		= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("freeHandBtn.gif");
 		freeHandBtn		= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("undoBtn.gif");
@@ -53,6 +54,8 @@ public class ToolButtonPanel extends JPanel
 		polygonBtn.setToolTipText("Polygon");
 		curveLine3PBtn.addActionListener(new ToolButtonListener());
 		curveLine3PBtn.setToolTipText("CurveLine 3-Points");
+		curveLine4PBtn.addActionListener(new ToolButtonListener());
+		curveLine4PBtn.setToolTipText("CurveLine 4-Points");
 		freeHandBtn.addActionListener(new ToolButtonListener());
 		freeHandBtn.setToolTipText("Free Hand");
 		undoBtn.addActionListener(new ToolButtonListener());
@@ -64,18 +67,32 @@ public class ToolButtonPanel extends JPanel
 		dragBtn.addActionListener(new ToolButtonListener());
 		dragBtn.setToolTipText("Drag");
 /*----------------------------------------------------------------------------*/		
-		fullChk = new JCheckBox("Full");
-		fullChk.addItemListener(
+		solidChk = new JCheckBox("Solid");
+		solidChk.addItemListener(
 			new ItemListener()
 			{
 				public void itemStateChanged(ItemEvent event)
 				{
-					if(fullChk.isSelected())
+					if(solidChk.isSelected())
 						canvasPanel.setSolidMode(Boolean.TRUE);
 					else
 						canvasPanel.setSolidMode(Boolean.FALSE);
 				}	
 			}
+		);	
+		showPath = new JCheckBox("Show Path");
+		showPath.setSelected(Boolean.TRUE);
+		showPath.addItemListener(
+			new ItemListener()
+			{
+				public void itemStateChanged(ItemEvent event)
+				{
+					if(showPath.isSelected())
+						canvasPanel.setShowPathMode(Boolean.TRUE);
+					else
+						canvasPanel.setShowPathMode(Boolean.FALSE);
+				}	
+			}	
 		);
 /*----------------------------------------------------------------------------*/		
 		this.setLayout(new GridLayout(1,20)); // 9 Buttons & 1 CheckBox
@@ -85,11 +102,13 @@ public class ToolButtonPanel extends JPanel
 		this.add(ovalBtn);
 		this.add(polygonBtn);
 		this.add(curveLine3PBtn);
+		this.add(curveLine4PBtn);
 		this.add(freeHandBtn);
 		this.add(undoBtn);
 		this.add(redoBtn);
 		this.add(clearBtn);
-		this.add(fullChk);				
+		this.add(solidChk);	
+		this.add(showPath);
 	}
 /*----------------------------------------------------------------------------*/
 	private class ToolButtonListener implements ActionListener
@@ -117,6 +136,10 @@ public class ToolButtonPanel extends JPanel
 			if(event.getSource() == curveLine3PBtn)
 			{
 				canvasPanel.setDrawMode(CanvasPanel.CURVE_LINE_3P);
+			}
+			if(event.getSource() == curveLine4PBtn)
+			{
+				canvasPanel.setDrawMode(CanvasPanel.CURVE_LINE_4P);
 			}
 			if(event.getSource() == freeHandBtn)
 			{

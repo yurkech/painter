@@ -33,6 +33,7 @@ public abstract class SimpleShape extends AbstractShape{
 	}
 
 	public void drawPathPoints(Graphics g) {
+		g.setColor(getColor());
     	PointUtil.paintCircleAroundPoint(g, p1);
     	PointUtil.paintCircleAroundPoint(g, p2);
 	}

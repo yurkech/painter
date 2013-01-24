@@ -20,6 +20,7 @@ public abstract class MultipointsShape extends AbstractShape{
 	}
 	
 	public void drawPathPoints(Graphics g) {
+		g.setColor(getColor());
 		for (Point point : points) {
 			PointUtil.paintCircleAroundPoint(g, point);
 		}
