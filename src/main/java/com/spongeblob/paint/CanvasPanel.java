@@ -369,8 +369,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 
 	/*----------------------------------------------------------------------------*/
 	private RenderedImage myCreateImage() {
-		BufferedImage bufferedImage = new BufferedImage(600, 390,
-				BufferedImage.TYPE_INT_RGB);
+		BufferedImage bufferedImage = new BufferedImage(1400,800, BufferedImage.TYPE_INT_RGB);
 
 		Graphics g = bufferedImage.createGraphics();
 		redrawVectorBuffer(g);

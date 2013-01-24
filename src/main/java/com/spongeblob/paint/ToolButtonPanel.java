@@ -2,6 +2,7 @@ package com.spongeblob.paint;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 
 public class ToolButtonPanel extends JPanel
@@ -17,9 +18,13 @@ public class ToolButtonPanel extends JPanel
 	private JCheckBox solidChk, showPath;
 	private CanvasPanel canvasPanel;
 	
+	private JButton foreGroundColorBtn,backGroundColorBtn;
+	private Color foreColor, backColor;
+	
 	public ToolButtonPanel(CanvasPanel inCanvasPanel)
 	{
 		canvasPanel = inCanvasPanel;
+		
 /*----------------------------------------------------------------------------*/	
 		java.net.URL imgURL = getClass().getResource("lineBtn.gif");
 		lineBtn			= new JButton("",new ImageIcon(imgURL));
@@ -94,6 +99,36 @@ public class ToolButtonPanel extends JPanel
 				}	
 			}	
 		);
+		
+		foreGroundColorBtn = new JButton();
+		foreGroundColorBtn.setOpaque(true);
+		foreGroundColorBtn.setBackground(canvasPanel.getForeGroundColor());
+		foreGroundColorBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		foreGroundColorBtn.addActionListener(
+			new ActionListener()
+			{
+				public void actionPerformed(ActionEvent event)
+				{
+					setForeGroundColor();
+				}
+			}
+		);
+		
+		backGroundColorBtn = new JButton();
+		backGroundColorBtn.setOpaque(true);
+		backGroundColorBtn.setBackground(canvasPanel.getBackGroundColor());
+		backGroundColorBtn.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+		backGroundColorBtn.addActionListener(
+			new ActionListener()
+			{
+				public void actionPerformed(ActionEvent event)
+				{
+					setBackGroundColor();
+				}
+			}
+		);
+	
+		
 /*----------------------------------------------------------------------------*/		
 		this.setLayout(new GridLayout(1,20)); // 9 Buttons & 1 CheckBox
 		this.add(dragBtn);
@@ -109,6 +144,8 @@ public class ToolButtonPanel extends JPanel
 		this.add(clearBtn);
 		this.add(solidChk);	
 		this.add(showPath);
+		this.add(foreGroundColorBtn);
+		this.add(backGroundColorBtn);
 	}
 /*----------------------------------------------------------------------------*/
 	private class ToolButtonListener implements ActionListener
@@ -161,6 +198,26 @@ public class ToolButtonPanel extends JPanel
 			{
 				canvasPanel.clearCanvas();
 			}
+		}
+	}
+/*----------------------------------------------------------------------------*/	
+	public void setForeGroundColor()
+	{
+		foreColor = JColorChooser.showDialog(null,"ForeGround Color",foreColor);
+		if(foreColor!=null)
+		{
+			foreGroundColorBtn.setBackground(foreColor);
+			canvasPanel.setForeGroundColor(foreColor);
+		}
+	}
+/*----------------------------------------------------------------------------*/
+	public void setBackGroundColor()
+	{
+		backColor = JColorChooser.showDialog(null,"BackGround Color",backColor);
+		if(backColor!=null)
+		{
+			backGroundColorBtn.setBackground(backColor);
+			canvasPanel.setBackGroundColor(backColor);
 		}
 	}
 }

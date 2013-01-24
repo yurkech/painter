@@ -12,7 +12,6 @@ public class Painter extends JFrame
 	private static final long serialVersionUID = -7100427091085957843L;
 	private CanvasPanel 		canvasPanel;
 	private ToolButtonPanel   	toolButtonPanel;
-	private ColorButtonPanel	colorButtonPanel;
 	
 	private Container 			mainContainer;
 	private String fileName;
@@ -92,12 +91,10 @@ public class Painter extends JFrame
 /*----------------------------------------------------------------------------*/
 		canvasPanel 	  = new CanvasPanel();
 		toolButtonPanel   = new ToolButtonPanel(canvasPanel);
-		colorButtonPanel  = new ColorButtonPanel(canvasPanel);
 		
 		mainContainer = getContentPane();
 		mainContainer.add(toolButtonPanel,BorderLayout.NORTH);
 		mainContainer.add(canvasPanel,BorderLayout.CENTER);
-		mainContainer.add(colorButtonPanel,BorderLayout.SOUTH);
 		
 		setSize(1400,800);
 		setResizable(true);
@@ -140,12 +137,12 @@ public class Painter extends JFrame
 			}
 			if(event.getSource() == foreGroundMenuItem)
 			{
-				colorButtonPanel.setForeGroundColor();
+				toolButtonPanel.setForeGroundColor();
 				canvasPanel.repaint();
 			}
 			if(event.getSource() == backGroundMenuItem)
 			{
-				colorButtonPanel.setBackGroundColor();
+				toolButtonPanel.setBackGroundColor();
 				canvasPanel.repaint();
 			}
 			if(event.getSource() == authorMenuItem)
