@@ -13,7 +13,8 @@ public class ToolButtonPanel extends JPanel
 	 */
 	private static final long serialVersionUID = 7917208796965969921L;
 
-	private JButton dragBtn, lineBtn, squareBtn, ovalBtn, polygonBtn, curveLine3PBtn, curveLine4PBtn, freeHandBtn, undoBtn, redoBtn, clearBtn;		
+	private JButton dragBtn, lineBtn, squareBtn, ovalBtn, polygonBtn, curveLine3PBtn, curveLine4PBtn, 
+			freeHandBtn, undoBtn, redoBtn, zoomInBtn, zoomOutBtn, clearBtn;		
 	
 	private JCheckBox solidChk, showPath;
 	private CanvasPanel canvasPanel;
@@ -44,6 +45,10 @@ public class ToolButtonPanel extends JPanel
 		undoBtn			= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("redoBtn.gif");
 		redoBtn			= new JButton("",new ImageIcon(imgURL));
+		imgURL = getClass().getResource("undoBtn.gif");
+		zoomInBtn			= new JButton("",new ImageIcon(imgURL));
+		imgURL = getClass().getResource("redoBtn.gif");
+		zoomOutBtn			= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("clearBtn.gif");
 		clearBtn		= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("dragBtn.png");
@@ -67,6 +72,10 @@ public class ToolButtonPanel extends JPanel
 		undoBtn.setToolTipText("Undo");
 		redoBtn.addActionListener(new ToolButtonListener());
 		redoBtn.setToolTipText("Redo");
+		zoomInBtn.addActionListener(new ToolButtonListener());
+		zoomInBtn.setToolTipText("Zoom In");
+		zoomOutBtn.addActionListener(new ToolButtonListener());
+		zoomOutBtn.setToolTipText("ZoomOut");
 		clearBtn.addActionListener(new ToolButtonListener());
 		clearBtn.setToolTipText("Clear Canvas");
 		dragBtn.addActionListener(new ToolButtonListener());
@@ -141,6 +150,8 @@ public class ToolButtonPanel extends JPanel
 		this.add(freeHandBtn);
 		this.add(undoBtn);
 		this.add(redoBtn);
+		this.add(zoomInBtn);
+		this.add(zoomOutBtn);
 		this.add(clearBtn);
 		this.add(solidChk);	
 		this.add(showPath);
@@ -193,6 +204,14 @@ public class ToolButtonPanel extends JPanel
 			if(event.getSource() == redoBtn)
 			{
 				canvasPanel.redo();
+			}
+			if(event.getSource() == zoomInBtn)
+			{
+				canvasPanel.zoomIn();
+			}
+			if(event.getSource() == zoomOutBtn)
+			{
+				canvasPanel.zoomOut();
 			}
 			if(event.getSource() == clearBtn)
 			{

@@ -8,6 +8,4 @@
 /.classpath
 /.project
 
-target/classes/META-INF/maven/Painter/Painter/pom.properties
-
-target/classes/META-INF/maven/Painter/Painter/pom.properties
+target/

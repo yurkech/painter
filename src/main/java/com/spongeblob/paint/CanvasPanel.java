@@ -2,12 +2,12 @@ package com.spongeblob.paint;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.*;
 import java.util.*;
 import java.io.*;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.imageio.*;
 
@@ -26,6 +26,10 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	 * 
 	 */
 	protected final static int RADIUS = 10;
+	protected final static double SCALE_STEP = 0.05;
+	protected final static int WIDTH = 600;
+	protected final static int HEIGHT = 600;
+	
 
 	private static final long serialVersionUID = -3371112021797757444L;
 	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4, CURVE_LINE_3P = 5, FREE_HAND = 6, DRAG = 7, CURVE_LINE_4P = 8;
@@ -39,6 +43,8 @@ public class CanvasPanel extends JPanel implements MouseListener,
 
 	private Point currentDragPoint;
 	private Shape currentShape;
+	
+    private double scale = 1.0;
 	
 	private File fileName;
 
@@ -55,6 +61,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		foreGroundColor = Color.BLACK;
 		backGroundColor = Color.WHITE;
 		setBackground(backGroundColor);
+		setSize(WIDTH, HEIGHT);
 
 		redoStack = new LinkedList<Shape>();
 		repaint();
@@ -164,6 +171,8 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		setSize((int)(WIDTH * scale), (int)(HEIGHT * scale));
+		
 		redrawVectorBuffer(g);
 	}
 
@@ -396,4 +405,14 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		repaint();
 	}
 
+	public void zoomIn(){
+        if(scale > 0.25)
+            scale -= SCALE_STEP;
+        repaint();
+	}
+	
+	public void zoomOut(){
+		scale += SCALE_STEP;
+        repaint();
+	}
 }

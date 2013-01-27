@@ -96,10 +96,6 @@ public class Painter extends JFrame
 		mainContainer.add(toolButtonPanel,BorderLayout.NORTH);
 		mainContainer.add(canvasPanel,BorderLayout.CENTER);
 		
-		setSize(1400,800);
-		setResizable(true);
-		setVisible(true);
-		
 		addWindowListener (
       		new WindowAdapter () 
       		{
@@ -173,12 +169,13 @@ public class Painter extends JFrame
 		}
 	}
 /*----------------------------------------------------------------------------*/
-	@SuppressWarnings("deprecation")
 	public static void main(String args[])
 	{
-		Painter application = new Painter();
-		application.show();
-		application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Painter f = new Painter();
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setSize(800,800);
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
 	}
 	public String getFileName() {
 		return fileName;
