@@ -22,7 +22,7 @@ public class Painter extends JFrame
 	
 	public Painter()
 	{
-		super("A Simple Painting");
+		super("Painter");
 		setFileName(null);
 		
 		mainBar 		= new JMenuBar();
@@ -90,11 +90,15 @@ public class Painter extends JFrame
 		mainBar.add(aboutMenu);
 /*----------------------------------------------------------------------------*/
 		canvasPanel 	  = new CanvasPanel();
+		JScrollPane scrollCanvasPanel = new JScrollPane(canvasPanel);
+		scrollCanvasPanel.setPreferredSize(new Dimension(getWidth(),getHeight()));
+		scrollCanvasPanel.setAutoscrolls(true);
+		
 		toolButtonPanel   = new ToolButtonPanel(canvasPanel);
 		
 		mainContainer = getContentPane();
 		mainContainer.add(toolButtonPanel,BorderLayout.NORTH);
-		mainContainer.add(canvasPanel,BorderLayout.CENTER);
+		mainContainer.add(scrollCanvasPanel,BorderLayout.CENTER);
 		
 		addWindowListener (
       		new WindowAdapter () 

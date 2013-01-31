@@ -171,8 +171,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		setSize((int)(WIDTH * scale), (int)(HEIGHT * scale));
-		
 		redrawVectorBuffer(g);
 	}
 
@@ -408,11 +406,15 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	public void zoomIn(){
         if(scale > 0.25)
             scale -= SCALE_STEP;
-        repaint();
+        System.out.println(getSize());
+		setSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
+		setPreferredSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
 	}
 	
 	public void zoomOut(){
 		scale += SCALE_STEP;
-        repaint();
+		System.out.println(getSize());	
+		setSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
+		setPreferredSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
 	}
 }

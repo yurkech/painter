@@ -208,14 +208,17 @@ public class ToolButtonPanel extends JPanel
 			if(event.getSource() == zoomInBtn)
 			{
 				canvasPanel.zoomIn();
+				canvasPanel.repaint();
 			}
 			if(event.getSource() == zoomOutBtn)
 			{
 				canvasPanel.zoomOut();
+				canvasPanel.repaint();
 			}
 			if(event.getSource() == clearBtn)
 			{
 				canvasPanel.clearCanvas();
+				
 			}
 		}
 	}
