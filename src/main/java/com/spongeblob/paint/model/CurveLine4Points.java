@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.spongeblob.paint.utils.PointUtil;
 
 public class CurveLine4Points extends AbstractShape{
@@ -37,12 +39,12 @@ public class CurveLine4Points extends AbstractShape{
 		g.drawPolyline(PointUtil.getXs(curvePoints), PointUtil.getYs(curvePoints), curvePoints.size());
 	}
 
-	
+	@JsonIgnore
 	public List<Point> getCurvePoints() {
 		List<Point> pathPoints = new LinkedList<Point>();
 		if (points.size() > 3){
 			for (int i = 0; i < points.size() - 3; i= i + 3) {
-				pathPoints.addAll(getCurveLine4Points(points.get(i).x, points.get(i).y, 
+				pathPoints.addAll(calculateCurveLine4Points(points.get(i).x, points.get(i).y, 
 						points.get(i + 1).x, points.get(i + 1).y, 
 						points.get(i + 2).x, points.get(i + 2).y,
 						points.get(i + 3).x, points.get(i + 3).y));			
@@ -54,7 +56,7 @@ public class CurveLine4Points extends AbstractShape{
 
 	/* Formula:
 	 * ((1-t)^2 * P1) + (2*(t)*(1-t) * P2) + ((tt) * P3) */
-	public List<Point> getCurveLine4Points(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+	public List<Point> calculateCurveLine4Points(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
 
 		List<Point> mPoints = new LinkedList<Point>();
 		
