@@ -9,7 +9,7 @@ public interface Shape extends Serializable{
 	public void drawPathPoints(Graphics g);
 	
 	
-	public List<Point> getPathPoints();
+	public List<Point> getPoints();
 	public Point contains(Point p, int radius); 
 	
 }

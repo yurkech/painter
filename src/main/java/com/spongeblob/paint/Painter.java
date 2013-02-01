@@ -162,7 +162,8 @@ public class Painter extends JFrame
 					chooseFile();
 				}
 				try {
-					writeJSONToFile(canvasPanel.getJSONView());
+					if (file != null)
+						writeJSONToFile(canvasPanel.getJSONView());
 				} catch (IOException e) {
 					file = null;
 					JOptionPane.showMessageDialog(null, e, "Painter",
@@ -173,7 +174,8 @@ public class Painter extends JFrame
 			{
 				chooseFile();
 				try {
-					writeJSONToFile(canvasPanel.getJSONView());
+					if (file != null)
+						writeJSONToFile(canvasPanel.getJSONView());
 				} catch (IOException e) {
 					file = null;
 					JOptionPane.showMessageDialog(null, e, "Painter",
@@ -184,7 +186,8 @@ public class Painter extends JFrame
 			{
 				chooseFile();
 				try {
-					canvasPanel.renderFromJSON(readJSONFromFile());
+					if (file != null)
+							canvasPanel.renderFromJSON(readJSONFromFile());
 				} catch (IOException e) {
 					file = null;
 					JOptionPane.showMessageDialog(null, e, "Painter",
@@ -223,6 +226,7 @@ public class Painter extends JFrame
 		fw.write(json);
 		JOptionPane.showMessageDialog(null, "File Saved", "Painter",
 				JOptionPane.INFORMATION_MESSAGE);
+		fw.close();
 	}
 	
 	private String readJSONFromFile() throws IOException{

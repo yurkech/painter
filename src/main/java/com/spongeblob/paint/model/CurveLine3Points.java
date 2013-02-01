@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.spongeblob.paint.utils.PointUtil;
 
-public class CurveLine3Points extends MultipointsShape implements Shape{
+public class CurveLine3Points extends AbstractShape{
 
 	/**
 	 * 
@@ -15,6 +15,7 @@ public class CurveLine3Points extends MultipointsShape implements Shape{
 	private static final long serialVersionUID = 3456072526729463848L;
 	private static float STEP = 0.1f;
 	
+	public CurveLine3Points(){}
 	
 	public CurveLine3Points(int x, int y, Color c){
 		points = new LinkedList<Point>();

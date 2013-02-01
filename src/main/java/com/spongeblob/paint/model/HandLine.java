@@ -7,13 +7,13 @@ import java.util.LinkedList;
 import com.spongeblob.paint.utils.PointUtil;
 
 
-public class HandLine extends MultipointsShape implements Shape{
+public class HandLine extends AbstractShape{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6765897363067718369L;
-	
+	public HandLine(){}
 	
 	public HandLine(int x, int y, Color c){
 		points = new LinkedList<Point>();

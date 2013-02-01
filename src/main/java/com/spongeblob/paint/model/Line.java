@@ -2,23 +2,25 @@ package com.spongeblob.paint.model;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.LinkedList;
 
-public class Line extends SimpleShape implements Shape{
+public class Line extends AbstractShape{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5109490022085804859L;
-
-	public Line(int x1, int y1, int x2, int y2, Color c){
-		p1 = new Point(x1, y1);
-		p2 = new Point(x2, y2);
+	public Line(){}
+	
+	public Line(int x, int y, Color c){
+		points = new LinkedList<Point>();
+		points.add(new Point(x, y));
+		points.add(new Point(x, y));
 		color = c;
 	}
 	
 	public void draw(Graphics g) {
 		g.setColor(getColor());
-     	g.drawLine(p1.x, p1.y, p2.x, p2.y);
-		
+     	g.drawLine(points.get(0).x, points.get(0).y, points.get(1).x, points.get(1).y);
 	}
 
 }

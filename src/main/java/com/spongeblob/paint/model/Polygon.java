@@ -4,17 +4,19 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.LinkedList;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 import com.spongeblob.paint.utils.PointUtil;
 
-public class Polygon extends MultipointsShape implements Shape{
+public class Polygon extends SolidAbstractShape{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2411393086421989720L;
-    
     private boolean isClosed;
-	
+    
+    public Polygon(){}
 	
 	public Polygon(int x, int y, Color c){
 		points = new LinkedList<Point>();
@@ -47,7 +49,7 @@ public class Polygon extends MultipointsShape implements Shape{
 	}
 
 	
-
+	@JsonProperty(value="isClosed")
 	public boolean isClosed() {
 		return isClosed;
 	}

@@ -8,6 +8,7 @@ import java.io.*;
 import javax.swing.*;
 
 import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -82,15 +83,15 @@ public class CanvasPanel extends JPanel implements MouseListener,
 			vObjects.add(currentShape);
 		}
 		if (drawMode == LINE) {
-			currentShape = new Line(event.getX(), event.getY(), event.getX(), event.getY(), foreGroundColor);
+			currentShape = new Line(event.getX(), event.getY(), foreGroundColor);
 			vObjects.add(currentShape);
 		}
 		if (drawMode == SQUARE) {
-			currentShape = new Rectangle(event.getX(), event.getY(), event.getX(), event.getY(), foreGroundColor, solidMode);
+			currentShape = new Rectangle(event.getX(), event.getY(), foreGroundColor, solidMode);
 			vObjects.add(currentShape);
 		}
 		if (drawMode == OVAL) {
-			currentShape = new Oval(event.getX(), event.getY(), event.getX(), event.getY(), foreGroundColor, solidMode);
+			currentShape = new Oval(event.getX(), event.getY(), foreGroundColor, solidMode);
 			vObjects.add(currentShape);
 		}
 	}
@@ -151,11 +152,11 @@ public class CanvasPanel extends JPanel implements MouseListener,
 
 		if (drawMode == DRAG) {
 			if (currentDragPoint != null) {
-				currentDragPoint.setLocation(event.getX(), event.getY());
+				currentDragPoint.move(event.getX(), event.getY());
 			}
 		}
 		if (drawMode == LINE || drawMode == SQUARE || drawMode == OVAL) {
-			currentShape.getPathPoints().get(1).setLocation(event.getX(), event.getY());
+			currentShape.getPoints().get(1).move(event.getX(), event.getY());
 		}
 		if (drawMode == FREE_HAND) {
 			((HandLine)currentShape).addPoint(event.getX(), event.getY());
@@ -235,14 +236,16 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	public String getJSONView() throws JsonGenerationException, JsonMappingException, IOException{
 		ObjectMapper mapper = new ObjectMapper().setVisibility(JsonMethod.FIELD, Visibility.ANY);
 		mapper.enableDefaultTypingAsProperty(DefaultTyping.OBJECT_AND_NON_CONCRETE, "type");
-		String json = null;
-		json = mapper.writeValueAsString(vObjects);
-		System.out.print(json);
+		String json = mapper.writeValueAsString(vObjects);
 		return json;
 	}
 	
-	public void renderFromJSON(String json){
-		
+	@SuppressWarnings("unchecked")
+	public void renderFromJSON(String json) throws JsonParseException, JsonMappingException, IOException{
+		ObjectMapper mapper = new ObjectMapper().setVisibility(JsonMethod.FIELD, Visibility.ANY);
+		mapper.enableDefaultTypingAsProperty(DefaultTyping.OBJECT_AND_NON_CONCRETE, "type");
+		vObjects = mapper.readValue(json, LinkedList.class);
+		repaint();
 	}
 	
 	/*
