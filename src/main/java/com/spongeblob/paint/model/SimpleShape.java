@@ -1,9 +1,10 @@
 package com.spongeblob.paint.model;
 
 import java.awt.Graphics;
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.spongeblob.paint.utils.PointUtil;
 
@@ -24,7 +25,7 @@ public abstract class SimpleShape extends AbstractShape{
 		return null;
 	}
 
-
+	@JsonProperty(value="points")
 	public List<Point> getPathPoints() {
 		List<Point> l = new ArrayList<Point>(2);
 		l.add(p1);

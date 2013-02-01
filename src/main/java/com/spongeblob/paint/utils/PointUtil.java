@@ -1,8 +1,9 @@
 package com.spongeblob.paint.utils;
 
 import java.awt.Graphics;
-import java.awt.Point;
 import java.util.List;
+
+import com.spongeblob.paint.model.Point;
 
 public class PointUtil {
 	protected final static int MARKER_RADIUS = 10;

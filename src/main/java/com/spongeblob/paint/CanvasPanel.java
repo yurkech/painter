@@ -2,14 +2,17 @@ package com.spongeblob.paint;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.*;
 import java.util.*;
 import java.io.*;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.imageio.*;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectMapper.DefaultTyping;
 
 import com.spongeblob.paint.model.CurveLine3Points;
 import com.spongeblob.paint.model.CurveLine4Points;
@@ -19,6 +22,8 @@ import com.spongeblob.paint.model.Oval;
 import com.spongeblob.paint.model.Rectangle;
 import com.spongeblob.paint.model.Polygon;
 import com.spongeblob.paint.model.Shape;
+import com.spongeblob.paint.model.Point;
+
 
 public class CanvasPanel extends JPanel implements MouseListener,
 		MouseMotionListener, Serializable {
@@ -33,7 +38,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 
 	private static final long serialVersionUID = -3371112021797757444L;
 	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4, CURVE_LINE_3P = 5, FREE_HAND = 6, DRAG = 7, CURVE_LINE_4P = 8;
-	protected static Vector<Serializable> vFile;
 	protected static LinkedList<Shape> vObjects, redoStack;
 
 	private Color foreGroundColor, backGroundColor;
@@ -46,11 +50,8 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	
     private double scale = 1.0;
 	
-	private File fileName;
-
 	public CanvasPanel() {
 		vObjects = new LinkedList<Shape>();
-		vFile = new Vector<Serializable>();
 
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -67,7 +68,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		repaint();
 	}
 
-	/*----------------------------------------------------------------------------*/
 	public void mousePressed(MouseEvent event) {
 		if (drawMode == DRAG) {
 			for (int i = 0; i < vObjects.size(); i++) {
@@ -139,17 +139,14 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		repaint();
 	}
 
-	/*----------------------------------------------------------------------------*/
 	public void mouseEntered(MouseEvent event) {
 		setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 	}
 
-	/*----------------------------------------------------------------------------*/
 	public void mouseExited(MouseEvent event) {
 		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}
 
-	/*----------------------------------------------------------------------------*/
 	public void mouseDragged(MouseEvent event) {
 
 		if (drawMode == DRAG) {
@@ -166,7 +163,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		repaint();
 	}
 
-	/*----------------------------------------------------------------------------*/
 
 	@Override
 	public void paintComponent(Graphics g) {
@@ -174,7 +170,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		redrawVectorBuffer(g);
 	}
 
-	/*----------------------------------------------------------------------------*/
 	public void setDrawMode(int mode) {
 		drawMode = mode;
 	}
@@ -183,7 +178,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		return drawMode;
 	}
 
-	/*----------------------------------------------------------------------------*/
 	public void setSolidMode(Boolean inSolidMode) {
 		solidMode = inSolidMode.booleanValue();
 	}
@@ -192,7 +186,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		return Boolean.valueOf(solidMode);
 	}
 
-	/*----------------------------------------------------------------------------*/
 	public void setForeGroundColor(Color inputColor) {
 		foreGroundColor = inputColor;
 	}
@@ -201,7 +194,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		return foreGroundColor;
 	}
 
-	/*----------------------------------------------------------------------------*/
 	public void setBackGroundColor(Color inputColor) {
 		backGroundColor = inputColor;
 		this.setBackground(backGroundColor);
@@ -211,7 +203,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		return backGroundColor;
 	}
 
-	/*----------------------------------------------------------------------------*/
 	public void undo() {
 
 		if (vObjects.isEmpty())
@@ -224,7 +215,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		repaint();
 	}
 
-	/*----------------------------------------------------------------------------*/
 	public void redo() {
 		if (redoStack.isEmpty())
 			JOptionPane.showMessageDialog(null, "Can't Redo", "Painter",
@@ -236,25 +226,34 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		repaint();
 	}
 
-	/*----------------------------------------------------------------------------*/
 	public void clearCanvas() {
 		vObjects.clear();
 		redoStack.clear();
 		repaint();
 	}
 
-	/*----------------------------------------------------------------------------*/
-	public void SaveCanvasToFile() {
+	public String getJSONView() throws JsonGenerationException, JsonMappingException, IOException{
+		ObjectMapper mapper = new ObjectMapper().setVisibility(JsonMethod.FIELD, Visibility.ANY);
+		mapper.enableDefaultTypingAsProperty(DefaultTyping.OBJECT_AND_NON_CONCRETE, "type");
+		String json = null;
+		json = mapper.writeValueAsString(vObjects);
+		System.out.print(json);
+		return json;
+	}
+	
+	public void renderFromJSON(String json){
+		
+	}
+	
+	/*
+	public void saveCanvasToFile() {
 		if (fileName != null) {
-			vFile.removeAllElements();
-			vFile.addElement(vObjects);
-			vFile.addElement(new Color(backGroundColor.getRGB()));
 			RenderedImage rendImage = myCreateImage();
 
 			try {
 				FileOutputStream fos = new FileOutputStream(fileName);
 				ObjectOutputStream oos = new ObjectOutputStream(fos);
-				oos.writeObject(vFile);
+				oos.writeObject(vObjects);
 				JOptionPane.showMessageDialog(null, "File Saved", "Painter",
 						JOptionPane.INFORMATION_MESSAGE);
 			} catch (Exception exp) {
@@ -266,13 +265,13 @@ public class CanvasPanel extends JPanel implements MouseListener,
 			} catch (IOException e) {
 			}
 		} else {
-			SaveAsCanvasToFile();
+			saveAsCanvasToFile();
 		}
 		repaint();
 	}
-
-	/*----------------------------------------------------------------------------*/
-	public void SaveAsCanvasToFile() {
+	*/
+	/*
+	public void saveAsCanvasToFile() {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		int result = fileChooser.showSaveDialog(null);
@@ -321,8 +320,9 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		}
 		repaint();
 	}
-
-	/*----------------------------------------------------------------------------*/
+	*/
+	
+	/*
 	@SuppressWarnings("unchecked")
 	public void OpenCanvasFile() {
 		JFileChooser fileChooser = new JFileChooser();
@@ -364,7 +364,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		}
 		repaint();
 	}
-
+	*/
 	public void flushDrawing() {
 		if (drawMode == CanvasPanel.POLYGON) {
 			if (currentShape != null)
@@ -374,7 +374,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		repaint();
 	}
 
-	/*----------------------------------------------------------------------------*/
+	/*
 	private RenderedImage myCreateImage() {
 		BufferedImage bufferedImage = new BufferedImage(1400,800, BufferedImage.TYPE_INT_RGB);
 
@@ -384,8 +384,8 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		g.dispose();
 		return bufferedImage;
 	}
-
-	/*----------------------------------------------------------------------------*/
+	*/
+	
 	private void redrawVectorBuffer(Graphics g) {
 		for (int i = 0; i < vObjects.size(); i++) {
 			((Shape) vObjects.get(i)).draw(g);

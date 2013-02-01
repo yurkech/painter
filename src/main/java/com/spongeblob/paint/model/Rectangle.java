@@ -2,7 +2,6 @@ package com.spongeblob.paint.model;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
 
 public class Rectangle extends SimpleShape implements Shape{
 

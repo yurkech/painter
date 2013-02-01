@@ -2,7 +2,14 @@ package com.spongeblob.paint;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Painter extends JFrame
 {
@@ -14,7 +21,7 @@ public class Painter extends JFrame
 	private ToolButtonPanel   	toolButtonPanel;
 	
 	private Container 			mainContainer;
-	private String fileName;
+	private File file;
 	
 	JMenuBar mainBar;
 	JMenu fileMenu, editMenu, setColorMenuItem, aboutMenu;
@@ -23,7 +30,6 @@ public class Painter extends JFrame
 	public Painter()
 	{
 		super("Painter");
-		setFileName(null);
 		
 		mainBar 		= new JMenuBar();
 		setJMenuBar(mainBar);
@@ -152,15 +158,38 @@ public class Painter extends JFrame
 			}
 			if(event.getSource() == saveMenuItem)
 			{
-				canvasPanel.SaveCanvasToFile();
+				if (file == null || file.getName().equals("")){
+					chooseFile();
+				}
+				try {
+					writeJSONToFile(canvasPanel.getJSONView());
+				} catch (IOException e) {
+					file = null;
+					JOptionPane.showMessageDialog(null, e, "Painter",
+							JOptionPane.ERROR_MESSAGE);
+				}
 			}
 			if(event.getSource() == saveAsMenuItem)
 			{
-				canvasPanel.SaveAsCanvasToFile();
+				chooseFile();
+				try {
+					writeJSONToFile(canvasPanel.getJSONView());
+				} catch (IOException e) {
+					file = null;
+					JOptionPane.showMessageDialog(null, e, "Painter",
+							JOptionPane.ERROR_MESSAGE);
+				}
 			}
 			if(event.getSource() == openMenuItem)
 			{
-				canvasPanel.OpenCanvasFile();
+				chooseFile();
+				try {
+					canvasPanel.renderFromJSON(readJSONFromFile());
+				} catch (IOException e) {
+					file = null;
+					JOptionPane.showMessageDialog(null, e, "Painter",
+							JOptionPane.ERROR_MESSAGE);
+				}
 			}
 			if(event.getSource() == undoMenuItem)
 			{
@@ -172,7 +201,42 @@ public class Painter extends JFrame
 			}
 		}
 	}
-/*----------------------------------------------------------------------------*/
+	
+	void chooseFile(){
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileChooser.setFileFilter(new FileNameExtensionFilter("*.vec", "vec"));
+
+		int result = fileChooser.showOpenDialog(null);
+		if (result == JFileChooser.CANCEL_OPTION)
+			return;
+
+		file = fileChooser.getSelectedFile();
+		
+		if (file == null || file.getName().equals(""))
+			JOptionPane.showMessageDialog(null, "Invalid File Name", "Painter",
+					JOptionPane.ERROR_MESSAGE);
+	}
+	
+	void writeJSONToFile(String json) throws IOException{
+		FileWriter fw = new FileWriter(file);
+		fw.write(json);
+		JOptionPane.showMessageDialog(null, "File Saved", "Painter",
+				JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private String readJSONFromFile() throws IOException{
+		StringBuilder res = new StringBuilder();
+		FileReader fr = new FileReader(file);
+		BufferedReader br = new BufferedReader(fr);
+		String s;
+		while((s = br.readLine()) != null) {
+			res.append(s);
+		}
+		fr.close();
+		return res.toString();
+	}
+	
 	public static void main(String args[])
 	{
 		Painter f = new Painter();
@@ -180,11 +244,5 @@ public class Painter extends JFrame
 		f.setSize(800,800);
         f.setLocationRelativeTo(null);
         f.setVisible(true);
-	}
-	public String getFileName() {
-		return fileName;
-	}
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
 	}
 }

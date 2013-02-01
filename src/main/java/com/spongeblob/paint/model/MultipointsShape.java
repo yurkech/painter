@@ -1,9 +1,10 @@
 package com.spongeblob.paint.model;
 
 import java.awt.Graphics;
-import java.awt.Point;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.spongeblob.paint.utils.PointUtil;
 
@@ -26,6 +27,7 @@ public abstract class MultipointsShape extends AbstractShape{
 		}
 	}
 
+	@JsonProperty(value="points")
 	public List<Point> getPathPoints() {
 		return points;
 	}
