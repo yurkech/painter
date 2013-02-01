@@ -9,3 +9,7 @@
 /.project
 
 target/
+
+target/classes/META-INF/maven/Painter/Painter/pom.xml
+
+target/classes/META-INF/maven/Painter/Painter/pom.properties
