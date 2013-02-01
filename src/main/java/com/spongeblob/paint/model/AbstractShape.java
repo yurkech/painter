@@ -65,4 +65,28 @@ public abstract class AbstractShape implements Shape{
 		}
 		return null;	
 	}
+	
+	public Boolean intersects(Point p, int radius){
+		if (points.size() > 1){
+			for (int i = 0; i < points.size() - 1; i= i + 1) {
+				if (PointUtil.isPointIntersectLineInRadius(p, points.get(i), points.get(i + 1), radius))
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	public void setFocus(Boolean flag){
+		if (flag){
+			color = Color.RED;
+		} else{
+			color = Color.BLACK;
+		}
+	}
+	
+	public void move(int deltaX, int deltaY){
+		for (Point point : points) {
+			point.moveWithDelta(deltaX, deltaY);
+		}
+	}
 }

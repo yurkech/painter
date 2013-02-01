@@ -11,5 +11,8 @@ public interface Shape extends Serializable{
 	
 	public List<Point> getPoints();
 	public Point contains(Point p, int radius); 
+	public Boolean intersects(Point p, int radius);
 	
+	public void setFocus(Boolean flag);
+	public void move(int deltaX, int deltaY);
 }

@@ -48,6 +48,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 
 	private Point currentDragPoint;
 	private Shape currentShape;
+	private int baseX, baseY;
 	
     private double scale = 1.0;
 	
@@ -77,6 +78,16 @@ public class CanvasPanel extends JPanel implements MouseListener,
 					currentDragPoint = p;
 				}
 			}
+			if (currentDragPoint == null) {
+				for (int i = 0; i < vObjects.size(); i++) {
+					 if (((Shape) vObjects.get(i)).intersects(new Point(event.getX(), event.getY()), RADIUS)){
+						currentShape = vObjects.get(i);
+					 	currentShape.setFocus(true);
+					 	baseX = event.getX();
+					 	baseY = event.getY();
+					 }	
+				}
+			}	
 		}
 		if (drawMode == FREE_HAND) {
 			currentShape = new HandLine(event.getX(), event.getY(), foreGroundColor);
@@ -105,6 +116,10 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	public void mouseReleased(MouseEvent event) {
 		if (drawMode == DRAG) {
 			currentDragPoint = null;
+			
+			if (currentShape != null)
+				currentShape.setFocus(false);
+			currentShape = null;
 		}
 		if (drawMode == FREE_HAND) {
 			currentShape = null;
@@ -153,6 +168,14 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		if (drawMode == DRAG) {
 			if (currentDragPoint != null) {
 				currentDragPoint.move(event.getX(), event.getY());
+			}
+			if (currentShape != null){
+				int deltaX = event.getX() - baseX;
+				int deltaY = event.getY() - baseY;
+				currentShape.move(deltaX, deltaY);
+				
+				baseX = event.getX();
+				baseY = event.getY();
 			}
 		}
 		if (drawMode == LINE || drawMode == SQUARE || drawMode == OVAL) {

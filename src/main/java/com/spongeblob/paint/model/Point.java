@@ -40,6 +40,9 @@ public class Point implements Serializable{
 		this.y = y;
 	}
 
-	
+	void moveWithDelta(int deltaX, int deltaY){
+		this.x = this.x + deltaX;
+		this.y = this.y + deltaY;
+	}
 
 }
