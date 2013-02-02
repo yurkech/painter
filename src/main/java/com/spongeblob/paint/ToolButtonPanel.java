@@ -13,10 +13,10 @@ public class ToolButtonPanel extends JPanel
 	 */
 	private static final long serialVersionUID = 7917208796965969921L;
 
-	private JButton dragBtn, lineBtn, squareBtn, ovalBtn, polygonBtn, curveLine3PBtn, curveLine4PBtn, 
+	private JButton dragBtn, lineBtn, polygonBtn, curveLine3PBtn, curveLine4PBtn, 
 			freeHandBtn, undoBtn, redoBtn, zoomInBtn, zoomOutBtn, clearBtn;		
 	
-	private JCheckBox solidChk, showPath;
+	private JCheckBox solidChk;
 	private CanvasPanel canvasPanel;
 	
 	private JButton foreGroundColorBtn,backGroundColorBtn;
@@ -27,39 +27,31 @@ public class ToolButtonPanel extends JPanel
 		canvasPanel = inCanvasPanel;
 		
 /*----------------------------------------------------------------------------*/	
-		java.net.URL imgURL = getClass().getResource("lineBtn.gif");
+		java.net.URL imgURL = getClass().getResource("stock_draw_line.png");
 		lineBtn			= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("squareBtn.gif");
-		squareBtn		= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("ovalBtn.gif");
-		ovalBtn	 		= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("polygonBtn.gif");
+		imgURL = getClass().getResource("stock_draw_polygon_filled.png");
 		polygonBtn		= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("polygonBtn.gif");
+		imgURL = getClass().getResource("line.png");
 		curveLine3PBtn		= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("polygonBtn.gif");
+		imgURL = getClass().getResource("line.png");
 		curveLine4PBtn		= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("freeHandBtn.gif");
+		imgURL = getClass().getResource("stock_draw_freeform_line.png");
 		freeHandBtn		= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("undoBtn.gif");
+		imgURL = getClass().getResource("undo.png");
 		undoBtn			= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("redoBtn.gif");
+		imgURL = getClass().getResource("redo.png");
 		redoBtn			= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("undoBtn.gif");
+		imgURL = getClass().getResource("zoom_in.png");
 		zoomInBtn			= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("redoBtn.gif");
+		imgURL = getClass().getResource("zoom_out.png");
 		zoomOutBtn			= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("clearBtn.gif");
+		imgURL = getClass().getResource("eraser.png");
 		clearBtn		= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("dragBtn.png");
+		imgURL = getClass().getResource("cursor_drag_arrow_icon.png");
 		dragBtn			= new JButton("",new ImageIcon(imgURL));
 		
 		lineBtn.addActionListener(new ToolButtonListener());
 		lineBtn.setToolTipText("Line");
-		squareBtn.addActionListener(new ToolButtonListener());
-		squareBtn.setToolTipText("Rectangle");
-		ovalBtn.addActionListener(new ToolButtonListener());
-		ovalBtn.setToolTipText("Oval");
 		polygonBtn.addActionListener(new ToolButtonListener());
 		polygonBtn.setToolTipText("Polygon");
 		curveLine3PBtn.addActionListener(new ToolButtonListener());
@@ -94,20 +86,7 @@ public class ToolButtonPanel extends JPanel
 				}	
 			}
 		);	
-		showPath = new JCheckBox("Show Path");
-		showPath.setSelected(Boolean.TRUE);
-		showPath.addItemListener(
-			new ItemListener()
-			{
-				public void itemStateChanged(ItemEvent event)
-				{
-					if(showPath.isSelected())
-						canvasPanel.setShowPathMode(Boolean.TRUE);
-					else
-						canvasPanel.setShowPathMode(Boolean.FALSE);
-				}	
-			}	
-		);
+		
 		
 		foreGroundColorBtn = new JButton();
 		foreGroundColorBtn.setOpaque(true);
@@ -142,8 +121,6 @@ public class ToolButtonPanel extends JPanel
 		this.setLayout(new GridLayout(1,20)); // 9 Buttons & 1 CheckBox
 		this.add(dragBtn);
 		this.add(lineBtn);
-		this.add(squareBtn);
-		this.add(ovalBtn);
 		this.add(polygonBtn);
 		this.add(curveLine3PBtn);
 		this.add(curveLine4PBtn);
@@ -154,7 +131,6 @@ public class ToolButtonPanel extends JPanel
 		this.add(zoomOutBtn);
 		this.add(clearBtn);
 		this.add(solidChk);	
-		this.add(showPath);
 		this.add(foreGroundColorBtn);
 		this.add(backGroundColorBtn);
 	}
@@ -168,14 +144,6 @@ public class ToolButtonPanel extends JPanel
 			if(event.getSource() == lineBtn)
 			{
 				canvasPanel.setDrawMode(CanvasPanel.LINE);		
-			}
-			if(event.getSource() == squareBtn)
-			{
-				canvasPanel.setDrawMode(CanvasPanel.SQUARE);
-			}
-			if(event.getSource() == ovalBtn)
-			{
-				canvasPanel.setDrawMode(CanvasPanel.OVAL);
 			}
 			if(event.getSource() == polygonBtn)
 			{

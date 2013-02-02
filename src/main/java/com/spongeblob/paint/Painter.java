@@ -24,8 +24,11 @@ public class Painter extends JFrame
 	private File file;
 	
 	JMenuBar mainBar;
-	JMenu fileMenu, editMenu, setColorMenuItem, aboutMenu;
-	JMenuItem newMenuItem, openMenuItem, closeMenuItem, saveMenuItem, saveAsMenuItem, exitMenuItem, undoMenuItem, redoMenuItem, foreGroundMenuItem, backGroundMenuItem, authorMenuItem;
+	JMenu fileMenu, editMenu, setColorMenuItem, aboutMenu, viewMenu;
+	JMenuItem newMenuItem, openMenuItem, closeMenuItem, 
+			saveMenuItem, saveAsMenuItem, exitMenuItem, undoMenuItem, 
+			redoMenuItem, foreGroundMenuItem, backGroundMenuItem, 
+			authorMenuItem, showControlPointMenuItem;
 	
 	public Painter()
 	{
@@ -83,6 +86,14 @@ public class Painter extends JFrame
 		editMenu.addSeparator();
 		editMenu.add(setColorMenuItem);
 /*----------------------------------------------------------------------------*/			
+		viewMenu	= new JMenu("View");
+		viewMenu.setMnemonic('V');
+		
+		showControlPointMenuItem = new JMenuItem("Hide Control Points");
+		showControlPointMenuItem.addActionListener(new MenuButtonListener());
+		
+		viewMenu.add(showControlPointMenuItem);
+/*----------------------------------------------------------------------------*/			
 		aboutMenu	= new JMenu("About");
 		aboutMenu.setMnemonic('A');
 		
@@ -93,6 +104,7 @@ public class Painter extends JFrame
 /*----------------------------------------------------------------------------*/				
 		mainBar.add(fileMenu);
 		mainBar.add(editMenu);
+		mainBar.add(viewMenu);
 		mainBar.add(aboutMenu);
 /*----------------------------------------------------------------------------*/
 		canvasPanel 	  = new CanvasPanel();
@@ -201,6 +213,16 @@ public class Painter extends JFrame
 			if(event.getSource() == redoMenuItem)
 			{
 				canvasPanel.redo();
+			}
+			if(event.getSource() == showControlPointMenuItem)
+			{
+				if (showControlPointMenuItem.getText().equals("Show Control Points")){
+					showControlPointMenuItem.setText("Hide Control Points");
+					canvasPanel.setShowPathMode(true);
+				} else if (showControlPointMenuItem.getText().equals("Hide Control Points")){
+					showControlPointMenuItem.setText("Show Control Points");
+					canvasPanel.setShowPathMode(false);
+				}	
 			}
 		}
 	}
