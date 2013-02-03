@@ -41,9 +41,9 @@ public class ToolButtonPanel extends JPanel
 		undoBtn			= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("redo.png");
 		redoBtn			= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("zoom_in.png");
-		zoomInBtn			= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("zoom_out.png");
+		zoomInBtn			= new JButton("",new ImageIcon(imgURL));
+		imgURL = getClass().getResource("zoom_in.png");
 		zoomOutBtn			= new JButton("",new ImageIcon(imgURL));
 		imgURL = getClass().getResource("eraser.png");
 		clearBtn		= new JButton("",new ImageIcon(imgURL));

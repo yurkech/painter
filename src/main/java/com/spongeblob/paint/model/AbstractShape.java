@@ -3,10 +3,13 @@ package com.spongeblob.paint.model;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.LinkedList;
+import java.util.List;
 	
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import com.spongeblob.paint.settings.Settings;
+import com.spongeblob.paint.settings.ShapePhysicsSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
 public abstract class AbstractShape implements Shape{
@@ -16,14 +19,27 @@ public abstract class AbstractShape implements Shape{
 	 */
 	private static final long serialVersionUID = 7586022119974312143L;
 	protected Color color;
-	protected LinkedList<Point> points;
+	protected List<Point> points;
+	protected List<Settings> settings;
 	
+	public AbstractShape(){
+		settings = new LinkedList<Settings>();
+		settings.add(new ShapePhysicsSettings());
+	}
 	
-	public LinkedList<Point> getPoints() {
+	public List<Settings> getSettings() {
+		return settings;
+	}
+
+	public void setSettings(List<Settings> settings) {
+		this.settings = settings;
+	}
+
+	public List<Point> getPoints() {
 		return points;
 	}
 
-	public void setPoints(LinkedList<Point> points) {
+	public void setPoints(List<Point> points) {
 		this.points = points;
 	}
 

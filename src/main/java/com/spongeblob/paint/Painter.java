@@ -16,12 +16,14 @@ public class Painter extends JFrame
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7100427091085957843L;
+	private static final long 	serialVersionUID = -7100427091085957843L;
 	private CanvasPanel 		canvasPanel;
 	private ToolButtonPanel   	toolButtonPanel;
+	private StatusBarPanel 		statusBarPanel;
+	private SettingsPanel		settingsPanel;
 	
 	private Container 			mainContainer;
-	private File file;
+	private File 				file;
 	
 	JMenuBar mainBar;
 	JMenu fileMenu, editMenu, setColorMenuItem, aboutMenu, viewMenu;
@@ -107,16 +109,19 @@ public class Painter extends JFrame
 		mainBar.add(viewMenu);
 		mainBar.add(aboutMenu);
 /*----------------------------------------------------------------------------*/
-		canvasPanel 	  = new CanvasPanel();
-		JScrollPane scrollCanvasPanel = new JScrollPane(canvasPanel);
-		scrollCanvasPanel.setPreferredSize(new Dimension(getWidth(),getHeight()));
-		scrollCanvasPanel.setAutoscrolls(true);
+		mainContainer = getContentPane();
 		
+		statusBarPanel	  = new StatusBarPanel();
+		settingsPanel	  = new SettingsPanel(mainContainer);
+		canvasPanel 	  = new CanvasPanel(statusBarPanel, settingsPanel);
 		toolButtonPanel   = new ToolButtonPanel(canvasPanel);
 		
-		mainContainer = getContentPane();
-		mainContainer.add(toolButtonPanel,BorderLayout.NORTH);
-		mainContainer.add(scrollCanvasPanel,BorderLayout.CENTER);
+		
+		mainContainer.add(toolButtonPanel, BorderLayout.NORTH);
+		mainContainer.add(canvasPanel, BorderLayout.CENTER);
+		mainContainer.add(statusBarPanel, BorderLayout.SOUTH);
+		mainContainer.add(settingsPanel, BorderLayout.EAST);
+		
 		
 		addWindowListener (
       		new WindowAdapter () 

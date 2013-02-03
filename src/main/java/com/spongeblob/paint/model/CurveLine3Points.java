@@ -73,5 +73,4 @@ public class CurveLine3Points extends AbstractShape{
 		}
 		return mPoints;
 	}
-
 }

@@ -24,6 +24,7 @@ import com.spongeblob.paint.model.Rectangle;
 import com.spongeblob.paint.model.Polygon;
 import com.spongeblob.paint.model.Shape;
 import com.spongeblob.paint.model.Point;
+import com.spongeblob.paint.settings.CanvasSettings;
 
 
 public class CanvasPanel extends JPanel implements MouseListener,
@@ -31,13 +32,18 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID = -3371112021797757444L;
+	
 	protected final static int RADIUS = 10;
 	protected final static double SCALE_STEP = 0.05;
 	protected final static int WIDTH = 600;
 	protected final static int HEIGHT = 600;
 	
 
-	private static final long serialVersionUID = -3371112021797757444L;
+	private StatusBarPanel statusBarPanel;
+	private SettingsPanel settingsPanel;
+	
+	
 	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4, CURVE_LINE_3P = 5, FREE_HAND = 6, DRAG = 7, CURVE_LINE_4P = 8;
 	protected static LinkedList<Shape> vObjects, redoStack;
 
@@ -52,9 +58,12 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	
     private double scale = 1.0;
 	
-	public CanvasPanel() {
+	public CanvasPanel(StatusBarPanel statusBarPanel, SettingsPanel settingsPanel) {
+		this.statusBarPanel = statusBarPanel;
+		this.settingsPanel = settingsPanel;
+		
 		vObjects = new LinkedList<Shape>();
-
+		
 		addMouseListener(this);
 		addMouseMotionListener(this);
 
@@ -67,7 +76,11 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		setSize(WIDTH, HEIGHT);
 
 		redoStack = new LinkedList<Shape>();
-		repaint();
+		
+		CanvasSettings canvasSettings = new CanvasSettings();
+		canvasSettings.setHeight(this.getHeight());
+		canvasSettings.setWidth(this.getWidth());
+		this.settingsPanel.setSettings(canvasSettings);
 	}
 
 	public void mousePressed(MouseEvent event) {
@@ -83,6 +96,8 @@ public class CanvasPanel extends JPanel implements MouseListener,
 					 if (((Shape) vObjects.get(i)).intersects(new Point(event.getX(), event.getY()), RADIUS)){
 						currentShape = vObjects.get(i);
 					 	currentShape.setFocus(true);
+					 	this.settingsPanel.setSettings(currentShape.getSettings());
+					 	
 					 	baseX = event.getX();
 					 	baseY = event.getY();
 					 }	
@@ -111,6 +126,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	}
 
 	public void mouseMoved(MouseEvent event) {
+		statusBarPanel.showStatus("x:" + event.getX() + ", y:" + event.getY());
 	}
 
 	public void mouseReleased(MouseEvent event) {
