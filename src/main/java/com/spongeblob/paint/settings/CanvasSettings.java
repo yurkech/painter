@@ -1,11 +1,14 @@
 package com.spongeblob.paint.settings;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 
 
@@ -34,8 +37,10 @@ public class CanvasSettings implements Settings{
 		this.width = width;
 	}
 
+	@JsonIgnore
 	public JPanel getSettingsPanel() {
 		JPanel panel = new JPanel(new GridLayout(2,2));
+		panel.setPreferredSize(new Dimension(200, 70));
 		panel.setBorder(BorderFactory.createTitledBorder("Canvas"));
 		panel.add(new JLabel("Width:",SwingConstants.LEFT));
 		panel.add(new JLabel(String.valueOf(width),SwingConstants.LEFT));

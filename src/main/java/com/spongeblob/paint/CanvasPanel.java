@@ -77,10 +77,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 
 		redoStack = new LinkedList<Shape>();
 		
-		CanvasSettings canvasSettings = new CanvasSettings();
-		canvasSettings.setHeight(this.getHeight());
-		canvasSettings.setWidth(this.getWidth());
-		this.settingsPanel.setSettings(canvasSettings);
+		setDefaulsSettings();
 	}
 
 	public void mousePressed(MouseEvent event) {
@@ -95,11 +92,13 @@ public class CanvasPanel extends JPanel implements MouseListener,
 				for (int i = 0; i < vObjects.size(); i++) {
 					 if (((Shape) vObjects.get(i)).intersects(new Point(event.getX(), event.getY()), RADIUS)){
 						currentShape = vObjects.get(i);
+						releaseFocused();
 					 	currentShape.setFocus(true);
-					 	this.settingsPanel.setSettings(currentShape.getSettings());
 					 	
 					 	baseX = event.getX();
 					 	baseY = event.getY();
+					 	
+					 	settingsPanel.setSettings(currentShape.getSettings());
 					 }	
 				}
 			}	
@@ -132,9 +131,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	public void mouseReleased(MouseEvent event) {
 		if (drawMode == DRAG) {
 			currentDragPoint = null;
-			
-			if (currentShape != null)
-				currentShape.setFocus(false);
 			currentShape = null;
 		}
 		if (drawMode == FREE_HAND) {
@@ -413,9 +409,17 @@ public class CanvasPanel extends JPanel implements MouseListener,
 				((Polygon)currentShape).setClosed(Boolean.TRUE);
 		}
 		currentShape = null;
+		
+		releaseFocused();
+		setDefaulsSettings();
 		repaint();
 	}
 
+	public void releaseFocused(){
+		for (Shape shape : vObjects) {
+			shape.setFocus(false);
+		}
+	}
 	/*
 	private RenderedImage myCreateImage() {
 		BufferedImage bufferedImage = new BufferedImage(1400,800, BufferedImage.TYPE_INT_RGB);
@@ -458,5 +462,13 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		System.out.println(getSize());	
 		setSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
 		setPreferredSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
+	}
+	
+	public void setDefaulsSettings(){
+		CanvasSettings canvasSettings = new CanvasSettings();
+		canvasSettings.setHeight(this.getHeight());
+		canvasSettings.setWidth(this.getWidth());
+		
+		settingsPanel.setSettings(canvasSettings);
 	}
 }

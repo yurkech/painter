@@ -112,9 +112,13 @@ public class Painter extends JFrame
 		mainContainer = getContentPane();
 		
 		statusBarPanel	  = new StatusBarPanel();
-		settingsPanel	  = new SettingsPanel(mainContainer);
+		statusBarPanel.setPreferredSize(new Dimension(800, 30));
+		settingsPanel	  = new SettingsPanel();
+		settingsPanel.setPreferredSize(new Dimension(200, 800));
 		canvasPanel 	  = new CanvasPanel(statusBarPanel, settingsPanel);
+		canvasPanel.setPreferredSize(new Dimension(700, 700));
 		toolButtonPanel   = new ToolButtonPanel(canvasPanel);
+		toolButtonPanel.setPreferredSize(new Dimension(800, 50));
 		
 		
 		mainContainer.add(toolButtonPanel, BorderLayout.NORTH);
@@ -272,8 +276,9 @@ public class Painter extends JFrame
 	{
 		Painter f = new Painter();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setSize(800,800);
+		f.setSize(new Dimension(1000, 800));
         f.setLocationRelativeTo(null);
+        f.pack();
         f.setVisible(true);
 	}
 }
