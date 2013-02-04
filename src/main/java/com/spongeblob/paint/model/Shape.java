@@ -18,6 +18,6 @@ public interface Shape extends Serializable{
 	public void setFocus(Boolean flag);
 	public void move(int deltaX, int deltaY);
 	
-	public List<Settings> getSettings();
+	public List<Settings> getAllSettings();
 	
 }

@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import com.spongeblob.paint.settings.ShapeDrawingSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
 public class Polygon extends SolidAbstractShape{
@@ -21,18 +22,18 @@ public class Polygon extends SolidAbstractShape{
 	public Polygon(int x, int y, Color c){
 		points = new LinkedList<Point>();
 		points.add(new Point(x, y));
-		color = c;
+		((ShapeDrawingSettings)getSettingsByClass(ShapeDrawingSettings.class)).setColor(c);
 	}
 	
 	public Polygon(int x, int y, Color c, Boolean solid){
 		points = new LinkedList<Point>();
 		points.add(new Point(x, y));
-		color = c;
+		((ShapeDrawingSettings)getSettingsByClass(ShapeDrawingSettings.class)).setColor(c);
 		isSolid = solid;
 	}
 	
 	public void draw(Graphics g) {
-		g.setColor(getColor());
+		g.setColor(((ShapeDrawingSettings)getSettingsByClass(ShapeDrawingSettings.class)).getColor());
 		if (isClosed){
 			if(isSolid)
 	  	 	{

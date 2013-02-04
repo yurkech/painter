@@ -1,9 +1,11 @@
 package com.spongeblob.paint;
 
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 
@@ -35,7 +37,7 @@ public class SettingsPanel extends JPanel{
 	public void update() {
 		if (settings != null) {
 			removeAll();
-			setLayout(new FlowLayout());
+			this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 			for (Settings item : settings) {
 				add(item.getSettingsPanel());
 			}

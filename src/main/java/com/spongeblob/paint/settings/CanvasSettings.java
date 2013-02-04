@@ -1,5 +1,6 @@
 package com.spongeblob.paint.settings;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 

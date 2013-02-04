@@ -1,14 +1,14 @@
 package com.spongeblob.paint.model;
 
-import java.awt.Color;
 import java.awt.Graphics;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 	
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.spongeblob.paint.settings.Settings;
+import com.spongeblob.paint.settings.ShapeDrawingSettings;
 import com.spongeblob.paint.settings.ShapePhysicsSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
@@ -18,21 +18,29 @@ public abstract class AbstractShape implements Shape{
 	 * 
 	 */
 	private static final long serialVersionUID = 7586022119974312143L;
-	protected Color color;
 	protected List<Point> points;
-	protected List<Settings> settings;
+	protected HashMap<Class<?>, Settings> settings;
 	
 	public AbstractShape(){
-		settings = new LinkedList<Settings>();
-		settings.add(new ShapePhysicsSettings());
+		settings = new HashMap<Class<?>, Settings>();
+		settings.put(ShapePhysicsSettings.class, new ShapePhysicsSettings());
+		settings.put(ShapeDrawingSettings.class, new ShapeDrawingSettings());
 	}
 	
-	public List<Settings> getSettings() {
-		return settings;
+	public List<Settings> getAllSettings() {
+		LinkedList<Settings> list = new LinkedList<Settings>();
+		for (Entry<Class<?>, Settings> item : settings.entrySet()) {
+			list.add(item.getValue());
+		}
+		return list;
 	}
-
-	public void setSettings(List<Settings> settings) {
-		this.settings = settings;
+	
+	public Settings getSettingsByClass(Class<?> clazz) {
+		return settings.get(clazz);
+	}
+	
+	public void addSettings(Settings settings) {
+		this.settings.put(settings.getClass(), settings);
 	}
 
 	public List<Point> getPoints() {
@@ -43,32 +51,13 @@ public abstract class AbstractShape implements Shape{
 		this.points = points;
 	}
 
-	@JsonIgnore
-	public Color getColor() {
-		return color;
-	}
-	
-	@JsonProperty(value="color")
-	public String getColorAsString() {
-		return color.toString();
-	}
-	
-	@JsonProperty(value="color")
-	public void setColorFromString(String color) {
-		this.color = Color.getColor(color);
-	}
-	
-	public void setColor(Color color) {
-		this.color = color;
-	}
-	
 	
 	public void addPoint(int x, int y){
 		points.add(new Point(x, y));
 	}
 	
 	public void drawPathPoints(Graphics g) {
-		g.setColor(getColor());
+		g.setColor(((ShapeDrawingSettings)getSettingsByClass(ShapeDrawingSettings.class)).getPathPointsColor());
 		for (Point point : points) {
 			PointUtil.paintCircleAroundPoint(g, point);
 		}
@@ -92,17 +81,14 @@ public abstract class AbstractShape implements Shape{
 		return false;
 	}
 	
-	public void setFocus(Boolean flag){
-		if (flag){
-			color = Color.RED;
-		} else{
-			color = Color.BLACK;
-		}
-	}
-	
 	public void move(int deltaX, int deltaY){
 		for (Point point : points) {
 			point.moveWithDelta(deltaX, deltaY);
 		}
+	}
+	
+	public void setFocus(Boolean flag) {
+		// TODO Auto-generated method stub
+		
 	}
 }
