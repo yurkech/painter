@@ -2,6 +2,7 @@ package com.spongeblob.paint;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.io.*;
 
@@ -29,6 +30,7 @@ import com.spongeblob.paint.settings.CanvasSettings;
 
 public class CanvasPanel extends JPanel implements MouseListener,
 		MouseMotionListener, Serializable {
+
 	/**
 	 * 
 	 */
@@ -36,8 +38,8 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	
 	protected final static int RADIUS = 10;
 	protected final static double SCALE_STEP = 0.05;
-	protected final static int WIDTH = 600;
-	protected final static int HEIGHT = 600;
+	
+	private BufferedImage image;
 	
 
 	private StatusBarPanel statusBarPanel;
@@ -73,7 +75,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		foreGroundColor = Color.BLACK;
 		backGroundColor = Color.WHITE;
 		setBackground(backGroundColor);
-		setSize(WIDTH, HEIGHT);
 
 		redoStack = new LinkedList<Shape>();
 		
@@ -203,6 +204,9 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		if (image != null){
+			g.drawImage(image, 0, 0, null);             
+		}
 		redrawVectorBuffer(g);
 	}
 
@@ -450,18 +454,22 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	}
 
 	public void zoomIn(){
-        if(scale > 0.25)
+        /*
+		if(scale > 0.25)
             scale -= SCALE_STEP;
         System.out.println(getSize());
 		setSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
 		setPreferredSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
+		*/
 	}
 	
 	public void zoomOut(){
+		/*
 		scale += SCALE_STEP;
 		System.out.println(getSize());	
 		setSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
 		setPreferredSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
+		*/
 	}
 	
 	public void setDefaulsSettings(){
@@ -471,4 +479,13 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		
 		settingsPanel.setSettings(canvasSettings);
 	}
+	
+	public BufferedImage getImage() {
+		return image;
+	}
+
+	public void setImage(BufferedImage image) {
+		this.image = image;
+	}
+
 }

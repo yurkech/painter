@@ -25,6 +25,7 @@ public class ShapePhysicsSettings implements Settings{
 	private int restriction  = 0;
 	private int friction = 0;
 	
+	@JsonIgnore
 	private JTextField textDensity, textRestriction, textFriction; 
 	
 	public double getDensity() {
@@ -45,6 +46,7 @@ public class ShapePhysicsSettings implements Settings{
 	public void setFriction(int friction) {
 		this.friction = friction;
 	}
+	
 	@JsonIgnore
 	public JPanel getSettingsPanel() {
 		JPanel panel = new JPanel(new GridLayout(3,2));

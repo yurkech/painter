@@ -2,14 +2,17 @@ package com.spongeblob.paint;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
+
+import com.spongeblob.paint.utils.FileUtil;
 
 public class Painter extends JFrame
 {
@@ -112,17 +115,19 @@ public class Painter extends JFrame
 		mainContainer = getContentPane();
 		
 		statusBarPanel	  = new StatusBarPanel();
-		statusBarPanel.setPreferredSize(new Dimension(800, 30));
+		statusBarPanel.setAlignmentY(30);
 		settingsPanel	  = new SettingsPanel();
-		settingsPanel.setPreferredSize(new Dimension(200, 800));
+		settingsPanel.setAlignmentX(200);
 		canvasPanel 	  = new CanvasPanel(statusBarPanel, settingsPanel);
-		canvasPanel.setPreferredSize(new Dimension(700, 700));
+		JScrollPane scroller = new JScrollPane(canvasPanel);
+        scroller.setPreferredSize(new Dimension(1200, 700));
 		toolButtonPanel   = new ToolButtonPanel(canvasPanel);
-		toolButtonPanel.setPreferredSize(new Dimension(800, 50));
+		toolButtonPanel.setAlignmentY(30);
+
 		
 		
 		mainContainer.add(toolButtonPanel, BorderLayout.NORTH);
-		mainContainer.add(canvasPanel, BorderLayout.CENTER);
+		mainContainer.add(scroller, BorderLayout.CENTER);
 		mainContainer.add(statusBarPanel, BorderLayout.SOUTH);
 		mainContainer.add(settingsPanel, BorderLayout.EAST);
 		
@@ -180,40 +185,58 @@ public class Painter extends JFrame
 			if(event.getSource() == saveMenuItem)
 			{
 				if (file == null || file.getName().equals("")){
-					chooseFile();
+					file = FileUtil.chooseFile();
 				}
 				try {
 					if (file != null)
 						writeJSONToFile(canvasPanel.getJSONView());
 				} catch (IOException e) {
 					file = null;
+					e.printStackTrace();
 					JOptionPane.showMessageDialog(null, e, "Painter",
 							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 			if(event.getSource() == saveAsMenuItem)
 			{
-				chooseFile();
+				file = FileUtil.chooseFile();
 				try {
 					if (file != null)
 						writeJSONToFile(canvasPanel.getJSONView());
 				} catch (IOException e) {
 					file = null;
+					e.printStackTrace();
 					JOptionPane.showMessageDialog(null, e, "Painter",
 							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 			if(event.getSource() == openMenuItem)
 			{
-				chooseFile();
-				try {
-					if (file != null)
-							canvasPanel.renderFromJSON(readJSONFromFile());
-				} catch (IOException e) {
-					file = null;
-					JOptionPane.showMessageDialog(null, e, "Painter",
-							JOptionPane.ERROR_MESSAGE);
+				File vFile = FileUtil.chooseFile();
+				if (FileUtil.getFileExtension(vFile).equals("vec"))
+				{
+					try {
+						if (file != null)
+								canvasPanel.renderFromJSON(readJSONFromFile());
+					} catch (IOException e) {
+						file = null;
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, e, "Painter",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				} else{
+					try {
+						BufferedImage image = ImageIO.read(vFile);
+						canvasPanel.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+						canvasPanel.setImage(image);
+						canvasPanel.revalidate();
+					} catch (IOException e) {
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, e, "Painter",
+								JOptionPane.ERROR_MESSAGE);
+					}
 				}
+				
 			}
 			if(event.getSource() == undoMenuItem)
 			{
@@ -236,21 +259,6 @@ public class Painter extends JFrame
 		}
 	}
 	
-	void chooseFile(){
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fileChooser.setFileFilter(new FileNameExtensionFilter("*.vec", "vec"));
-
-		int result = fileChooser.showOpenDialog(null);
-		if (result == JFileChooser.CANCEL_OPTION)
-			return;
-
-		file = fileChooser.getSelectedFile();
-		
-		if (file == null || file.getName().equals(""))
-			JOptionPane.showMessageDialog(null, "Invalid File Name", "Painter",
-					JOptionPane.ERROR_MESSAGE);
-	}
 	
 	void writeJSONToFile(String json) throws IOException{
 		FileWriter fw = new FileWriter(file);
@@ -272,12 +280,12 @@ public class Painter extends JFrame
 		return res.toString();
 	}
 	
+	
 	public static void main(String args[])
 	{
 		Painter f = new Painter();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setSize(new Dimension(1000, 800));
-        f.setLocationRelativeTo(null);
+		f.setLocationRelativeTo(null);
         f.pack();
         f.setVisible(true);
 	}
