@@ -100,6 +100,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 					 	baseY = event.getY();
 					 	
 					 	settingsPanel.setSettings(currentShape.getSettings());
+					 	settingsPanel.repaint();
 					 }	
 				}
 			}	
