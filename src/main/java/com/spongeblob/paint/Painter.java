@@ -185,34 +185,21 @@ public class Painter extends JFrame
 			if(event.getSource() == saveMenuItem)
 			{
 				if (file == null || file.getName().equals("")){
-					file = FileUtil.chooseFile();
+					file = FileUtil.saveFile();
 				}
-				try {
-					if (file != null)
-						writeJSONToFile(canvasPanel.getJSONView());
-				} catch (IOException e) {
-					file = null;
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, e, "Painter",
-							JOptionPane.ERROR_MESSAGE);
-				}
+				save();
 			}
 			if(event.getSource() == saveAsMenuItem)
 			{
-				file = FileUtil.chooseFile();
-				try {
-					if (file != null)
-						writeJSONToFile(canvasPanel.getJSONView());
-				} catch (IOException e) {
-					file = null;
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, e, "Painter",
-							JOptionPane.ERROR_MESSAGE);
-				}
+				
+				file = FileUtil.saveFile();
+				save();
 			}
 			if(event.getSource() == openMenuItem)
 			{
-				File vFile = FileUtil.chooseFile();
+				
+				
+				File vFile = FileUtil.openFile();
 				if (FileUtil.getFileExtension(vFile).equals("vec"))
 				{
 					try {
@@ -288,5 +275,30 @@ public class Painter extends JFrame
 		f.setLocationRelativeTo(null);
         f.pack();
         f.setVisible(true);
+	}
+	
+	private void save(){
+		if (FileUtil.getFileExtension(file).equals("vec"))
+		{
+			try {
+				writeJSONToFile(canvasPanel.getJSONView());
+			} catch (IOException e) {
+				file = null;
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, e, "Painter",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}	
+		if (FileUtil.getFileExtension(file).equals("json"))
+		{
+			try {
+				writeJSONToFile(canvasPanel.getJSONView(false));
+			} catch (IOException e) {
+				file = null;
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, e, "Painter",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}	
 	}
 }

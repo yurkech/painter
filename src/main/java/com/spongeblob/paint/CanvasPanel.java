@@ -14,7 +14,6 @@ import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectMapper.DefaultTyping;
 
 import com.spongeblob.paint.model.CurveLine3Points;
 import com.spongeblob.paint.model.CurveLine4Points;
@@ -263,8 +262,13 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	}
 
 	public String getJSONView() throws JsonGenerationException, JsonMappingException, IOException{
+		return getJSONView(true);
+	}
+	public String getJSONView(Boolean enableTyping) throws JsonGenerationException, JsonMappingException, IOException{
 		ObjectMapper mapper = new ObjectMapper().setVisibility(JsonMethod.FIELD, Visibility.ANY);
-		mapper.enableDefaultTypingAsProperty(DefaultTyping.OBJECT_AND_NON_CONCRETE, "type");
+		if (enableTyping){
+			mapper.enableDefaultTyping();
+		}	
 		String json = mapper.writeValueAsString(vObjects);
 		return json;
 	}
@@ -272,135 +276,14 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	@SuppressWarnings("unchecked")
 	public void renderFromJSON(String json) throws JsonParseException, JsonMappingException, IOException{
 		ObjectMapper mapper = new ObjectMapper().setVisibility(JsonMethod.FIELD, Visibility.ANY);
-		mapper.enableDefaultTypingAsProperty(DefaultTyping.OBJECT_AND_NON_CONCRETE, "type");
+		mapper.enableDefaultTyping();
 		vObjects = mapper.readValue(json, LinkedList.class);
 		repaint();
 	}
 	
-	/*
-	public void saveCanvasToFile() {
-		if (fileName != null) {
-			RenderedImage rendImage = myCreateImage();
-
-			try {
-				FileOutputStream fos = new FileOutputStream(fileName);
-				ObjectOutputStream oos = new ObjectOutputStream(fos);
-				oos.writeObject(vObjects);
-				JOptionPane.showMessageDialog(null, "File Saved", "Painter",
-						JOptionPane.INFORMATION_MESSAGE);
-			} catch (Exception exp) {
-			}
-
-			try {
-				File file = new File(fileName.toString() + ".jpg");
-				ImageIO.write(rendImage, "jpg", file);
-			} catch (IOException e) {
-			}
-		} else {
-			saveAsCanvasToFile();
-		}
-		repaint();
-	}
-	*/
-	/*
-	public void saveAsCanvasToFile() {
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		int result = fileChooser.showSaveDialog(null);
-
-		if (result == JFileChooser.CANCEL_OPTION)
-			return;
-
-		fileName = fileChooser.getSelectedFile();
-
-		if (fileName == null || fileName.getName().equals(""))
-			JOptionPane.showMessageDialog(null, "Invalid File Name", "Painter",
-					JOptionPane.ERROR_MESSAGE);
-		else {
-			vFile.removeAllElements();
-			vFile.addElement(vObjects);
-			vFile.addElement(new Color(backGroundColor.getRGB()));
-
-			RenderedImage rendImage = myCreateImage();
-			
-			ObjectOutputStream oos = null;
-			FileOutputStream fos = null;
-			File file = new File(fileName.toString() + ".vec");
-			try {
-				fos = new FileOutputStream(file);
-				oos = new ObjectOutputStream(fos);
-				oos.writeObject(vFile);
-				JOptionPane.showMessageDialog(null, "File Saved", "Painter",
-						JOptionPane.INFORMATION_MESSAGE);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally{
-				try {
-					oos.close();
-					fos.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-
-			try {
-				file = new File(fileName.toString() + ".jpg");
-				ImageIO.write(rendImage, "jpg", file);
-			} catch (IOException e) {
-			}
-		}
-		repaint();
-	}
-	*/
-	
-	/*
-	@SuppressWarnings("unchecked")
-	public void OpenCanvasFile() {
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		fileChooser.setFileFilter(new FileNameExtensionFilter("VEC Images", "vec"));
-
-		int result = fileChooser.showOpenDialog(null);
-		if (result == JFileChooser.CANCEL_OPTION)
-			return;
-
-		fileName = fileChooser.getSelectedFile();
-
-		ObjectInputStream ois = null;
-		if (fileName != null) {
-			try {
-				FileInputStream fis = new FileInputStream(fileName);
-				ois = new ObjectInputStream(fis);
-				vFile = (Vector<Serializable>) ois.readObject();
-
-				this.clearCanvas();
-				vObjects = (LinkedList<Shape>) vFile.elementAt(0);
-				backGroundColor = (Color) vFile.elementAt(1);
-
-				this.setBackground(backGroundColor);
-			} catch (Exception e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(null, "Can't Open File",
-						"Painter", JOptionPane.INFORMATION_MESSAGE);
-			}finally{
-				try {
-					ois.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-		} else {
-			fileName = null;
-		}
-		repaint();
-	}
-	*/
 	public void flushDrawing() {
 		currentShape = null;
 		
-		releaseFocused();
 		setDefaulsSettings();
 		repaint();
 	}

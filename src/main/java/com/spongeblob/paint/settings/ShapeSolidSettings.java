@@ -7,11 +7,10 @@ import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 public class ShapeSolidSettings implements Settings{
 
@@ -58,7 +57,7 @@ public class ShapeSolidSettings implements Settings{
 		return panel;
 	}
 
-
+	@JsonProperty(value="isSolid")
 	public boolean isSolid() {
 		return isSolid;
 	}
@@ -69,6 +68,7 @@ public class ShapeSolidSettings implements Settings{
 	}
 
 
+	@JsonProperty(value="isFilled")
 	public boolean isFilled() {
 		return isFilled;
 	}

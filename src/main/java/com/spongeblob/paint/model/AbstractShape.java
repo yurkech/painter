@@ -40,11 +40,11 @@ public abstract class AbstractShape implements Shape{
 	
 	@JsonIgnore
 	public Settings getSettingsByClass(Class<?> clazz) {
-		return settings.get(clazz.toString());
+		return settings.get(clazz.getName());
 	}
 	
 	public void addSettings(Settings settings) {
-		this.settings.put(settings.getClass().toString(), settings);
+		this.settings.put(settings.getClass().getName(), settings);
 	}
 
 	public List<Point> getPoints() {
