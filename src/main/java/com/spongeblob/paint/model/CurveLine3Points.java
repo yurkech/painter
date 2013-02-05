@@ -8,9 +8,10 @@ import java.util.List;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import com.spongeblob.paint.settings.ShapeColorSettings;
+import com.spongeblob.paint.settings.ShapeSolidSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
-public class CurveLine3Points extends AbstractShape{
+public class CurveLine3Points extends SolidAbstractShape{
 
 	/**
 	 * 
@@ -34,10 +35,23 @@ public class CurveLine3Points extends AbstractShape{
 		}
 	}
 	
+	@Override
 	public void draw(Graphics g) {
 		g.setColor(((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).getColor());
 		List<Point> curvePoints = getCurvePoints();
-		g.drawPolyline(PointUtil.getXs(curvePoints), PointUtil.getYs(curvePoints), curvePoints.size());
+		
+		if (((ShapeSolidSettings)getSettingsByClass(ShapeSolidSettings.class)).isSolid()){
+			if(((ShapeSolidSettings)getSettingsByClass(ShapeSolidSettings.class)).isFilled())
+	  	 	{
+				g.fillPolygon(PointUtil.getXs(curvePoints), PointUtil.getYs(curvePoints), curvePoints.size());
+	  	 	}
+	     	else
+	     	{
+	     		g.drawPolygon(PointUtil.getXs(curvePoints), PointUtil.getYs(curvePoints), curvePoints.size());
+	     	}
+		} else{
+			g.drawPolyline(PointUtil.getXs(curvePoints), PointUtil.getYs(curvePoints), curvePoints.size());
+		}
 	}
 
 	@JsonIgnore

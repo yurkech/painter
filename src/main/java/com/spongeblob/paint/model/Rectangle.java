@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.util.LinkedList;
 
 import com.spongeblob.paint.settings.ShapeColorSettings;
+import com.spongeblob.paint.settings.ShapeSolidSettings;
 
 public class Rectangle extends SolidAbstractShape{
 
@@ -26,12 +27,11 @@ public class Rectangle extends SolidAbstractShape{
 		points.add(new Point(x, y));
 		points.add(new Point(x, y));
 		((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).setColor(c);
-		isSolid = solid; 
 	}
 	
 	public void draw(Graphics g) {
 		g.setColor(((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).getColor());
-		if(isSolid)
+		if(((ShapeSolidSettings)getSettingsByClass(ShapeSolidSettings.class)).isSolid())
   	 	{
   	 		if(points.get(0).x > points.get(1).x || points.get(0).y > points.get(1).y)
   	 			g.fillRect (points.get(1).x, points.get(1).y, points.get(0).x - points.get(1).x, points.get(0).y - points.get(1).y);

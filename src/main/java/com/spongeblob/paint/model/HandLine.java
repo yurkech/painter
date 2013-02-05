@@ -1,11 +1,9 @@
 package com.spongeblob.paint.model;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.util.LinkedList;
 
 import com.spongeblob.paint.settings.ShapeColorSettings;
-import com.spongeblob.paint.utils.PointUtil;
 
 
 public class HandLine extends AbstractShape{
@@ -20,11 +18,5 @@ public class HandLine extends AbstractShape{
 		points = new LinkedList<Point>();
 		points.add(new Point(x, y));
 		((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).setColor(c);
-	}
-	
-	public void draw(Graphics g) {
-		g.setColor(((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).getColor());
-		g.drawPolyline(PointUtil.getXs(points), PointUtil.getYs(points), points.size());
-     	
 	}
 }

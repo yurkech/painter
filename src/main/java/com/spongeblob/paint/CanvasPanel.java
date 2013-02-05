@@ -52,7 +52,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	private Color foreGroundColor, backGroundColor;
 
 	private int drawMode = 0;
-	private boolean solidMode, showPathMode;
+	private boolean showPathMode;
 
 	private Point currentDragPoint;
 	private Shape currentShape;
@@ -69,15 +69,13 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		addMouseListener(this);
 		addMouseMotionListener(this);
 
-		solidMode = false;
-		showPathMode = true;
-
 		foreGroundColor = Color.BLACK;
 		backGroundColor = Color.WHITE;
 		setBackground(backGroundColor);
 
 		redoStack = new LinkedList<Shape>();
 		
+		showPathMode = true;
 		setDefaulsSettings();
 	}
 
@@ -86,6 +84,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 			for (int i = 0; i < vObjects.size(); i++) {
 				Point p = ((Shape) vObjects.get(i)).contains(new Point(event.getX(), event.getY()), RADIUS);
 				if (p != null) {
+					currentShape = vObjects.get(i);
 					currentDragPoint = p;
 				}
 			}
@@ -93,14 +92,9 @@ public class CanvasPanel extends JPanel implements MouseListener,
 				for (int i = 0; i < vObjects.size(); i++) {
 					 if (((Shape) vObjects.get(i)).intersects(new Point(event.getX(), event.getY()), RADIUS)){
 						currentShape = vObjects.get(i);
-						releaseFocused();
-					 	currentShape.setFocus(true);
 					 	
 					 	baseX = event.getX();
 					 	baseY = event.getY();
-					 	
-					 	settingsPanel.setSettings(currentShape.getAllSettings());
-					 	settingsPanel.repaint();
 					 }	
 				}
 			}	
@@ -114,13 +108,17 @@ public class CanvasPanel extends JPanel implements MouseListener,
 			vObjects.add(currentShape);
 		}
 		if (drawMode == SQUARE) {
-			currentShape = new Rectangle(event.getX(), event.getY(), foreGroundColor, solidMode);
+			currentShape = new Rectangle(event.getX(), event.getY(), foreGroundColor);
 			vObjects.add(currentShape);
 		}
 		if (drawMode == OVAL) {
-			currentShape = new Oval(event.getX(), event.getY(), foreGroundColor, solidMode);
+			currentShape = new Oval(event.getX(), event.getY(), foreGroundColor);
 			vObjects.add(currentShape);
 		}
+		if (currentShape != null){
+			settingsPanel.setSettings(currentShape.getAllSettings());
+	 		settingsPanel.repaint();
+		}	
 	}
 
 	public void mouseClicked(MouseEvent event) {
@@ -141,7 +139,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		
 		if (drawMode == POLYGON) {
 			if (currentShape == null){
-				currentShape = new Polygon(event.getX(), event.getY(), foreGroundColor, solidMode);
+				currentShape = new Polygon(event.getX(), event.getY(), foreGroundColor);
 				vObjects.add(currentShape);
 			}
 			else{
@@ -182,8 +180,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		if (drawMode == DRAG) {
 			if (currentDragPoint != null) {
 				currentDragPoint.move(event.getX(), event.getY());
-			}
-			if (currentShape != null){
+			} else if (currentShape != null){
 				int deltaX = event.getX() - baseX;
 				int deltaY = event.getY() - baseY;
 				currentShape.move(deltaX, deltaY);
@@ -217,14 +214,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 
 	public int getDrawMode() {
 		return drawMode;
-	}
-
-	public void setSolidMode(Boolean inSolidMode) {
-		solidMode = inSolidMode.booleanValue();
-	}
-
-	public Boolean getSolidMode() {
-		return Boolean.valueOf(solidMode);
 	}
 
 	public void setForeGroundColor(Color inputColor) {
@@ -409,10 +398,6 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	}
 	*/
 	public void flushDrawing() {
-		if (drawMode == CanvasPanel.POLYGON) {
-			if (currentShape != null)
-				((Polygon)currentShape).setClosed(Boolean.TRUE);
-		}
 		currentShape = null;
 		
 		releaseFocused();

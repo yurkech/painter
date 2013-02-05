@@ -16,7 +16,6 @@ public class ToolButtonPanel extends JPanel
 	private JButton dragBtn, lineBtn, polygonBtn, curveLine3PBtn, curveLine4PBtn, 
 			freeHandBtn, undoBtn, redoBtn, zoomInBtn, zoomOutBtn, clearBtn;		
 	
-	private JCheckBox solidChk;
 	private CanvasPanel canvasPanel;
 	
 	private JButton foreGroundColorBtn,backGroundColorBtn;
@@ -72,20 +71,6 @@ public class ToolButtonPanel extends JPanel
 		clearBtn.setToolTipText("Clear Canvas");
 		dragBtn.addActionListener(new ToolButtonListener());
 		dragBtn.setToolTipText("Drag");
-/*----------------------------------------------------------------------------*/		
-		solidChk = new JCheckBox("Solid");
-		solidChk.addItemListener(
-			new ItemListener()
-			{
-				public void itemStateChanged(ItemEvent event)
-				{
-					if(solidChk.isSelected())
-						canvasPanel.setSolidMode(Boolean.TRUE);
-					else
-						canvasPanel.setSolidMode(Boolean.FALSE);
-				}	
-			}
-		);	
 		
 		
 		foreGroundColorBtn = new JButton();
@@ -130,7 +115,6 @@ public class ToolButtonPanel extends JPanel
 		this.add(zoomInBtn);
 		this.add(zoomOutBtn);
 		this.add(clearBtn);
-		this.add(solidChk);	
 		this.add(foreGroundColorBtn);
 		this.add(backGroundColorBtn);
 	}

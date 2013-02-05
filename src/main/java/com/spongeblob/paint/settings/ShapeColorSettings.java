@@ -9,7 +9,9 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -117,10 +119,12 @@ public class ShapeColorSettings implements Settings{
 				}
 			}
 		);
-		JPanel panel = new JPanel(new GridLayout(1,2));
+		JPanel panel = new JPanel(new GridLayout(2,2));
 		panel.setPreferredSize(new Dimension(200, 100));
 		panel.setBorder(BorderFactory.createTitledBorder("Color"));
+		panel.add(new JLabel("Points:", SwingConstants.LEFT));
 		panel.add(pathPointsColorBtn);
+		panel.add(new JLabel("Shape:", SwingConstants.LEFT));
 		panel.add(colorBtn);
 		return panel;
 	}

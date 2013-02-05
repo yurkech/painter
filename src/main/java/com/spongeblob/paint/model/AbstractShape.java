@@ -67,6 +67,11 @@ public abstract class AbstractShape implements Shape{
 		}
 	}
 
+	public void draw(Graphics g) {
+		g.setColor(((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).getColor());
+		g.drawPolyline(PointUtil.getXs(points), PointUtil.getYs(points), points.size());
+	}
+	
 	public Point contains(Point p, int radius) {
 		for (Point point : points) {
 			if (PointUtil.isPointInRadius(point, p, radius))
