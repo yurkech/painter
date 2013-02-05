@@ -4,11 +4,14 @@ import java.awt.Graphics;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 	
 
 import com.spongeblob.paint.settings.Settings;
-import com.spongeblob.paint.settings.ShapeDrawingSettings;
+import com.spongeblob.paint.settings.ShapeColorSettings;
 import com.spongeblob.paint.settings.ShapePhysicsSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
@@ -19,28 +22,29 @@ public abstract class AbstractShape implements Shape{
 	 */
 	private static final long serialVersionUID = 7586022119974312143L;
 	protected List<Point> points;
-	protected HashMap<Class<?>, Settings> settings;
+	protected Map<String, Settings> settings = new HashMap<String, Settings>();
 	
 	public AbstractShape(){
-		settings = new HashMap<Class<?>, Settings>();
-		settings.put(ShapePhysicsSettings.class, new ShapePhysicsSettings());
-		settings.put(ShapeDrawingSettings.class, new ShapeDrawingSettings());
+		addSettings(new ShapePhysicsSettings());
+		addSettings(new ShapeColorSettings());
 	}
 	
+	@JsonIgnore
 	public List<Settings> getAllSettings() {
 		LinkedList<Settings> list = new LinkedList<Settings>();
-		for (Entry<Class<?>, Settings> item : settings.entrySet()) {
+		for (Entry<String, Settings> item : settings.entrySet()) {
 			list.add(item.getValue());
 		}
 		return list;
 	}
 	
+	@JsonIgnore
 	public Settings getSettingsByClass(Class<?> clazz) {
-		return settings.get(clazz);
+		return settings.get(clazz.toString());
 	}
 	
 	public void addSettings(Settings settings) {
-		this.settings.put(settings.getClass(), settings);
+		this.settings.put(settings.getClass().toString(), settings);
 	}
 
 	public List<Point> getPoints() {
@@ -57,7 +61,7 @@ public abstract class AbstractShape implements Shape{
 	}
 	
 	public void drawPathPoints(Graphics g) {
-		g.setColor(((ShapeDrawingSettings)getSettingsByClass(ShapeDrawingSettings.class)).getPathPointsColor());
+		g.setColor(((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).getPathPointsColor());
 		for (Point point : points) {
 			PointUtil.paintCircleAroundPoint(g, point);
 		}

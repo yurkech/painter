@@ -11,7 +11,11 @@ import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JPanel;
 
-public class ShapeDrawingSettings implements Settings{
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+
+
+public class ShapeColorSettings implements Settings{
 
 	/**
 	 * 
@@ -21,34 +25,60 @@ public class ShapeDrawingSettings implements Settings{
 	private Color pathPointsColor;
 	private Color color;
 	
-	public ShapeDrawingSettings(){
+	public ShapeColorSettings(){
 		this.pathPointsColor = Color.RED;
 		this.color = Color.BLACK;
 	}
 	
-	public ShapeDrawingSettings(Color color){
+	public ShapeColorSettings(Color color){
 		this.pathPointsColor = Color.RED;
 		this.color = color;
 	}
 	
+	@JsonIgnore
 	private JButton pathPointsColorBtn, colorBtn;
 
+	@JsonIgnore
 	public Color getPathPointsColor() {
 		return pathPointsColor;
 	}
+	
+	@JsonProperty(value="pathPointsColor")
+	public String getPathPointsColorAsString() {
+		return String.valueOf(pathPointsColor.getRGB());
+	}
 
+	@JsonIgnore
 	public void setPathPointsColor(Color pathPointsColor) {
 		this.pathPointsColor = pathPointsColor;
 	}
+	
+	@JsonProperty(value="pathPointsColor")
+	public void setPathPointsColor(String pathPointsColor) {
+		this.pathPointsColor = new Color(Integer.parseInt(pathPointsColor));
+	}
 
+	@JsonIgnore
 	public Color getColor() {
 		return color;
 	}
+	
+	@JsonProperty(value = "color")
+	public String getColorAsString() {
+		return String.valueOf(color.getRGB());
+	}
 
+	@JsonIgnore
 	public void setColor(Color color) {
 		this.color = color;
 	}
+	
+	@JsonProperty(value = "color")
+	public void setColorFromStrin(String color) {
+		this.color = new Color(Integer.parseInt(color));
+	}
 
+	@JsonIgnore
 	public JPanel getSettingsPanel() {
 		pathPointsColorBtn = new JButton();
 		pathPointsColorBtn.setOpaque(true);

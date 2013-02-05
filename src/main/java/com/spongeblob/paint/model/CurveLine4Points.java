@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import com.spongeblob.paint.settings.ShapeDrawingSettings;
+import com.spongeblob.paint.settings.ShapeColorSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
 public class CurveLine4Points extends AbstractShape{
@@ -23,11 +23,11 @@ public class CurveLine4Points extends AbstractShape{
 	public CurveLine4Points(int x, int y, Color c){
 		points = new LinkedList<Point>();
 		points.add(new Point(x, y));
-		((ShapeDrawingSettings)getSettingsByClass(ShapeDrawingSettings.class)).setColor(c);
+		((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).setColor(c);
 	}
 	
 	public void drawPathPoints(Graphics g) {
-		g.setColor(((ShapeDrawingSettings)getSettingsByClass(ShapeDrawingSettings.class)).getPathPointsColor());
+		g.setColor(((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).getPathPointsColor());
 		g.drawPolyline(PointUtil.getXs(points), PointUtil.getYs(points), points.size());
 		for (Point point : points) {
 			PointUtil.paintCircleAroundPoint(g, point);
@@ -35,7 +35,7 @@ public class CurveLine4Points extends AbstractShape{
 	}
 	
 	public void draw(Graphics g) {
-		g.setColor(((ShapeDrawingSettings)getSettingsByClass(ShapeDrawingSettings.class)).getColor());
+		g.setColor(((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).getColor());
 		List<Point> curvePoints = getCurvePoints();
 		g.drawPolyline(PointUtil.getXs(curvePoints), PointUtil.getYs(curvePoints), curvePoints.size());
 	}
