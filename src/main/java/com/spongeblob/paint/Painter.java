@@ -200,29 +200,32 @@ public class Painter extends JFrame
 				
 				
 				File vFile = FileUtil.openFile();
-				if (FileUtil.getFileExtension(vFile).equals("vec"))
-				{
-					try {
-						if (file != null)
-								canvasPanel.renderFromJSON(readJSONFromFile());
-					} catch (IOException e) {
-						file = null;
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(null, e, "Painter",
-								JOptionPane.ERROR_MESSAGE);
+				if (vFile != null){
+					
+					if (FileUtil.getFileExtension(vFile).equals("vec"))
+					{
+						try {
+							file = vFile;
+							canvasPanel.renderFromJSON(readJSONFromFile());
+						} catch (IOException e) {
+							file = null;
+							e.printStackTrace();
+							JOptionPane.showMessageDialog(null, e, "Painter",
+									JOptionPane.ERROR_MESSAGE);
+						}
+					} else{
+						try {
+							BufferedImage image = ImageIO.read(vFile);
+							canvasPanel.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+							canvasPanel.setImage(image);
+							canvasPanel.revalidate();
+						} catch (IOException e) {
+							e.printStackTrace();
+							JOptionPane.showMessageDialog(null, e, "Painter",
+									JOptionPane.ERROR_MESSAGE);
+						}
 					}
-				} else{
-					try {
-						BufferedImage image = ImageIO.read(vFile);
-						canvasPanel.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
-						canvasPanel.setImage(image);
-						canvasPanel.revalidate();
-					} catch (IOException e) {
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(null, e, "Painter",
-								JOptionPane.ERROR_MESSAGE);
-					}
-				}
+				}	
 				
 			}
 			if(event.getSource() == undoMenuItem)

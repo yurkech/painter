@@ -17,7 +17,7 @@ public class Rectangle extends SolidAbstractShape{
 		points.add(new Point(x, y));
 		points.add(new Point(x, y));
 		colorSettings.setColor(c);
-		model = "rectangle";
+		model = "RECTANGLE";
 	}
 	
 	public Rectangle(int x, int y, Color c, Boolean solid){

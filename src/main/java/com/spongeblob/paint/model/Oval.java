@@ -18,7 +18,7 @@ public class Oval extends SolidAbstractShape{
 		points.add(new Point(x, y));
 		points.add(new Point(x, y));
 		colorSettings.setColor(c);
-		model = "oval";
+		model = "OVAL";
 	}
 	
 	public Oval(int x, int y, Color c, Boolean solid){
