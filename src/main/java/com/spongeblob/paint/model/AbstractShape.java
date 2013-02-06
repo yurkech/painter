@@ -1,13 +1,11 @@
 package com.spongeblob.paint.model;
 
 import java.awt.Graphics;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 	
 
 import com.spongeblob.paint.settings.Settings;
@@ -21,32 +19,29 @@ public abstract class AbstractShape implements Shape{
 	 * 
 	 */
 	private static final long serialVersionUID = 7586022119974312143L;
+	private PhysicsObjectType type;
+	protected String model;
+		
 	protected List<Point> points;
-	protected Map<String, Settings> settings = new HashMap<String, Settings>();
+	@JsonProperty("phys")	
+	protected ShapePhysicsSettings physicsSettings;
+	@JsonProperty("color")
+	protected ShapeColorSettings colorSettings;
 	
 	public AbstractShape(){
-		addSettings(new ShapePhysicsSettings());
-		addSettings(new ShapeColorSettings());
+		physicsSettings = new ShapePhysicsSettings();
+		colorSettings = new ShapeColorSettings();
+		setType(PhysicsObjectType.BORDERTRACK);
 	}
 	
 	@JsonIgnore
 	public List<Settings> getAllSettings() {
 		LinkedList<Settings> list = new LinkedList<Settings>();
-		for (Entry<String, Settings> item : settings.entrySet()) {
-			list.add(item.getValue());
-		}
+		list.add(physicsSettings);
+		list.add(colorSettings);
 		return list;
 	}
 	
-	@JsonIgnore
-	public Settings getSettingsByClass(Class<?> clazz) {
-		return settings.get(clazz.getName());
-	}
-	
-	public void addSettings(Settings settings) {
-		this.settings.put(settings.getClass().getName(), settings);
-	}
-
 	public List<Point> getPoints() {
 		return points;
 	}
@@ -61,14 +56,14 @@ public abstract class AbstractShape implements Shape{
 	}
 	
 	public void drawPathPoints(Graphics g) {
-		g.setColor(((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).getPathPointsColor());
+		g.setColor(colorSettings.getPathPointsColor());
 		for (Point point : points) {
 			PointUtil.paintCircleAroundPoint(g, point);
 		}
 	}
 
 	public void draw(Graphics g) {
-		g.setColor(((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).getColor());
+		g.setColor(colorSettings.getColor());
 		g.drawPolyline(PointUtil.getXs(points), PointUtil.getYs(points), points.size());
 	}
 	
@@ -99,5 +94,21 @@ public abstract class AbstractShape implements Shape{
 	public void setFocus(Boolean flag) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public PhysicsObjectType getType() {
+		return type;
+	}
+
+	public void setType(PhysicsObjectType type) {
+		this.type = type;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
 	}
 }

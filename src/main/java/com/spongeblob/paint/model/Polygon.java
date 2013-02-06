@@ -3,7 +3,6 @@ package com.spongeblob.paint.model;
 import java.awt.Color;
 import java.util.LinkedList;
 
-import com.spongeblob.paint.settings.ShapeColorSettings;
 
 public class Polygon extends SolidAbstractShape{
 
@@ -17,12 +16,13 @@ public class Polygon extends SolidAbstractShape{
 	public Polygon(int x, int y, Color c){
 		points = new LinkedList<Point>();
 		points.add(new Point(x, y));
-		((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).setColor(c);
+		colorSettings.setColor(c);
+		model = "polygon";
 	}
 	
 	public Polygon(int x, int y, Color c, Boolean solid){
 		points = new LinkedList<Point>();
 		points.add(new Point(x, y));
-		((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).setColor(c);
+		colorSettings.setColor(c);
 	}
 }

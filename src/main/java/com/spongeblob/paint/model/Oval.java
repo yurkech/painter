@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.LinkedList;
 
-import com.spongeblob.paint.settings.ShapeColorSettings;
-import com.spongeblob.paint.settings.ShapeSolidSettings;
 
 public class Oval extends SolidAbstractShape{
 
@@ -19,19 +17,20 @@ public class Oval extends SolidAbstractShape{
 		points = new LinkedList<Point>();
 		points.add(new Point(x, y));
 		points.add(new Point(x, y));
-		((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).setColor(c);
+		colorSettings.setColor(c);
+		model = "oval";
 	}
 	
 	public Oval(int x, int y, Color c, Boolean solid){
 		points = new LinkedList<Point>();
 		points.add(new Point(x, y));
 		points.add(new Point(x, y));
-		((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).setColor(c);
+		colorSettings.setColor(c);
 	}
 	
 	public void draw(Graphics g) {
-		g.setColor(((ShapeColorSettings)getSettingsByClass(ShapeColorSettings.class)).getColor());
-		if(((ShapeSolidSettings)getSettingsByClass(ShapeSolidSettings.class)).isSolid())
+		g.setColor(colorSettings.getColor());
+		if(solidSettings.isSolid())
   	 	{
      		if(points.get(0).x > points.get(1).x || points.get(0).y > points.get(1).y)
      			g.fillOval(points.get(1).x, points.get(1).y, points.get(0).x - points.get(1).x, points.get(0).y - points.get(1).y);

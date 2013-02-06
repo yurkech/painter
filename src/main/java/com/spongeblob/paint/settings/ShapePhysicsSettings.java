@@ -12,9 +12,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonTypeName;
 
-@JsonTypeName(value = "physics")
 public class ShapePhysicsSettings implements Settings{
 	
 	/**
