@@ -18,9 +18,12 @@ public abstract class AbstractShape implements Shape{
 	/**
 	 * 
 	 */
+	private static int ID = 0;
+	
 	private static final long serialVersionUID = 7586022119974312143L;
-	private PhysicsObjectType type;
+	protected PhysicsObjectType type;
 	protected String model;
+	protected int id;
 		
 	protected List<Point> points;
 	@JsonProperty("phys")	
@@ -32,6 +35,7 @@ public abstract class AbstractShape implements Shape{
 		physicsSettings = new ShapePhysicsSettings();
 		colorSettings = new ShapeColorSettings();
 		setType(PhysicsObjectType.BORDERTRACK);
+		id = ID++;
 	}
 	
 	@JsonIgnore

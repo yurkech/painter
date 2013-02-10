@@ -15,6 +15,7 @@ import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.spongeblob.paint.model.CleverLine;
 import com.spongeblob.paint.model.CurveLine3Points;
 import com.spongeblob.paint.model.CurveLine4Points;
 import com.spongeblob.paint.model.HandLine;
@@ -103,7 +104,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 			vObjects.add(currentShape);
 		}
 		if (drawMode == LINE) {
-			currentShape = new Line(event.getX(), event.getY(), foreGroundColor);
+			currentShape = new CleverLine(event.getX(), event.getY(), foreGroundColor);
 			vObjects.add(currentShape);
 		}
 		if (drawMode == SQUARE) {
