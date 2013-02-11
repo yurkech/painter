@@ -124,10 +124,10 @@ public class ToolButtonPanel extends JPanel
 		public void actionPerformed(ActionEvent event)
 		{	
 			canvasPanel.flushDrawing();
-			
+			canvasPanel.addNotify();
 			if(event.getSource() == lineBtn)
 			{
-				canvasPanel.setDrawMode(CanvasPanel.LINE);		
+				canvasPanel.setDrawMode(CanvasPanel.LINE);	
 			}
 			if(event.getSource() == polygonBtn)
 			{

@@ -15,7 +15,6 @@ import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.spongeblob.paint.model.CleverLine;
 import com.spongeblob.paint.model.CurveLine3Points;
 import com.spongeblob.paint.model.CurveLine4Points;
 import com.spongeblob.paint.model.HandLine;
@@ -28,7 +27,7 @@ import com.spongeblob.paint.model.Point;
 import com.spongeblob.paint.settings.CanvasSettings;
 
 
-public class CanvasPanel extends JPanel implements MouseListener,
+public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		MouseMotionListener, Serializable {
 
 	/**
@@ -68,6 +67,7 @@ public class CanvasPanel extends JPanel implements MouseListener,
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		addKeyListener(this);
 
 		foreGroundColor = Color.BLACK;
 		backGroundColor = Color.WHITE;
@@ -92,19 +92,18 @@ public class CanvasPanel extends JPanel implements MouseListener,
 				for (int i = 0; i < vObjects.size(); i++) {
 					 if (((Shape) vObjects.get(i)).intersects(new Point(event.getX(), event.getY()), RADIUS)){
 						currentShape = vObjects.get(i);
-					 	
-					 	baseX = event.getX();
-					 	baseY = event.getY();
 					 }	
 				}
 			}	
+			baseX = event.getX();
+		 	baseY = event.getY();
 		}
 		if (drawMode == FREE_HAND) {
 			currentShape = new HandLine(event.getX(), event.getY(), foreGroundColor);
 			vObjects.add(currentShape);
 		}
 		if (drawMode == LINE) {
-			currentShape = new CleverLine(event.getX(), event.getY(), foreGroundColor);
+			currentShape = new Line(event.getX(), event.getY(), foreGroundColor);
 			vObjects.add(currentShape);
 		}
 		if (drawMode == SQUARE) {
@@ -357,5 +356,45 @@ public class CanvasPanel extends JPanel implements MouseListener,
 	public void setImage(BufferedImage image) {
 		this.image = image;
 	}
+
+	public void addNotify() {
+        super.addNotify();
+        requestFocus();
+    }
+	
+	public void keyTyped(KeyEvent e) {}
+
+	public void keyPressed(KeyEvent e) {
+		if (drawMode == DRAG) {
+			if (e.getKeyCode() == KeyEvent.VK_F8){
+				if (currentDragPoint != null){
+					if (JOptionPane.showConfirmDialog(null, "Really delete this point? Operation can not be undo!") == JOptionPane.OK_OPTION){
+						currentShape.getPoints().remove(currentDragPoint);
+						if (currentShape.getPoints().isEmpty()){
+							vObjects.remove(currentShape);
+						}
+					}
+				}
+			}
+			if (e.getKeyCode() == KeyEvent.VK_F4){
+				Point p = new Point(baseX, baseY);
+				if (currentShape != null){
+						int position = currentShape.intersectionPointIndex(p, RADIUS);
+						if (position > 0)
+							currentShape.getPoints().add(position + 1, p);
+						else
+							currentShape.getPoints().add(p);
+				} else{
+					Shape shape = vObjects.peekLast();
+					if (shape != null){
+						shape.getPoints().add(p);
+					}
+				} 
+			}
+		repaint();
+		}
+	}
+
+	public void keyReleased(KeyEvent e) {}
 
 }

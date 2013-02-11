@@ -89,6 +89,16 @@ public abstract class AbstractShape implements Shape{
 		return false;
 	}
 	
+	public int intersectionPointIndex(Point p, int radius){
+		if (points.size() > 1){
+			for (int i = 0; i < points.size() - 1; i= i + 1) {
+				if (PointUtil.isPointIntersectLineInRadius(p, points.get(i), points.get(i + 1), radius))
+					return i;
+			}
+		}
+		return -1;
+	}
+	
 	public void move(int deltaX, int deltaY){
 		for (Point point : points) {
 			point.moveWithDelta(deltaX, deltaY);
