@@ -11,16 +11,22 @@ public class StatusBarPanel extends JPanel{
 	 * 
 	 */
 	private static final long serialVersionUID = 5281740009324771898L;
-	private JLabel info;
+	private JLabel point, zoom;
 
 	public StatusBarPanel()
 	{
 		this.setLayout(new FlowLayout());
-		add(info = new JLabel());
+		add(point = new JLabel());
+		add(zoom = new JLabel());
 	}
 
-	public void showStatus(String status)
+	public void showPoint(String status)
 	{
-		info.setText(status);
+		point.setText(status);
+	}
+	
+	public void showZoom(String status)
+	{
+		zoom.setText(status);
 	}
 }
