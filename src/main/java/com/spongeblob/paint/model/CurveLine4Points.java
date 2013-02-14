@@ -6,13 +6,14 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.spongeblob.paint.utils.PointUtil;
+
 public class CurveLine4Points extends CurveLine3Points{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6959381887395467014L;
-	private static float STEP = 0.1f;
 
 	public CurveLine4Points(){}
 	
@@ -20,7 +21,7 @@ public class CurveLine4Points extends CurveLine3Points{
 		points = new LinkedList<Point>();
 		points.add(new Point(x, y));
 		colorSettings.setColor(c);
-		model = "curveline4p";
+		model = "CURVELINE_4POINTS";
 	}
 	
 	@JsonIgnore
@@ -29,7 +30,7 @@ public class CurveLine4Points extends CurveLine3Points{
 		List<Point> pathPoints = new LinkedList<Point>();
 		if (points.size() > 3){
 			for (int i = 0; i < points.size() - 3; i= i + 3) {
-				pathPoints.addAll(calculateCurveLine4Points(points.get(i).x, points.get(i).y, 
+				pathPoints.addAll(PointUtil.calculateCurveLine4Points(points.get(i).x, points.get(i).y, 
 						points.get(i + 1).x, points.get(i + 1).y, 
 						points.get(i + 2).x, points.get(i + 2).y,
 						points.get(i + 3).x, points.get(i + 3).y));			
@@ -39,29 +40,6 @@ public class CurveLine4Points extends CurveLine3Points{
 	}
 	
 
-	/* Formula:
-	 * ((1-t)^2 * P1) + (2*(t)*(1-t) * P2) + ((tt) * P3) */
-	public List<Point> calculateCurveLine4Points(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
-
-		List<Point> mPoints = new LinkedList<Point>();
-		
-		for(float t=0; t <= 1; t += STEP){
-
-			final float u = 1 - t;
-			final float tt = t * t;
-			final float uu = u * u;
-			final float uuu = uu * u;
-			final float ttt = tt * t;
 	
-			final float ut3 = 3 * uu * t;
-			final float utt3 = 3 * u * tt;
-	
-			final float x = (uuu * x1) + (ut3 * x2) + (utt3 * x3) + (ttt * x4);
-			final float y = (uuu * y1) + (ut3 * y2) + (utt3 * y3) + (ttt * y4);
-			
-			mPoints.add(new Point((int)x, (int)y));
-		}
-		return mPoints;
-	}
 
 }
