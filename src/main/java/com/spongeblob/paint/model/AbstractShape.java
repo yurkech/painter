@@ -81,7 +81,7 @@ public abstract class AbstractShape implements Shape{
 	
 	public Boolean intersects(Point p, int radius){
 		if (points.size() > 1){
-			for (int i = 0; i < points.size() - 1; i= i + 1) {
+			for (int i = 0; i < points.size() - 1; i++) {
 				if (PointUtil.isPointIntersectLineInRadius(p, points.get(i), points.get(i + 1), radius))
 					return true;
 			}
@@ -91,7 +91,7 @@ public abstract class AbstractShape implements Shape{
 	
 	public int intersectionPointIndex(Point p, int radius){
 		if (points.size() > 1){
-			for (int i = 0; i < points.size() - 1; i= i + 1) {
+			for (int i = 0; i < points.size() - 1; i++) {
 				if (PointUtil.isPointIntersectLineInRadius(p, points.get(i), points.get(i + 1), radius))
 					return i;
 			}

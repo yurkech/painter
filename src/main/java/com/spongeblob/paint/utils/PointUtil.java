@@ -1,14 +1,19 @@
 package com.spongeblob.paint.utils;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.util.LinkedList;
 import java.util.List;
 
+import com.spongeblob.paint.model.MarkedPoint;
+import com.spongeblob.paint.model.Marker;
 import com.spongeblob.paint.model.Point;
 import com.spongeblob.paint.model.Vector;
 
 
 public class PointUtil {
 	protected final static int MARKER_RADIUS = 10;
+	private static float STEP = 0.1f;
 	
 	public static boolean isPointInRadius(Point p1, Point p2, int radius){
 		if (((p2.x - radius) <= p1.x) &&
@@ -54,7 +59,21 @@ public class PointUtil {
 		return ys;
 	}
 	
+	
 	public static void paintCircleAroundPoint(Graphics g, Point p, int radius){
+		if (p instanceof MarkedPoint){
+			if (((MarkedPoint)p).marker.equals(Marker.CL3_POINT)){
+				g.setColor(Color.GREEN);
+			}
+			if (((MarkedPoint)p).marker.equals(Marker.CL4_POINT)){
+				g.setColor(Color.MAGENTA);
+			}
+			if (((MarkedPoint)p).marker.equals(Marker.L_POINT)){
+				g.setColor(Color.RED);
+			}
+		} else{
+			g.setColor(Color.RED);
+		}
 		g.drawOval((int)p.getX() - radius/2, (int)p.getY() - radius/2, radius, radius);
 	}
 	
@@ -65,5 +84,51 @@ public class PointUtil {
 	
 	public static int calcInnerProduct(Vector v1, Vector v2){
 		return v1.getA1()*v2.getA1() + v1.getA2()*v2.getA2();
+	}
+	
+	/* Formula:
+	 * ((1-t)^2 * P1) + (2*(t)*(1-t) * P2) + ((tt) * P3) */
+	public static List<Point> calculateCurveLine3Points(float x1, float y1, float x2, float y2, float x3, float y3) {
+
+		List<Point> mPoints = new LinkedList<Point>();
+		
+		for(float t=0; t <= 1; t += STEP){
+			final float u = 1 - t;
+			final float tt = t*t;
+			final float uu = u*u;
+	
+			final float ut2 = 2 * u * t;
+
+			final float x = (uu * x1) + (ut2 * x2) + (tt * x3);
+			final float y = (uu * y1) + (ut2 * y2) + (tt * y3);
+			
+			mPoints.add(new Point((int)x, (int)y));
+		}
+		return mPoints;
+	}
+	
+	/* Formula:
+	 * ((1-t)^2 * P1) + (2*(t)*(1-t) * P2) + ((tt) * P3) */
+	public static List<Point> calculateCurveLine4Points(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+
+		List<Point> mPoints = new LinkedList<Point>();
+		
+		for(float t=0; t <= 1; t += STEP){
+
+			final float u = 1 - t;
+			final float tt = t * t;
+			final float uu = u * u;
+			final float uuu = uu * u;
+			final float ttt = tt * t;
+	
+			final float ut3 = 3 * uu * t;
+			final float utt3 = 3 * u * tt;
+	
+			final float x = (uuu * x1) + (ut3 * x2) + (utt3 * x3) + (ttt * x4);
+			final float y = (uuu * y1) + (ut3 * y2) + (utt3 * y3) + (ttt * y4);
+			
+			mPoints.add(new Point((int)x, (int)y));
+		}
+		return mPoints;
 	}
 }

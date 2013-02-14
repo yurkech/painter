@@ -15,7 +15,6 @@ public class CurveLine3Points extends SolidAbstractShape{
 	 * 
 	 */
 	private static final long serialVersionUID = 3456072526729463848L;
-	private static float STEP = 0.1f;
 	
 	public CurveLine3Points(){}
 	
@@ -23,7 +22,7 @@ public class CurveLine3Points extends SolidAbstractShape{
 		points = new LinkedList<Point>();
 		points.add(new Point(x, y));
 		colorSettings.setColor(c);
-		model = "curveline3p";
+		model = "CURVELINE_3POINTS";
 	}
 	
 	public void drawPathPoints(Graphics g) {
@@ -62,7 +61,7 @@ public class CurveLine3Points extends SolidAbstractShape{
 		List<Point> pathPoints = new LinkedList<Point>();
 		if (points.size() > 2){
 			for (int i = 0; i < points.size() - 2; i= i + 2) {
-				pathPoints.addAll(calculateCurveLine3Points(points.get(i).x, points.get(i).y, 
+				pathPoints.addAll(PointUtil.calculateCurveLine3Points(points.get(i).x, points.get(i).y, 
 						points.get(i + 1).x, points.get(i + 1).y, 
 						points.get(i + 2).x, points.get(i + 2).y));			
 			}
@@ -84,26 +83,7 @@ public class CurveLine3Points extends SolidAbstractShape{
 		}	
 		return points;
 	}
-	/* Formula:
-	 * ((1-t)^2 * P1) + (2*(t)*(1-t) * P2) + ((tt) * P3) */
-	public List<Point> calculateCurveLine3Points(float x1, float y1, float x2, float y2, float x3, float y3) {
-
-		List<Point> mPoints = new LinkedList<Point>();
-		
-		for(float t=0; t <= 1; t += STEP){
-			final float u = 1 - t;
-			final float tt = t*t;
-			final float uu = u*u;
 	
-			final float ut2 = 2 * u * t;
-
-			final float x = (uu * x1) + (ut2 * x2) + (tt * x3);
-			final float y = (uu * y1) + (ut2 * y2) + (tt * y3);
-			
-			mPoints.add(new Point((int)x, (int)y));
-		}
-		return mPoints;
-	}
 	
 	private Point[] calculateTangent(Point point, Point center, int radius){
 

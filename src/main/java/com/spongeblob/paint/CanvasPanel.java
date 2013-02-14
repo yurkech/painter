@@ -15,10 +15,13 @@ import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.spongeblob.paint.model.ComplexPolygon;
 import com.spongeblob.paint.model.CurveLine3Points;
 import com.spongeblob.paint.model.CurveLine4Points;
 import com.spongeblob.paint.model.HandLine;
 import com.spongeblob.paint.model.Line;
+import com.spongeblob.paint.model.MarkedPoint;
+import com.spongeblob.paint.model.Marker;
 import com.spongeblob.paint.model.Oval;
 import com.spongeblob.paint.model.Rectangle;
 import com.spongeblob.paint.model.Polygon;
@@ -138,11 +141,11 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		
 		if (drawMode == POLYGON) {
 			if (currentShape == null){
-				currentShape = new Polygon(event.getX(), event.getY(), foreGroundColor);
+				currentShape = new ComplexPolygon(event.getX(), event.getY(), foreGroundColor);
 				vObjects.add(currentShape);
 			}
 			else{
-				((Polygon)currentShape).addPoint(event.getX(), event.getY());
+				((ComplexPolygon)currentShape).addPoint(event.getX(), event.getY());
 			}
 		}
 		if (drawMode == CURVE_LINE_3P) {
@@ -376,21 +379,81 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 					}
 				}
 			}
+			if (e.getKeyCode() == KeyEvent.VK_F2){
+				Point p = new Point(baseX, baseY);
+				if (currentDragPoint != null){
+					if (currentShape instanceof ComplexPolygon){
+						((MarkedPoint)currentDragPoint).setMarker(Marker.L_POINT);
+					}
+				}
+				else if (currentShape != null){
+						int position = currentShape.intersectionPointIndex(p, RADIUS);
+						if (position >= 0)
+							if (currentShape instanceof ComplexPolygon)
+								currentShape.getPoints().add(position + 1, new MarkedPoint(p));
+							else
+								currentShape.getPoints().add(position + 1, p);
+						else
+							if (currentShape instanceof ComplexPolygon)
+								currentShape.getPoints().add(new MarkedPoint(p));
+							else
+								currentShape.getPoints().add(p);
+					} else{	
+						Shape shape = vObjects.peekLast();
+						if (shape != null){
+							if (shape instanceof ComplexPolygon)
+								shape.getPoints().add(new MarkedPoint(p));
+							else
+								shape.getPoints().add(p);
+						}
+					} 
+			}
+			if (e.getKeyCode() == KeyEvent.VK_F3){
+				Point p = new Point(baseX, baseY);
+				if (currentDragPoint != null){
+					if (currentShape instanceof ComplexPolygon){
+						((MarkedPoint)currentDragPoint).setMarker(Marker.CL3_POINT);
+					}
+				}	
+				else if (currentShape != null){
+						int position = currentShape.intersectionPointIndex(p, RADIUS);
+						if (position >= 0)
+							if (currentShape instanceof ComplexPolygon)
+								currentShape.getPoints().add(position + 1, new MarkedPoint(p, Marker.CL3_POINT));
+						else
+							if (currentShape instanceof ComplexPolygon)
+								currentShape.getPoints().add(new MarkedPoint(p, Marker.CL3_POINT));
+					} else{	
+						Shape shape = vObjects.peekLast();
+						if (shape != null){
+							if (shape instanceof ComplexPolygon)
+								shape.getPoints().add(new MarkedPoint(p, Marker.CL3_POINT));
+						}
+					} 
+			}	
 			if (e.getKeyCode() == KeyEvent.VK_F4){
 				Point p = new Point(baseX, baseY);
-				if (currentShape != null){
-						int position = currentShape.intersectionPointIndex(p, RADIUS);
-						if (position > 0)
-							currentShape.getPoints().add(position + 1, p);
-						else
-							currentShape.getPoints().add(p);
-				} else{
-					Shape shape = vObjects.peekLast();
-					if (shape != null){
-						shape.getPoints().add(p);
+				if (currentDragPoint != null){
+					if (currentShape instanceof ComplexPolygon){
+						((MarkedPoint)currentDragPoint).setMarker(Marker.CL4_POINT);
 					}
 				} 
-			}
+				else if (currentShape != null){
+						int position = currentShape.intersectionPointIndex(p, RADIUS);
+						if (position >= 0)
+							if (currentShape instanceof ComplexPolygon)
+								currentShape.getPoints().add(position + 1, new MarkedPoint(p, Marker.CL4_POINT));
+						else
+							if (currentShape instanceof ComplexPolygon)
+								currentShape.getPoints().add(new MarkedPoint(p, Marker.CL4_POINT));
+					} else{	
+						Shape shape = vObjects.peekLast();
+						if (shape != null){
+							if (shape instanceof ComplexPolygon)
+								shape.getPoints().add(new MarkedPoint(p, Marker.CL4_POINT));
+						}
+					} 
+			}	
 		repaint();
 		}
 	}
