@@ -36,22 +36,18 @@ public class CurveLine3Points extends SolidAbstractShape{
 	public void draw(Graphics g) {
 		g.setColor(colorSettings.getColor());
 		List<Point> curvePoints = getCurvePoints();
-		//List<Point> borderPoints = getBorderPoints(curvePoints, 30);
 		
 		if (solidSettings.isSolid()){
 			if(solidSettings.isFilled())
 	  	 	{
 				g.fillPolygon(PointUtil.getXs(curvePoints), PointUtil.getYs(curvePoints), curvePoints.size());
-				//g.drawPolygon(PointUtil.getXs(borderPoints), PointUtil.getYs(borderPoints), borderPoints.size());
 	  	 	}
 	     	else
 	     	{
 	     		g.drawPolygon(PointUtil.getXs(curvePoints), PointUtil.getYs(curvePoints), curvePoints.size());
-	     		//g.drawPolygon(PointUtil.getXs(borderPoints), PointUtil.getYs(borderPoints), borderPoints.size());
 	     	}
 		} else{
 			g.drawPolyline(PointUtil.getXs(curvePoints), PointUtil.getYs(curvePoints), curvePoints.size());
-			//g.drawPolyline(PointUtil.getXs(borderPoints), PointUtil.getYs(borderPoints), borderPoints.size());
 		}
 	}
 

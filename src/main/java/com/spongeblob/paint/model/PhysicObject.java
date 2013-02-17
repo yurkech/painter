@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
 import com.spongeblob.paint.settings.PhysicsSettings;
 import com.spongeblob.paint.settings.Settings;
 
