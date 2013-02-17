@@ -8,41 +8,29 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 	
 
-import com.spongeblob.paint.settings.Configurable;
 import com.spongeblob.paint.settings.Settings;
 import com.spongeblob.paint.settings.ShapeColorSettings;
-import com.spongeblob.paint.settings.ShapePhysicsSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
-public abstract class AbstractShape implements Configurable, Shape{
+public abstract class AbstractShape implements Shape{
 	
 	/**
 	 * 
 	 */
-	private static int ID = 0;
-	
 	private static final long serialVersionUID = 7586022119974312143L;
-	protected PhysicsObjectType type;
-	protected String model;
-	protected int id;
+	
 		
 	protected List<Point> controlPoints;
-	@JsonProperty("phys")	
-	protected ShapePhysicsSettings physicsSettings;
 	@JsonProperty("color")
 	protected ShapeColorSettings colorSettings;
 	
 	public AbstractShape(){
-		physicsSettings = new ShapePhysicsSettings();
 		colorSettings = new ShapeColorSettings();
-		setType(PhysicsObjectType.BORDERTRACK);
-		id = ID++;
 	}
 	
 	@JsonIgnore
-	public List<Settings> getAllSettings() {
+	public List<Settings> getSettings() {
 		LinkedList<Settings> list = new LinkedList<Settings>();
-		list.add(physicsSettings);
 		list.add(colorSettings);
 		return list;
 	}
@@ -96,19 +84,5 @@ public abstract class AbstractShape implements Configurable, Shape{
 		}
 	}
 	
-	public PhysicsObjectType getType() {
-		return type;
-	}
-
-	public void setType(PhysicsObjectType type) {
-		this.type = type;
-	}
-
-	public String getModel() {
-		return model;
-	}
-
-	public void setModel(String model) {
-		this.model = model;
-	}
+	
 }

@@ -17,7 +17,6 @@ public class Polygon extends SolidAbstractShape{
 		controlPoints = new LinkedList<Point>();
 		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
-		model = "POLYGON";
 	}
 	
 	public Polygon(int x, int y, Color c, Boolean solid){

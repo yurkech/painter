@@ -1,6 +1,6 @@
 package com.spongeblob.paint.model;
 
-public enum PhysicsObjectType {
+public enum PhysicObjectType {
 	BORDERTRACK; 
 	
 	@Override 

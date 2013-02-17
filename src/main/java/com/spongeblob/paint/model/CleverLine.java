@@ -17,7 +17,6 @@ public class CleverLine extends Line{
 		controlPoints.add(new Point(x, y));
 		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
-		model = "LINE";
 	}
 	
 	public void draw(Graphics g) {

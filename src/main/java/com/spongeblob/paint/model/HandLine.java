@@ -16,6 +16,5 @@ public class HandLine extends AbstractShape{
 		controlPoints = new LinkedList<Point>();
 		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
-		model = "POLYGON";
 	}
 }

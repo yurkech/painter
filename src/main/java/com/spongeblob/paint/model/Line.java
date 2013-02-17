@@ -16,6 +16,5 @@ public class Line extends AbstractShape{
 		controlPoints.add(new Point(x, y));
 		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
-		model = "LINE";
 	}
 }

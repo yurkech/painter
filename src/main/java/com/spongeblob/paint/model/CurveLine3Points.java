@@ -22,7 +22,6 @@ public class CurveLine3Points extends SolidAbstractShape{
 		controlPoints = new LinkedList<Point>();
 		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
-		model = "CURVELINE_3POINTS";
 	}
 	
 	public void drawControlPoints(Graphics g) {
