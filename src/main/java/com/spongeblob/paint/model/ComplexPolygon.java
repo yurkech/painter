@@ -22,7 +22,6 @@ public class ComplexPolygon extends SolidAbstractShape{
 		controlPoints = new LinkedList<Point>();
 		controlPoints.add(new MarkedPoint(x, y));
 		colorSettings.setColor(c);
-		model = "COMPLEX_POLYGON";
 	}
 	
 	public void addPoint(int x, int y){

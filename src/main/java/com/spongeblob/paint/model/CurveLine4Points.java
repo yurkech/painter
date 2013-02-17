@@ -21,7 +21,6 @@ public class CurveLine4Points extends CurveLine3Points{
 		controlPoints = new LinkedList<Point>();
 		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
-		model = "CURVELINE_4POINTS";
 	}
 	
 	@JsonIgnore

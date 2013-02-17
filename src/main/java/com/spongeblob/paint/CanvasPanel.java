@@ -23,11 +23,11 @@ import com.spongeblob.paint.model.Line;
 import com.spongeblob.paint.model.MarkedPoint;
 import com.spongeblob.paint.model.Marker;
 import com.spongeblob.paint.model.Oval;
+import com.spongeblob.paint.model.PhysicObject;
 import com.spongeblob.paint.model.Rectangle;
 import com.spongeblob.paint.model.Shape;
 import com.spongeblob.paint.model.Point;
 import com.spongeblob.paint.settings.CanvasSettings;
-import com.spongeblob.paint.settings.Configurable;
 
 
 public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
@@ -49,7 +49,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	
 	
 	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4, CURVE_LINE_3P = 5, FREE_HAND = 6, DRAG = 7, CURVE_LINE_4P = 8;
-	protected static LinkedList<Shape> vObjects, redoStack;
+	protected static LinkedList<PhysicObject> vObjects, redoStack;
 
 	private Color foreGroundColor, backGroundColor;
 
@@ -57,16 +57,14 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	private boolean showPathMode;
 
 	private Point currentDragPoint;
-	private Shape currentShape;
+	private PhysicObject selectedObject;
 	private int baseX, baseY;
-	
-    private double scale = 1.0;
 	
 	public CanvasPanel(StatusBarPanel statusBarPanel, SettingsPanel settingsPanel) {
 		this.statusBarPanel = statusBarPanel;
 		this.settingsPanel = settingsPanel;
 		
-		vObjects = new LinkedList<Shape>();
+		vObjects = new LinkedList<PhysicObject>();
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -76,7 +74,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		backGroundColor = Color.WHITE;
 		setBackground(backGroundColor);
 
-		redoStack = new LinkedList<Shape>();
+		redoStack = new LinkedList<PhysicObject>();
 		
 		showPathMode = true;
 		setDefaulsSettings();
@@ -85,16 +83,16 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	public void mousePressed(MouseEvent event) {
 		if (drawMode == DRAG) {
 			for (int i = 0; i < vObjects.size(); i++) {
-				Point p = ((Shape) vObjects.get(i)).getClosestControlPointInRadius(new Point(event.getX(), event.getY()), RADIUS);
+				Point p = ((Shape) vObjects.get(i).getShape()).getClosestControlPointInRadius(new Point(event.getX(), event.getY()), RADIUS);
 				if (p != null) {
-					currentShape = vObjects.get(i);
+					selectedObject = vObjects.get(i);
 					currentDragPoint = p;
 				}
 			}
 			if (currentDragPoint == null) {
 				for (int i = 0; i < vObjects.size(); i++) {
-					 if (((Shape) vObjects.get(i)).getClosestControlLineInRadius(new Point(event.getX(), event.getY()), RADIUS) >= 0){
-						currentShape = vObjects.get(i);
+					 if (((Shape) vObjects.get(i).getShape()).getClosestControlLineInRadius(new Point(event.getX(), event.getY()), RADIUS) >= 0){
+						selectedObject = vObjects.get(i);
 					 }	
 				}
 			}	
@@ -102,24 +100,23 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		 	baseY = event.getY();
 		}
 		if (drawMode == FREE_HAND) {
-			currentShape = new HandLine(event.getX(), event.getY(), foreGroundColor);
-			vObjects.add(currentShape);
+			selectedObject = new PhysicObject(new HandLine(event.getX(), event.getY(), foreGroundColor));
+			vObjects.add(selectedObject);
 		}
 		if (drawMode == LINE) {
-			currentShape = new Line(event.getX(), event.getY(), foreGroundColor);
-			vObjects.add(currentShape);
+			selectedObject = new PhysicObject(new Line(event.getX(), event.getY(), foreGroundColor));
+			vObjects.add(selectedObject);
 		}
 		if (drawMode == SQUARE) {
-			currentShape = new Rectangle(event.getX(), event.getY(), foreGroundColor);
-			vObjects.add(currentShape);
+			selectedObject = new PhysicObject(new Rectangle(event.getX(), event.getY(), foreGroundColor));
+			vObjects.add(selectedObject);
 		}
 		if (drawMode == OVAL) {
-			currentShape = new Oval(event.getX(), event.getY(), foreGroundColor);
-			vObjects.add(currentShape);
+			selectedObject = new PhysicObject(new Oval(event.getX(), event.getY(), foreGroundColor));
+			vObjects.add(selectedObject);
 		}
-		if (currentShape != null){
-			if (currentShape instanceof Configurable) 
-				settingsPanel.setSettings(((Configurable)currentShape).getAllSettings());
+		if (selectedObject != null){
+				settingsPanel.setSettings(selectedObject.getSettings());
 	 			settingsPanel.repaint();
 		}	
 	}
@@ -134,37 +131,37 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	public void mouseReleased(MouseEvent event) {
 		if (drawMode == DRAG) {
 			currentDragPoint = null;
-			currentShape = null;
+			selectedObject = null;
 		}
 		if (drawMode == FREE_HAND) {
-			currentShape = null;
+			selectedObject = null;
 		}
 		
 		if (drawMode == POLYGON) {
-			if (currentShape == null){
-				currentShape = new ComplexPolygon(event.getX(), event.getY(), foreGroundColor);
-				vObjects.add(currentShape);
+			if (selectedObject == null){
+				selectedObject = new PhysicObject(new ComplexPolygon(event.getX(), event.getY(), foreGroundColor));
+				vObjects.add(selectedObject);
 			}
 			else{
-				((ComplexPolygon)currentShape).addPoint(event.getX(), event.getY());
+				((ComplexPolygon)selectedObject.getShape()).addPoint(event.getX(), event.getY());
 			}
 		}
 		if (drawMode == CURVE_LINE_3P) {
-			if (currentShape == null){
-				currentShape = new CurveLine3Points(event.getX(), event.getY(), foreGroundColor);
-				vObjects.add(currentShape);
+			if (selectedObject == null){
+				selectedObject = new PhysicObject(new CurveLine3Points(event.getX(), event.getY(), foreGroundColor));
+				vObjects.add(selectedObject);
 			}
 			else{
-				((CurveLine3Points)currentShape).addPoint(event.getX(), event.getY());
+				((CurveLine3Points)selectedObject.getShape()).addPoint(event.getX(), event.getY());
 			}
 		}
 		if (drawMode == CURVE_LINE_4P) {
-			if (currentShape == null){
-				currentShape = new CurveLine4Points(event.getX(), event.getY(), foreGroundColor);
-				vObjects.add(currentShape);
+			if (selectedObject == null){
+				selectedObject = new PhysicObject(new CurveLine4Points(event.getX(), event.getY(), foreGroundColor));
+				vObjects.add(selectedObject);
 			}
 			else{
-				((CurveLine4Points)currentShape).addPoint(event.getX(), event.getY());
+				((CurveLine4Points)selectedObject.getShape()).addPoint(event.getX(), event.getY());
 			}
 		}
 		repaint();
@@ -183,20 +180,20 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		if (drawMode == DRAG) {
 			if (currentDragPoint != null) {
 				currentDragPoint.move(event.getX(), event.getY());
-			} else if (currentShape != null){
+			} else if (selectedObject != null){
 				int deltaX = event.getX() - baseX;
 				int deltaY = event.getY() - baseY;
-				currentShape.move(deltaX, deltaY);
+				selectedObject.getShape().move(deltaX, deltaY);
 				
 				baseX = event.getX();
 				baseY = event.getY();
 			}
 		}
 		if (drawMode == LINE || drawMode == SQUARE || drawMode == OVAL) {
-			currentShape.getControlPoints().get(1).move(event.getX(), event.getY());
+			selectedObject.getShape().getControlPoints().get(1).move(event.getX(), event.getY());
 		}
 		if (drawMode == FREE_HAND) {
-			((HandLine)currentShape).addPoint(event.getX(), event.getY());
+			((HandLine)selectedObject.getShape()).addPoint(event.getX(), event.getY());
 		}
 		repaint();
 	}
@@ -242,7 +239,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			JOptionPane.showMessageDialog(null, "Can't Undo", "Painter",
 					JOptionPane.INFORMATION_MESSAGE);
 		else {
-			Shape o = vObjects.removeLast();
+			PhysicObject o = vObjects.removeLast();
 			redoStack.add(o);
 		}
 		repaint();
@@ -253,7 +250,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			JOptionPane.showMessageDialog(null, "Can't Redo", "Painter",
 					JOptionPane.INFORMATION_MESSAGE);
 		else {
-			Shape o = redoStack.removeLast();
+			PhysicObject o = redoStack.removeLast();
 			vObjects.add(o);
 		}
 		repaint();
@@ -286,7 +283,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	}
 	
 	public void flushDrawing() {
-		currentShape = null;
+		selectedObject = null;
 		
 		setDefaulsSettings();
 		repaint();
@@ -306,9 +303,9 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	
 	private void redrawVectorBuffer(Graphics g) {
 		for (int i = 0; i < vObjects.size(); i++) {
-			((Shape) vObjects.get(i)).draw(g);
+			((Shape) vObjects.get(i).getShape()).draw(g);
 			if (isShowPathMode())
-				((Shape)vObjects.get(i)).drawControlPoints(g);
+				((Shape)vObjects.get(i).getShape()).drawControlPoints(g);
 		}
 	}
 
@@ -368,9 +365,9 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			if (e.getKeyCode() == KeyEvent.VK_F8){
 				if (currentDragPoint != null){
 					if (JOptionPane.showConfirmDialog(null, "Really delete this point? Operation can not be undo!") == JOptionPane.OK_OPTION){
-						currentShape.getControlPoints().remove(currentDragPoint);
-						if (currentShape.getControlPoints().isEmpty()){
-							vObjects.remove(currentShape);
+						selectedObject.getShape().getControlPoints().remove(currentDragPoint);
+						if (selectedObject.getShape().getControlPoints().isEmpty()){
+							vObjects.remove(selectedObject);
 						}
 					}
 				}
@@ -378,75 +375,75 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			if (e.getKeyCode() == KeyEvent.VK_F2){
 				Point p = new Point(baseX, baseY);
 				if (currentDragPoint != null){
-					if (currentShape instanceof ComplexPolygon){
+					if (selectedObject.getShape() instanceof ComplexPolygon){
 						((MarkedPoint)currentDragPoint).setMarker(Marker.L_POINT);
 					}
 				}
-				else if (currentShape != null){
-						int position = currentShape.getClosestControlLineInRadius(p, RADIUS);
+				else if (selectedObject != null){
+						int position = selectedObject.getShape().getClosestControlLineInRadius(p, RADIUS);
 						if (position >= 0)
-							if (currentShape instanceof ComplexPolygon)
-								currentShape.getControlPoints().add(position + 1, new MarkedPoint(p));
+							if (selectedObject.getShape() instanceof ComplexPolygon)
+								selectedObject.getShape().getControlPoints().add(position + 1, new MarkedPoint(p));
 							else
-								currentShape.getControlPoints().add(position + 1, p);
+								selectedObject.getShape().getControlPoints().add(position + 1, p);
 						else
-							if (currentShape instanceof ComplexPolygon)
-								currentShape.getControlPoints().add(new MarkedPoint(p));
+							if (selectedObject.getShape() instanceof ComplexPolygon)
+								selectedObject.getShape().getControlPoints().add(new MarkedPoint(p));
 							else
-								currentShape.getControlPoints().add(p);
+								selectedObject.getShape().getControlPoints().add(p);
 					} else{	
-						Shape shape = vObjects.peekLast();
-						if (shape != null){
-							if (shape instanceof ComplexPolygon)
-								shape.getControlPoints().add(new MarkedPoint(p));
+						PhysicObject o = vObjects.peekLast();
+						if (o != null){
+							if (o.getShape() instanceof ComplexPolygon)
+								o.getShape().getControlPoints().add(new MarkedPoint(p));
 							else
-								shape.getControlPoints().add(p);
+								o.getShape().getControlPoints().add(p);
 						}
 					} 
 			}
 			if (e.getKeyCode() == KeyEvent.VK_F3){
 				Point p = new Point(baseX, baseY);
 				if (currentDragPoint != null){
-					if (currentShape instanceof ComplexPolygon){
+					if (selectedObject.getShape() instanceof ComplexPolygon){
 						((MarkedPoint)currentDragPoint).setMarker(Marker.CL3_POINT);
 					}
 				}	
-				else if (currentShape != null){
-						int position = currentShape.getClosestControlLineInRadius(p, RADIUS);
+				else if (selectedObject != null){
+						int position = selectedObject.getShape().getClosestControlLineInRadius(p, RADIUS);
 						if (position >= 0)
-							if (currentShape instanceof ComplexPolygon)
-								currentShape.getControlPoints().add(position + 1, new MarkedPoint(p, Marker.CL3_POINT));
+							if (selectedObject.getShape() instanceof ComplexPolygon)
+								selectedObject.getShape().getControlPoints().add(position + 1, new MarkedPoint(p, Marker.CL3_POINT));
 						else
-							if (currentShape instanceof ComplexPolygon)
-								currentShape.getControlPoints().add(new MarkedPoint(p, Marker.CL3_POINT));
+							if (selectedObject.getShape() instanceof ComplexPolygon)
+								selectedObject.getShape().getControlPoints().add(new MarkedPoint(p, Marker.CL3_POINT));
 					} else{	
-						Shape shape = vObjects.peekLast();
-						if (shape != null){
-							if (shape instanceof ComplexPolygon)
-								shape.getControlPoints().add(new MarkedPoint(p, Marker.CL3_POINT));
+						PhysicObject o = vObjects.peekLast();
+						if (o != null){
+							if (o.getShape() instanceof ComplexPolygon)
+								o.getShape().getControlPoints().add(new MarkedPoint(p, Marker.CL3_POINT));
 						}
 					} 
 			}	
 			if (e.getKeyCode() == KeyEvent.VK_F4){
 				Point p = new Point(baseX, baseY);
 				if (currentDragPoint != null){
-					if (currentShape instanceof ComplexPolygon){
+					if (selectedObject.getShape() instanceof ComplexPolygon){
 						((MarkedPoint)currentDragPoint).setMarker(Marker.CL4_POINT);
 					}
 				} 
-				else if (currentShape != null){
-						int position = currentShape.getClosestControlLineInRadius(p, RADIUS);
+				else if (selectedObject != null){
+						int position = selectedObject.getShape().getClosestControlLineInRadius(p, RADIUS);
 						if (position >= 0)
-							if (currentShape instanceof ComplexPolygon)
-								currentShape.getControlPoints().add(position + 1, new MarkedPoint(p, Marker.CL4_POINT));
+							if (selectedObject.getShape() instanceof ComplexPolygon)
+								selectedObject.getShape().getControlPoints().add(position + 1, new MarkedPoint(p, Marker.CL4_POINT));
 						else
-							if (currentShape instanceof ComplexPolygon)
-								currentShape.getControlPoints().add(new MarkedPoint(p, Marker.CL4_POINT));
+							if (selectedObject.getShape() instanceof ComplexPolygon)
+								selectedObject.getShape().getControlPoints().add(new MarkedPoint(p, Marker.CL4_POINT));
 					} else{	
-						Shape shape = vObjects.peekLast();
-						if (shape != null){
-							if (shape instanceof ComplexPolygon)
-								shape.getControlPoints().add(new MarkedPoint(p, Marker.CL4_POINT));
+						PhysicObject o = vObjects.peekLast();
+						if (o != null){
+							if (o.getShape() instanceof ComplexPolygon)
+								o.getShape().getControlPoints().add(new MarkedPoint(p, Marker.CL4_POINT));
 						}
 					} 
 			}	

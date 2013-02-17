@@ -25,7 +25,7 @@ public abstract class SolidAbstractShape extends AbstractShape{
 	
 	@JsonIgnore
 	public List<Settings> getAllSettings() {
-		List<Settings> list = super.getAllSettings();
+		List<Settings> list = super.getSettings();
 		list.add(solidSettings);
 		return list;
 	}

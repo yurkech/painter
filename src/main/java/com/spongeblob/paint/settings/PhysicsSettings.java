@@ -13,7 +13,9 @@ import javax.swing.event.DocumentListener;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-public class ShapePhysicsSettings implements Settings{
+import com.spongeblob.paint.model.PhysicObjectType;
+
+public class PhysicsSettings implements Settings{
 	
 	/**
 	 * 
@@ -22,6 +24,7 @@ public class ShapePhysicsSettings implements Settings{
 	private double density = 1.0;
 	private int restriction  = 0;
 	private int friction = 0;
+	private PhysicObjectType type = PhysicObjectType.BORDERTRACK;
 	
 	@JsonIgnore
 	private JTextField textDensity, textRestriction, textFriction; 
@@ -117,5 +120,11 @@ public class ShapePhysicsSettings implements Settings{
 			});
 		panel.add(textFriction);
 		return panel;
+	}
+	public PhysicObjectType getType() {
+		return type;
+	}
+	public void setType(PhysicObjectType type) {
+		this.type = type;
 	}
 }
