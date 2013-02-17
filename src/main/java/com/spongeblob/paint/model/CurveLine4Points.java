@@ -18,8 +18,8 @@ public class CurveLine4Points extends CurveLine3Points{
 	public CurveLine4Points(){}
 	
 	public CurveLine4Points(int x, int y, Color c){
-		points = new LinkedList<Point>();
-		points.add(new Point(x, y));
+		controlPoints = new LinkedList<Point>();
+		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
 		model = "CURVELINE_4POINTS";
 	}
@@ -28,12 +28,12 @@ public class CurveLine4Points extends CurveLine3Points{
 	@Override
 	public List<Point> getCurvePoints() {
 		List<Point> pathPoints = new LinkedList<Point>();
-		if (points.size() > 3){
-			for (int i = 0; i < points.size() - 3; i= i + 3) {
-				pathPoints.addAll(PointUtil.calculateCurveLine4Points(points.get(i).x, points.get(i).y, 
-						points.get(i + 1).x, points.get(i + 1).y, 
-						points.get(i + 2).x, points.get(i + 2).y,
-						points.get(i + 3).x, points.get(i + 3).y));			
+		if (controlPoints.size() > 3){
+			for (int i = 0; i < controlPoints.size() - 3; i= i + 3) {
+				pathPoints.addAll(PointUtil.calculateCurveLine4Points(controlPoints.get(i).x, controlPoints.get(i).y, 
+						controlPoints.get(i + 1).x, controlPoints.get(i + 1).y, 
+						controlPoints.get(i + 2).x, controlPoints.get(i + 2).y,
+						controlPoints.get(i + 3).x, controlPoints.get(i + 3).y));			
 			}
 		}
 		return pathPoints;

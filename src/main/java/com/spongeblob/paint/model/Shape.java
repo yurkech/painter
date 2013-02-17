@@ -3,22 +3,20 @@ import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.List;
 
-import com.spongeblob.paint.settings.Settings;
-
-
+/**
+ * @author yurkech
+ *
+ */
 public interface Shape extends Serializable{
 	public void draw(Graphics g);
-	public void drawPathPoints(Graphics g);
+	public void drawControlPoints(Graphics g);
 	
 	
-	public List<Point> getPoints();
-	public Point contains(Point p, int radius); 
-	public Boolean intersects(Point p, int radius);
-	public int intersectionPointIndex(Point p, int radius);
+	public List<Point> getControlPoints();
+	public Point getClosestControlPointInRadius(Point p, int radius); 
 	
-	public void setFocus(Boolean flag);
+	
+	public int getClosestControlLineInRadius(Point p, int radius);
+	
 	public void move(int deltaX, int deltaY);
-	
-	public List<Settings> getAllSettings();
-	
 }

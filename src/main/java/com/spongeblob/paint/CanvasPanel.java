@@ -24,10 +24,10 @@ import com.spongeblob.paint.model.MarkedPoint;
 import com.spongeblob.paint.model.Marker;
 import com.spongeblob.paint.model.Oval;
 import com.spongeblob.paint.model.Rectangle;
-import com.spongeblob.paint.model.Polygon;
 import com.spongeblob.paint.model.Shape;
 import com.spongeblob.paint.model.Point;
 import com.spongeblob.paint.settings.CanvasSettings;
+import com.spongeblob.paint.settings.Configurable;
 
 
 public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
@@ -85,7 +85,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	public void mousePressed(MouseEvent event) {
 		if (drawMode == DRAG) {
 			for (int i = 0; i < vObjects.size(); i++) {
-				Point p = ((Shape) vObjects.get(i)).contains(new Point(event.getX(), event.getY()), RADIUS);
+				Point p = ((Shape) vObjects.get(i)).getClosestControlPointInRadius(new Point(event.getX(), event.getY()), RADIUS);
 				if (p != null) {
 					currentShape = vObjects.get(i);
 					currentDragPoint = p;
@@ -93,7 +93,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			}
 			if (currentDragPoint == null) {
 				for (int i = 0; i < vObjects.size(); i++) {
-					 if (((Shape) vObjects.get(i)).intersects(new Point(event.getX(), event.getY()), RADIUS)){
+					 if (((Shape) vObjects.get(i)).getClosestControlLineInRadius(new Point(event.getX(), event.getY()), RADIUS) >= 0){
 						currentShape = vObjects.get(i);
 					 }	
 				}
@@ -118,8 +118,9 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			vObjects.add(currentShape);
 		}
 		if (currentShape != null){
-			settingsPanel.setSettings(currentShape.getAllSettings());
-	 		settingsPanel.repaint();
+			if (currentShape instanceof Configurable) 
+				settingsPanel.setSettings(((Configurable)currentShape).getAllSettings());
+	 			settingsPanel.repaint();
 		}	
 	}
 
@@ -192,7 +193,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			}
 		}
 		if (drawMode == LINE || drawMode == SQUARE || drawMode == OVAL) {
-			currentShape.getPoints().get(1).move(event.getX(), event.getY());
+			currentShape.getControlPoints().get(1).move(event.getX(), event.getY());
 		}
 		if (drawMode == FREE_HAND) {
 			((HandLine)currentShape).addPoint(event.getX(), event.getY());
@@ -291,11 +292,6 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		repaint();
 	}
 
-	public void releaseFocused(){
-		for (Shape shape : vObjects) {
-			shape.setFocus(false);
-		}
-	}
 	/*
 	private RenderedImage myCreateImage() {
 		BufferedImage bufferedImage = new BufferedImage(1400,800, BufferedImage.TYPE_INT_RGB);
@@ -312,7 +308,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		for (int i = 0; i < vObjects.size(); i++) {
 			((Shape) vObjects.get(i)).draw(g);
 			if (isShowPathMode())
-				((Shape)vObjects.get(i)).drawPathPoints(g);
+				((Shape)vObjects.get(i)).drawControlPoints(g);
 		}
 	}
 
@@ -372,8 +368,8 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			if (e.getKeyCode() == KeyEvent.VK_F8){
 				if (currentDragPoint != null){
 					if (JOptionPane.showConfirmDialog(null, "Really delete this point? Operation can not be undo!") == JOptionPane.OK_OPTION){
-						currentShape.getPoints().remove(currentDragPoint);
-						if (currentShape.getPoints().isEmpty()){
+						currentShape.getControlPoints().remove(currentDragPoint);
+						if (currentShape.getControlPoints().isEmpty()){
 							vObjects.remove(currentShape);
 						}
 					}
@@ -387,24 +383,24 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 					}
 				}
 				else if (currentShape != null){
-						int position = currentShape.intersectionPointIndex(p, RADIUS);
+						int position = currentShape.getClosestControlLineInRadius(p, RADIUS);
 						if (position >= 0)
 							if (currentShape instanceof ComplexPolygon)
-								currentShape.getPoints().add(position + 1, new MarkedPoint(p));
+								currentShape.getControlPoints().add(position + 1, new MarkedPoint(p));
 							else
-								currentShape.getPoints().add(position + 1, p);
+								currentShape.getControlPoints().add(position + 1, p);
 						else
 							if (currentShape instanceof ComplexPolygon)
-								currentShape.getPoints().add(new MarkedPoint(p));
+								currentShape.getControlPoints().add(new MarkedPoint(p));
 							else
-								currentShape.getPoints().add(p);
+								currentShape.getControlPoints().add(p);
 					} else{	
 						Shape shape = vObjects.peekLast();
 						if (shape != null){
 							if (shape instanceof ComplexPolygon)
-								shape.getPoints().add(new MarkedPoint(p));
+								shape.getControlPoints().add(new MarkedPoint(p));
 							else
-								shape.getPoints().add(p);
+								shape.getControlPoints().add(p);
 						}
 					} 
 			}
@@ -416,18 +412,18 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 					}
 				}	
 				else if (currentShape != null){
-						int position = currentShape.intersectionPointIndex(p, RADIUS);
+						int position = currentShape.getClosestControlLineInRadius(p, RADIUS);
 						if (position >= 0)
 							if (currentShape instanceof ComplexPolygon)
-								currentShape.getPoints().add(position + 1, new MarkedPoint(p, Marker.CL3_POINT));
+								currentShape.getControlPoints().add(position + 1, new MarkedPoint(p, Marker.CL3_POINT));
 						else
 							if (currentShape instanceof ComplexPolygon)
-								currentShape.getPoints().add(new MarkedPoint(p, Marker.CL3_POINT));
+								currentShape.getControlPoints().add(new MarkedPoint(p, Marker.CL3_POINT));
 					} else{	
 						Shape shape = vObjects.peekLast();
 						if (shape != null){
 							if (shape instanceof ComplexPolygon)
-								shape.getPoints().add(new MarkedPoint(p, Marker.CL3_POINT));
+								shape.getControlPoints().add(new MarkedPoint(p, Marker.CL3_POINT));
 						}
 					} 
 			}	
@@ -439,18 +435,18 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 					}
 				} 
 				else if (currentShape != null){
-						int position = currentShape.intersectionPointIndex(p, RADIUS);
+						int position = currentShape.getClosestControlLineInRadius(p, RADIUS);
 						if (position >= 0)
 							if (currentShape instanceof ComplexPolygon)
-								currentShape.getPoints().add(position + 1, new MarkedPoint(p, Marker.CL4_POINT));
+								currentShape.getControlPoints().add(position + 1, new MarkedPoint(p, Marker.CL4_POINT));
 						else
 							if (currentShape instanceof ComplexPolygon)
-								currentShape.getPoints().add(new MarkedPoint(p, Marker.CL4_POINT));
+								currentShape.getControlPoints().add(new MarkedPoint(p, Marker.CL4_POINT));
 					} else{	
 						Shape shape = vObjects.peekLast();
 						if (shape != null){
 							if (shape instanceof ComplexPolygon)
-								shape.getPoints().add(new MarkedPoint(p, Marker.CL4_POINT));
+								shape.getControlPoints().add(new MarkedPoint(p, Marker.CL4_POINT));
 						}
 					} 
 			}	

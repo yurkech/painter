@@ -14,17 +14,17 @@ public class Oval extends SolidAbstractShape{
 	public Oval(){}
 	
 	public Oval(int x, int y, Color c){
-		points = new LinkedList<Point>();
-		points.add(new Point(x, y));
-		points.add(new Point(x, y));
+		controlPoints = new LinkedList<Point>();
+		controlPoints.add(new Point(x, y));
+		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
 		model = "OVAL";
 	}
 	
 	public Oval(int x, int y, Color c, Boolean solid){
-		points = new LinkedList<Point>();
-		points.add(new Point(x, y));
-		points.add(new Point(x, y));
+		controlPoints = new LinkedList<Point>();
+		controlPoints.add(new Point(x, y));
+		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
 	}
 	
@@ -32,17 +32,17 @@ public class Oval extends SolidAbstractShape{
 		g.setColor(colorSettings.getColor());
 		if(solidSettings.isSolid())
   	 	{
-     		if(points.get(0).x > points.get(1).x || points.get(0).y > points.get(1).y)
-     			g.fillOval(points.get(1).x, points.get(1).y, points.get(0).x - points.get(1).x, points.get(0).y - points.get(1).y);
+     		if(controlPoints.get(0).x > controlPoints.get(1).x || controlPoints.get(0).y > controlPoints.get(1).y)
+     			g.fillOval(controlPoints.get(1).x, controlPoints.get(1).y, controlPoints.get(0).x - controlPoints.get(1).x, controlPoints.get(0).y - controlPoints.get(1).y);
      		else	
-     			g.fillOval(points.get(0).x, points.get(0).y, points.get(1).x - points.get(0).x, points.get(1).y - points.get(0).y);
+     			g.fillOval(controlPoints.get(0).x, controlPoints.get(0).y, controlPoints.get(1).x - controlPoints.get(0).x, controlPoints.get(1).y - controlPoints.get(0).y);
   	 	}
      	else
      	{
-     		if(points.get(0).x > points.get(1).x || points.get(0).y > points.get(1).y)
-     			g.drawOval (points.get(1).x, points.get(1).y, points.get(0).x - points.get(1).x, points.get(0).y - points.get(1).y);
+     		if(controlPoints.get(0).x > controlPoints.get(1).x || controlPoints.get(0).y > controlPoints.get(1).y)
+     			g.drawOval (controlPoints.get(1).x, controlPoints.get(1).y, controlPoints.get(0).x - controlPoints.get(1).x, controlPoints.get(0).y - controlPoints.get(1).y);
      		else
-     			g.drawOval (points.get(0).x, points.get(0).y, points.get(1).x - points.get(0).x, points.get(1).y - points.get(0).y);
+     			g.drawOval (controlPoints.get(0).x, controlPoints.get(0).y, controlPoints.get(1).x - controlPoints.get(0).x, controlPoints.get(1).y - controlPoints.get(0).y);
      	}
 	}
 }
