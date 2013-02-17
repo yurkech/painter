@@ -19,14 +19,14 @@ public class ComplexPolygon extends SolidAbstractShape{
 	public ComplexPolygon(){};
 	
 	public ComplexPolygon(int x, int y, Color c){
-		points = new LinkedList<Point>();
-		points.add(new MarkedPoint(x, y));
+		controlPoints = new LinkedList<Point>();
+		controlPoints.add(new MarkedPoint(x, y));
 		colorSettings.setColor(c);
 		model = "COMPLEX_POLYGON";
 	}
 	
 	public void addPoint(int x, int y){
-		points.add(new MarkedPoint(x, y));
+		controlPoints.add(new MarkedPoint(x, y));
 	}
 
 	@Override
@@ -49,40 +49,40 @@ public class ComplexPolygon extends SolidAbstractShape{
 	}
 	
 	@Override
-	public void drawPathPoints(Graphics g) {
+	public void drawControlPoints(Graphics g) {
 		g.setColor(colorSettings.getPathPointsColor());
-		for (int i = 0; i < points.size() - 1;) {
-			if (((MarkedPoint)points.get(i)).marker.equals(Marker.L_POINT)){
+		for (int i = 0; i < controlPoints.size() - 1;) {
+			if (((MarkedPoint)controlPoints.get(i)).marker.equals(Marker.L_POINT)){
 				i++;
 				continue;
 			}
-			if (((MarkedPoint)points.get(i)).marker.equals(Marker.CL3_POINT)){
+			if (((MarkedPoint)controlPoints.get(i)).marker.equals(Marker.CL3_POINT)){
 				try{
-					g.drawLine(points.get(i).x, points.get(i).y, points.get(i+1).x, points.get(i+1).y);
-					g.drawLine(points.get(i+1).x, points.get(i+1).y, points.get(i+2).x, points.get(i+2).y);
+					g.drawLine(controlPoints.get(i).x, controlPoints.get(i).y, controlPoints.get(i+1).x, controlPoints.get(i+1).y);
+					g.drawLine(controlPoints.get(i+1).x, controlPoints.get(i+1).y, controlPoints.get(i+2).x, controlPoints.get(i+2).y);
 					i = i + 2;
 				} catch (IndexOutOfBoundsException e){
 					//not enough points
-					g.drawLine(points.get(i).x, points.get(i).y, points.get(i+1).x, points.get(i+1).y);
+					g.drawLine(controlPoints.get(i).x, controlPoints.get(i).y, controlPoints.get(i+1).x, controlPoints.get(i+1).y);
 					i++;
 				}
 				continue;
 			}
-			if (((MarkedPoint)points.get(i)).marker.equals(Marker.CL4_POINT)){
+			if (((MarkedPoint)controlPoints.get(i)).marker.equals(Marker.CL4_POINT)){
 				try{
-					g.drawLine(points.get(i).x, points.get(i).y, points.get(i+1).x, points.get(i+1).y);
-					g.drawLine(points.get(i+1).x, points.get(i+1).y, points.get(i+2).x, points.get(i+2).y);
-					g.drawLine(points.get(i+2).x, points.get(i+2).y, points.get(i+3).x, points.get(i+3).y);
+					g.drawLine(controlPoints.get(i).x, controlPoints.get(i).y, controlPoints.get(i+1).x, controlPoints.get(i+1).y);
+					g.drawLine(controlPoints.get(i+1).x, controlPoints.get(i+1).y, controlPoints.get(i+2).x, controlPoints.get(i+2).y);
+					g.drawLine(controlPoints.get(i+2).x, controlPoints.get(i+2).y, controlPoints.get(i+3).x, controlPoints.get(i+3).y);
 					i = i + 3;
 				} catch (IndexOutOfBoundsException e){
 					//not enough points
-					g.drawLine(points.get(i).x, points.get(i).y, points.get(i+1).x, points.get(i+1).y);
+					g.drawLine(controlPoints.get(i).x, controlPoints.get(i).y, controlPoints.get(i+1).x, controlPoints.get(i+1).y);
 					i++;
 				}
 				continue;
 			}
 		}
-		for (Point point : points) {
+		for (Point point : controlPoints) {
 			PointUtil.paintCircleAroundPoint(g, point);
 		}
 	}
@@ -90,35 +90,35 @@ public class ComplexPolygon extends SolidAbstractShape{
 	@JsonIgnore
 	public List<Point> getCurvePoints() {
 		List<Point> pathPoints = new LinkedList<Point>();
-		for (int i = 0; i <= points.size() - 1;) {
-			if (((MarkedPoint)points.get(i)).marker.equals(Marker.L_POINT)){
-				pathPoints.add(points.get(i));
+		for (int i = 0; i <= controlPoints.size() - 1;) {
+			if (((MarkedPoint)controlPoints.get(i)).marker.equals(Marker.L_POINT)){
+				pathPoints.add(controlPoints.get(i));
 				i++;
 				continue;
 			}
-			if (((MarkedPoint)points.get(i)).marker.equals(Marker.CL3_POINT)){
+			if (((MarkedPoint)controlPoints.get(i)).marker.equals(Marker.CL3_POINT)){
 				try{
-					pathPoints.addAll(PointUtil.calculateCurveLine3Points(points.get(i).x, points.get(i).y, 
-							points.get(i + 1).x, points.get(i + 1).y, 
-							points.get(i + 2).x, points.get(i + 2).y));	
+					pathPoints.addAll(PointUtil.calculateCurveLine3Points(controlPoints.get(i).x, controlPoints.get(i).y, 
+							controlPoints.get(i + 1).x, controlPoints.get(i + 1).y, 
+							controlPoints.get(i + 2).x, controlPoints.get(i + 2).y));	
 					i = i + 2;
 				} catch (IndexOutOfBoundsException e){
 					//not enough points
-					pathPoints.add(points.get(i));
+					pathPoints.add(controlPoints.get(i));
 					i++;
 				}
 				continue;
 			}
-			if (((MarkedPoint)points.get(i)).marker.equals(Marker.CL4_POINT)){
+			if (((MarkedPoint)controlPoints.get(i)).marker.equals(Marker.CL4_POINT)){
 				try{
-					pathPoints.addAll(PointUtil.calculateCurveLine4Points(points.get(i).x, points.get(i).y, 
-							points.get(i + 1).x, points.get(i + 1).y, 
-							points.get(i + 2).x, points.get(i + 2).y,
-							points.get(i + 3).x, points.get(i + 3).y));		
+					pathPoints.addAll(PointUtil.calculateCurveLine4Points(controlPoints.get(i).x, controlPoints.get(i).y, 
+							controlPoints.get(i + 1).x, controlPoints.get(i + 1).y, 
+							controlPoints.get(i + 2).x, controlPoints.get(i + 2).y,
+							controlPoints.get(i + 3).x, controlPoints.get(i + 3).y));		
 					i = i + 3;
 				} catch (IndexOutOfBoundsException e){
 					//not enough points
-					pathPoints.add(points.get(i));
+					pathPoints.add(controlPoints.get(i));
 					i++;
 				}
 				continue;

@@ -13,8 +13,8 @@ public class HandLine extends AbstractShape{
 	public HandLine(){}
 	
 	public HandLine(int x, int y, Color c){
-		points = new LinkedList<Point>();
-		points.add(new Point(x, y));
+		controlPoints = new LinkedList<Point>();
+		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
 		model = "POLYGON";
 	}

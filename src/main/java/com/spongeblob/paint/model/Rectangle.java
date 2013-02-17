@@ -13,17 +13,17 @@ public class Rectangle extends SolidAbstractShape{
 	public Rectangle(){};
 
 	public Rectangle(int x, int y, Color c){
-		points = new LinkedList<Point>();
-		points.add(new Point(x, y));
-		points.add(new Point(x, y));
+		controlPoints = new LinkedList<Point>();
+		controlPoints.add(new Point(x, y));
+		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
 		model = "RECTANGLE";
 	}
 	
 	public Rectangle(int x, int y, Color c, Boolean solid){
-		points = new LinkedList<Point>();
-		points.add(new Point(x, y));
-		points.add(new Point(x, y));
+		controlPoints = new LinkedList<Point>();
+		controlPoints.add(new Point(x, y));
+		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
 	}
 	
@@ -31,17 +31,17 @@ public class Rectangle extends SolidAbstractShape{
 		g.setColor(colorSettings.getColor());
 		if(solidSettings.isSolid())
   	 	{
-  	 		if(points.get(0).x > points.get(1).x || points.get(0).y > points.get(1).y)
-  	 			g.fillRect (points.get(1).x, points.get(1).y, points.get(0).x - points.get(1).x, points.get(0).y - points.get(1).y);
+  	 		if(controlPoints.get(0).x > controlPoints.get(1).x || controlPoints.get(0).y > controlPoints.get(1).y)
+  	 			g.fillRect (controlPoints.get(1).x, controlPoints.get(1).y, controlPoints.get(0).x - controlPoints.get(1).x, controlPoints.get(0).y - controlPoints.get(1).y);
   	 		else
-  	 			g.fillRect (points.get(0).x, points.get(0).y, points.get(1).x - points.get(0).x, points.get(1).y - points.get(0).y);
+  	 			g.fillRect (controlPoints.get(0).x, controlPoints.get(0).y, controlPoints.get(1).x - controlPoints.get(0).x, controlPoints.get(1).y - controlPoints.get(0).y);
   	 	}
      	else
      	{
-     		if(points.get(0).x > points.get(1).x || points.get(0).y > points.get(1).y)
-     			g.drawRect (points.get(1).x, points.get(1).y, points.get(0).x - points.get(1).x, points.get(0).y - points.get(1).y);
+     		if(controlPoints.get(0).x > controlPoints.get(1).x || controlPoints.get(0).y > controlPoints.get(1).y)
+     			g.drawRect (controlPoints.get(1).x, controlPoints.get(1).y, controlPoints.get(0).x - controlPoints.get(1).x, controlPoints.get(0).y - controlPoints.get(1).y);
      		else
-     			g.drawRect (points.get(0).x, points.get(0).y, points.get(1).x - points.get(0).x, points.get(1).y - points.get(0).y);
+     			g.drawRect (controlPoints.get(0).x, controlPoints.get(0).y, controlPoints.get(1).x - controlPoints.get(0).x, controlPoints.get(1).y - controlPoints.get(0).y);
      	}
 		
 	}

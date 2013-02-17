@@ -13,24 +13,24 @@ public class CleverLine extends Line{
 	private static final int RADIOUS = 50;
 	
 	public CleverLine(int x, int y, Color c){
-		points = new LinkedList<Point>();
-		points.add(new Point(x, y));
-		points.add(new Point(x, y));
+		controlPoints = new LinkedList<Point>();
+		controlPoints.add(new Point(x, y));
+		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
 		model = "LINE";
 	}
 	
 	public void draw(Graphics g) {
 		g.setColor(colorSettings.getColor());
-     	g.drawLine(points.get(0).x, points.get(0).y, points.get(1).x, points.get(1).y);
-     	g.drawOval(points.get(1).x - RADIOUS, points.get(1).y - RADIOUS, 2 *RADIOUS, 2 * RADIOUS);
+     	g.drawLine(controlPoints.get(0).x, controlPoints.get(0).y, controlPoints.get(1).x, controlPoints.get(1).y);
+     	g.drawOval(controlPoints.get(1).x - RADIOUS, controlPoints.get(1).y - RADIOUS, 2 *RADIOUS, 2 * RADIOUS);
      	
-     	if (!points.get(0).equals(points.get(1))){
+     	if (!controlPoints.get(0).equals(controlPoints.get(1))){
      	//	if (points.get(0).y != points.get(1).y){
-     			Point [] point = GetKas2(points.get(0), points.get(1), RADIOUS);
-	     			g.drawLine(points.get(0).x, points.get(0).y, point[0].x, point[0].y);
+     			Point [] point = GetKas2(controlPoints.get(0), controlPoints.get(1), RADIOUS);
+	     			g.drawLine(controlPoints.get(0).x, controlPoints.get(0).y, point[0].x, point[0].y);
      			System.out.println("x0: " + point[0].x + " y0:" + point[0].y);
-     			g.drawLine(points.get(0).x, points.get(0).y, point[1].x, point[1].y);
+     			g.drawLine(controlPoints.get(0).x, controlPoints.get(0).y, point[1].x, point[1].y);
      			System.out.println("x1: " + point[1].x + " y1:" + point[1].y);
      	/*	} else{
      			g.drawLine(points.get(0).x, points.get(0).y, 

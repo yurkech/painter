@@ -19,16 +19,16 @@ public class CurveLine3Points extends SolidAbstractShape{
 	public CurveLine3Points(){}
 	
 	public CurveLine3Points(int x, int y, Color c){
-		points = new LinkedList<Point>();
-		points.add(new Point(x, y));
+		controlPoints = new LinkedList<Point>();
+		controlPoints.add(new Point(x, y));
 		colorSettings.setColor(c);
 		model = "CURVELINE_3POINTS";
 	}
 	
-	public void drawPathPoints(Graphics g) {
+	public void drawControlPoints(Graphics g) {
 		g.setColor(colorSettings.getPathPointsColor());
-		g.drawPolyline(PointUtil.getXs(points), PointUtil.getYs(points), points.size());
-		for (Point point : points) {
+		g.drawPolyline(PointUtil.getXs(controlPoints), PointUtil.getYs(controlPoints), controlPoints.size());
+		for (Point point : controlPoints) {
 			PointUtil.paintCircleAroundPoint(g, point);
 		}
 	}
@@ -59,11 +59,11 @@ public class CurveLine3Points extends SolidAbstractShape{
 	@JsonIgnore
 	public List<Point> getCurvePoints() {
 		List<Point> pathPoints = new LinkedList<Point>();
-		if (points.size() > 2){
-			for (int i = 0; i < points.size() - 2; i= i + 2) {
-				pathPoints.addAll(PointUtil.calculateCurveLine3Points(points.get(i).x, points.get(i).y, 
-						points.get(i + 1).x, points.get(i + 1).y, 
-						points.get(i + 2).x, points.get(i + 2).y));			
+		if (controlPoints.size() > 2){
+			for (int i = 0; i < controlPoints.size() - 2; i= i + 2) {
+				pathPoints.addAll(PointUtil.calculateCurveLine3Points(controlPoints.get(i).x, controlPoints.get(i).y, 
+						controlPoints.get(i + 1).x, controlPoints.get(i + 1).y, 
+						controlPoints.get(i + 2).x, controlPoints.get(i + 2).y));			
 			}
 		}
 		return pathPoints;
