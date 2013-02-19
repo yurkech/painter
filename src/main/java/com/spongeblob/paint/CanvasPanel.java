@@ -1,12 +1,20 @@
 package com.spongeblob.paint;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.util.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.LinkedList;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
@@ -24,10 +32,11 @@ import com.spongeblob.paint.model.MarkedPoint;
 import com.spongeblob.paint.model.Marker;
 import com.spongeblob.paint.model.Oval;
 import com.spongeblob.paint.model.PhysicObject;
+import com.spongeblob.paint.model.Point;
 import com.spongeblob.paint.model.Rectangle;
 import com.spongeblob.paint.model.Shape;
-import com.spongeblob.paint.model.Point;
 import com.spongeblob.paint.settings.CanvasSettings;
+import com.spongeblob.paint.utils.PropertyFilteringModule;
 
 
 public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
@@ -266,10 +275,13 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		return getJSONView(true);
 	}
 	public String getJSONView(Boolean enableTyping) throws JsonGenerationException, JsonMappingException, IOException{
-		ObjectMapper mapper = new ObjectMapper().setVisibility(JsonMethod.FIELD, Visibility.ANY);
+		ObjectMapper mapper;
 		if (enableTyping){
-			mapper.enableDefaultTyping();
-		}	
+			mapper = getObjectMapper();
+		} else{
+			mapper = getFilteringObjectMapper();
+		}
+		
 		String json = mapper.writeValueAsString(vObjects);
 		return json;
 	}
@@ -452,5 +464,21 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	}
 
 	public void keyReleased(KeyEvent e) {}
+	
+	private static ObjectMapper getObjectMapper() {
+        return new ObjectMapper();
+    }
+
+    private static ObjectMapper getFilteringObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(
+                PropertyFilteringModule.builder("Export Module")
+                        .exclude(MarkedPoint.class, "marker")
+                        .exclude(PhysicObject.class, "id")
+                        .exclude(ComplexPolygon.class, "color")
+                        .exclude(ComplexPolygon.class, "solid")
+                        .build());
+        return mapper;
+    }
 
 }

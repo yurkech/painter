@@ -14,6 +14,6 @@ public class Line extends AbstractShape {
 	public Line(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
 		getControlPoints().add(new Point(x, y));
-		colorSettings.setColor(c);
+		getColorSettings().setColor(c);
 	}
 }

@@ -21,7 +21,7 @@ public class ComplexPolygon extends SolidAbstractShape {
 
 	public ComplexPolygon(int x, int y, Color c) {
 		getControlPoints().add(new MarkedPoint(x, y));
-		colorSettings.setColor(c);
+		getColorSettings().setColor(c);
 	}
 
 	public void addPoint(int x, int y) {
@@ -30,11 +30,11 @@ public class ComplexPolygon extends SolidAbstractShape {
 
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(colorSettings.getColor());
+		g.setColor(getColorSettings().getColor());
 		List<Point> curvePoints = getCurvePoints();
 
-		if (solidSettings.isSolid()) {
-			if (solidSettings.isFilled()) {
+		if (getSolidSettings().isSolid()) {
+			if (getSolidSettings().isFilled()) {
 				g.fillPolygon(PointUtil.getXs(curvePoints),
 						PointUtil.getYs(curvePoints), curvePoints.size());
 			} else {
@@ -49,7 +49,7 @@ public class ComplexPolygon extends SolidAbstractShape {
 
 	@Override
 	public void drawControlPoints(Graphics g) {
-		g.setColor(colorSettings.getPathPointsColor());
+		g.setColor(getColorSettings().getPathPointsColor());
 		for (int i = 0; i < getControlPoints().size() - 1;) {
 			if (((MarkedPoint) getControlPoints().get(i)).marker
 					.equals(Marker.L_POINT)) {
@@ -69,8 +69,8 @@ public class ComplexPolygon extends SolidAbstractShape {
 					i = i + 2;
 				} catch (IndexOutOfBoundsException e) {
 					// not enough points
-					g.drawLine(getControlPoints().get(i).x, getControlPoints().get(i).y,
-							getControlPoints().get(i + 1).x,
+					g.drawLine(getControlPoints().get(i).x, getControlPoints()
+							.get(i).y, getControlPoints().get(i + 1).x,
 							getControlPoints().get(i + 1).y);
 					i++;
 				}
@@ -79,22 +79,22 @@ public class ComplexPolygon extends SolidAbstractShape {
 			if (((MarkedPoint) getControlPoints().get(i)).marker
 					.equals(Marker.CL4_POINT)) {
 				try {
-					g.drawLine(getControlPoints().get(i).x, getControlPoints().get(i).y,
-							getControlPoints().get(i + 1).x,
+					g.drawLine(getControlPoints().get(i).x, getControlPoints()
+							.get(i).y, getControlPoints().get(i + 1).x,
 							getControlPoints().get(i + 1).y);
 					g.drawLine(getControlPoints().get(i + 1).x,
-							getControlPoints().get(i + 1).y,
-							getControlPoints().get(i + 2).x,
-							getControlPoints().get(i + 2).y);
+							getControlPoints().get(i + 1).y, getControlPoints()
+									.get(i + 2).x, getControlPoints()
+									.get(i + 2).y);
 					g.drawLine(getControlPoints().get(i + 2).x,
-							getControlPoints().get(i + 2).y,
-							getControlPoints().get(i + 3).x,
-							getControlPoints().get(i + 3).y);
+							getControlPoints().get(i + 2).y, getControlPoints()
+									.get(i + 3).x, getControlPoints()
+									.get(i + 3).y);
 					i = i + 3;
 				} catch (IndexOutOfBoundsException e) {
 					// not enough points
-					g.drawLine(getControlPoints().get(i).x, getControlPoints().get(i).y,
-							getControlPoints().get(i + 1).x,
+					g.drawLine(getControlPoints().get(i).x, getControlPoints()
+							.get(i).y, getControlPoints().get(i + 1).x,
 							getControlPoints().get(i + 1).y);
 					i++;
 				}
@@ -120,11 +120,11 @@ public class ComplexPolygon extends SolidAbstractShape {
 					.equals(Marker.CL3_POINT)) {
 				try {
 					pathPoints.addAll(PointUtil.calculateCurveLine3Points(
-							getControlPoints().get(i).x, getControlPoints().get(i).y,
-							getControlPoints().get(i + 1).x,
-							getControlPoints().get(i + 1).y,
-							getControlPoints().get(i + 2).x,
-							getControlPoints().get(i + 2).y));
+							getControlPoints().get(i).x, getControlPoints()
+									.get(i).y, getControlPoints().get(i + 1).x,
+							getControlPoints().get(i + 1).y, getControlPoints()
+									.get(i + 2).x, getControlPoints()
+									.get(i + 2).y));
 					i = i + 2;
 				} catch (IndexOutOfBoundsException e) {
 					// not enough points
@@ -137,13 +137,13 @@ public class ComplexPolygon extends SolidAbstractShape {
 					.equals(Marker.CL4_POINT)) {
 				try {
 					pathPoints.addAll(PointUtil.calculateCurveLine4Points(
-							getControlPoints().get(i).x, getControlPoints().get(i).y,
-							getControlPoints().get(i + 1).x,
-							getControlPoints().get(i + 1).y,
-							getControlPoints().get(i + 2).x,
-							getControlPoints().get(i + 2).y,
-							getControlPoints().get(i + 3).x,
-							getControlPoints().get(i + 3).y));
+							getControlPoints().get(i).x, getControlPoints()
+									.get(i).y, getControlPoints().get(i + 1).x,
+							getControlPoints().get(i + 1).y, getControlPoints()
+									.get(i + 2).x, getControlPoints()
+									.get(i + 2).y, getControlPoints()
+									.get(i + 3).x, getControlPoints()
+									.get(i + 3).y));
 					i = i + 3;
 				} catch (IndexOutOfBoundsException e) {
 					// not enough points

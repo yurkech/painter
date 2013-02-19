@@ -20,7 +20,7 @@ public class CurveLine4Points extends CurveLine3Points {
 
 	public CurveLine4Points(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
-		colorSettings.setColor(c);
+		getColorSettings().setColor(c);
 	}
 
 	@JsonIgnore

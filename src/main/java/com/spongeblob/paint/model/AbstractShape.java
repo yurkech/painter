@@ -21,10 +21,17 @@ public abstract class AbstractShape implements Shape{
 	
 		
 	private List<? extends Point> controlPoints ;
+	private ShapeColorSettings colorSettings;
 	
 	@JsonProperty("color")
-	protected ShapeColorSettings colorSettings;
-	
+	public ShapeColorSettings getColorSettings() {
+		return colorSettings;
+	}
+
+	public void setColorSettings(ShapeColorSettings colorSettings) {
+		this.colorSettings = colorSettings;
+	}
+
 	public AbstractShape(){
 		controlPoints = new LinkedList<Point>();
 		colorSettings = new ShapeColorSettings();
@@ -33,7 +40,7 @@ public abstract class AbstractShape implements Shape{
 	@JsonIgnore
 	public List<Settings> getSettings() {
 		LinkedList<Settings> list = new LinkedList<Settings>();
-		list.add(colorSettings);
+		list.add(getColorSettings());
 		return list;
 	}
 	
@@ -49,17 +56,18 @@ public abstract class AbstractShape implements Shape{
 	}
 	
 	public void drawControlPoints(Graphics g) {
-		g.setColor(colorSettings.getPathPointsColor());
+		g.setColor(getColorSettings().getPathPointsColor());
 		for (Point point : getControlPoints()) {
 			PointUtil.paintCircleAroundPoint(g, point);
 		}
 	}
 
 	public void draw(Graphics g) {
-		g.setColor(colorSettings.getColor());
+		g.setColor(getColorSettings().getColor());
 		g.drawPolyline(PointUtil.getXs(getControlPoints()), PointUtil.getYs(getControlPoints()), getControlPoints().size());
 	}
 	
+	@JsonIgnore
 	public Point getClosestControlPointInRadius(Point p, int radius) {
 		for (Point point : getControlPoints()) {
 			if (PointUtil.isPointInRadius(point, p, radius))
@@ -68,6 +76,7 @@ public abstract class AbstractShape implements Shape{
 		return null;	
 	}
 	
+	@JsonIgnore
 	public int getClosestControlLineInRadius(Point p, int radius){
 		if (getControlPoints().size() > 1){
 			for (int i = 0; i < getControlPoints().size() - 1; i++) {
@@ -85,6 +94,7 @@ public abstract class AbstractShape implements Shape{
 	}
 
 	@SuppressWarnings("unchecked")
+	@JsonProperty(value = "points")
 	public <T extends Point> List<T> getControlPoints() {
 		return (List<T>) controlPoints;
 	}

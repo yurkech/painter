@@ -14,11 +14,11 @@ public class Polygon extends SolidAbstractShape {
 
 	public Polygon(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
-		colorSettings.setColor(c);
+		getColorSettings().setColor(c);
 	}
 
 	public Polygon(int x, int y, Color c, Boolean solid) {
 		getControlPoints().add(new Point(x, y));
-		colorSettings.setColor(c);
+		getColorSettings().setColor(c);
 	}
 }
