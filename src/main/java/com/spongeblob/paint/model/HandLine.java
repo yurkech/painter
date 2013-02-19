@@ -14,6 +14,6 @@ public class HandLine extends AbstractShape {
 
 	public HandLine(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
-		colorSettings.setColor(c);
+		getColorSettings().setColor(c);
 	}
 }

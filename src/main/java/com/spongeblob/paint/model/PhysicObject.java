@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 import com.spongeblob.paint.settings.PhysicsSettings;
 import com.spongeblob.paint.settings.Settings;
 
@@ -14,7 +17,15 @@ public class PhysicObject implements Serializable{
 	private static final long serialVersionUID = 7311103560094655035L;
 	private static int ID = 0;
 	
-	protected int id;
+	private int id;
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	private PhysicObjectType type = PhysicObjectType.BORDERTRACK;
 	
 	private Shape shape;
@@ -43,6 +54,7 @@ public class PhysicObject implements Serializable{
 		this.shape = shape;
 	}
 
+	@JsonProperty(value = "phys")
 	public PhysicsSettings getPhysicsSettings() {
 		return physicsSettings;
 	}
@@ -51,10 +63,11 @@ public class PhysicObject implements Serializable{
 		this.physicsSettings = physicsSettings;
 	}
 
+	@JsonIgnore
 	public List<Settings> getSettings() {
 		LinkedList<Settings> list = new LinkedList<Settings>();
-		list.add(physicsSettings);
-		list.addAll(shape.getSettings());
+		list.add(getPhysicsSettings());
+		list.addAll(getShape().getSettings());
 		return list;
 	}
 }

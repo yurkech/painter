@@ -21,11 +21,11 @@ public class CurveLine3Points extends SolidAbstractShape {
 
 	public CurveLine3Points(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
-		colorSettings.setColor(c);
+		getColorSettings().setColor(c);
 	}
 
 	public void drawControlPoints(Graphics g) {
-		g.setColor(colorSettings.getPathPointsColor());
+		g.setColor(getColorSettings().getPathPointsColor());
 		g.drawPolyline(PointUtil.getXs(getControlPoints()),
 				PointUtil.getYs(getControlPoints()), getControlPoints().size());
 		for (Point point : getControlPoints()) {
@@ -35,11 +35,11 @@ public class CurveLine3Points extends SolidAbstractShape {
 
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(colorSettings.getColor());
+		g.setColor(getColorSettings().getColor());
 		List<Point> curvePoints = getCurvePoints();
 
-		if (solidSettings.isSolid()) {
-			if (solidSettings.isFilled()) {
+		if (getSolidSettings().isSolid()) {
+			if (getSolidSettings().isFilled()) {
 				g.fillPolygon(PointUtil.getXs(curvePoints),
 						PointUtil.getYs(curvePoints), curvePoints.size());
 			} else {

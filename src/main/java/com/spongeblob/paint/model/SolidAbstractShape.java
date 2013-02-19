@@ -10,41 +10,48 @@ import com.spongeblob.paint.settings.Settings;
 import com.spongeblob.paint.settings.ShapeSolidSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
-
-public abstract class SolidAbstractShape extends AbstractShape{
+public abstract class SolidAbstractShape extends AbstractShape {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6982632616667148896L;
+	private ShapeSolidSettings solidSettings;
+
 	@JsonProperty("solid")
-	protected ShapeSolidSettings solidSettings; 
-	
-	public SolidAbstractShape(){
+	public ShapeSolidSettings getSolidSettings() {
+		return solidSettings;
+	}
+
+	public void setSolidSettings(ShapeSolidSettings solidSettings) {
+		this.solidSettings = solidSettings;
+	}
+
+	public SolidAbstractShape() {
 		solidSettings = new ShapeSolidSettings();
 	}
-	
+
 	@JsonIgnore
 	@Override
 	public List<Settings> getSettings() {
 		List<Settings> list = super.getSettings();
-		list.add(solidSettings);
+		list.add(getSolidSettings());
 		return list;
 	}
-	
+
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(colorSettings.getColor());
-		if (solidSettings.isSolid()){
-			if(solidSettings.isFilled())
-	  	 	{
-				g.fillPolygon(PointUtil.getXs(getControlPoints()), PointUtil.getYs(getControlPoints()), getControlPoints().size());
-	  	 	}
-	     	else
-	     	{
-	     		g.drawPolygon(PointUtil.getXs(getControlPoints()), PointUtil.getYs(getControlPoints()), getControlPoints().size());
-	     	}
-		} else{
-			g.drawPolyline(PointUtil.getXs(getControlPoints()), PointUtil.getYs(getControlPoints()), getControlPoints().size());
+		g.setColor(getColorSettings().getColor());
+		if (getSolidSettings().isSolid()) {
+			if (getSolidSettings().isFilled()) {
+				g.fillPolygon(PointUtil.getXs(getControlPoints()), PointUtil
+						.getYs(getControlPoints()), getControlPoints().size());
+			} else {
+				g.drawPolygon(PointUtil.getXs(getControlPoints()), PointUtil
+						.getYs(getControlPoints()), getControlPoints().size());
+			}
+		} else {
+			g.drawPolyline(PointUtil.getXs(getControlPoints()), PointUtil
+					.getYs(getControlPoints()), getControlPoints().size());
 		}
 	}
 }

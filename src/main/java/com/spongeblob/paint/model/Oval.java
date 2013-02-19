@@ -16,18 +16,18 @@ public class Oval extends SolidAbstractShape {
 	public Oval(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
 		getControlPoints().add(new Point(x, y));
-		colorSettings.setColor(c);
+		getColorSettings().setColor(c);
 	}
 
 	public Oval(int x, int y, Color c, Boolean solid) {
 		getControlPoints().add(new Point(x, y));
 		getControlPoints().add(new Point(x, y));
-		colorSettings.setColor(c);
+		getColorSettings().setColor(c);
 	}
 
 	public void draw(Graphics g) {
-		g.setColor(colorSettings.getColor());
-		if (solidSettings.isSolid()) {
+		g.setColor(getColorSettings().getColor());
+		if (getSolidSettings().isSolid()) {
 			if (getControlPoints().get(0).x > getControlPoints().get(1).x
 					|| getControlPoints().get(0).y > getControlPoints().get(1).y)
 				g.fillOval(getControlPoints().get(1).x,
