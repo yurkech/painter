@@ -18,8 +18,6 @@ import javax.swing.JPanel;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
-import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -27,6 +25,7 @@ import com.spongeblob.paint.model.ComplexPolygon;
 import com.spongeblob.paint.model.CurveLine3Points;
 import com.spongeblob.paint.model.CurveLine4Points;
 import com.spongeblob.paint.model.HandLine;
+import com.spongeblob.paint.model.Level;
 import com.spongeblob.paint.model.Line;
 import com.spongeblob.paint.model.MarkedPoint;
 import com.spongeblob.paint.model.Marker;
@@ -271,26 +270,34 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		repaint();
 	}
 
+	
 	public String getJSONView() throws JsonGenerationException, JsonMappingException, IOException{
 		return getJSONView(true);
 	}
+	
 	public String getJSONView(Boolean enableTyping) throws JsonGenerationException, JsonMappingException, IOException{
 		ObjectMapper mapper;
+
+		Level level = new Level();
+		level.setObjects(vObjects);
+		level.setWidth(getWidth());
+		level.setHeight(getHeight());
+		
 		if (enableTyping){
 			mapper = getObjectMapper();
+			mapper.enableDefaultTyping();
 		} else{
 			mapper = getFilteringObjectMapper();
 		}
-		
-		String json = mapper.writeValueAsString(vObjects);
-		return json;
+		return mapper.writeValueAsString(level);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void renderFromJSON(String json) throws JsonParseException, JsonMappingException, IOException{
-		ObjectMapper mapper = new ObjectMapper().setVisibility(JsonMethod.FIELD, Visibility.ANY);
+		ObjectMapper mapper = getObjectMapper();
 		mapper.enableDefaultTyping();
-		vObjects = mapper.readValue(json, LinkedList.class);
+		
+		Level level = mapper.readValue(json, Level.class);
+		vObjects = level.getObjects();
 		repaint();
 	}
 	

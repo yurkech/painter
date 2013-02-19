@@ -15,9 +15,10 @@ public abstract class SolidAbstractShape extends AbstractShape {
 	 * 
 	 */
 	private static final long serialVersionUID = -6982632616667148896L;
+	@JsonProperty("solid")
 	private ShapeSolidSettings solidSettings;
 
-	@JsonProperty("solid")
+	
 	public ShapeSolidSettings getSolidSettings() {
 		return solidSettings;
 	}

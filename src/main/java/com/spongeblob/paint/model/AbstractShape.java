@@ -19,13 +19,15 @@ public abstract class AbstractShape implements Shape{
 	 */
 	private static final long serialVersionUID = 7586022119974312143L;
 	
-		
-	private List<? extends Point> controlPoints ;
-	private ShapeColorSettings colorSettings;
+	@JsonProperty(value = "points")	
+	private List<Point> controlPoints ;
 	
 	@JsonProperty("color")
+	private ShapeColorSettings colorSettings;
+	
+	
 	public ShapeColorSettings getColorSettings() {
-		return colorSettings;
+		return this.colorSettings;
 	}
 
 	public void setColorSettings(ShapeColorSettings colorSettings) {
@@ -33,8 +35,8 @@ public abstract class AbstractShape implements Shape{
 	}
 
 	public AbstractShape(){
-		controlPoints = new LinkedList<Point>();
-		colorSettings = new ShapeColorSettings();
+		this.controlPoints = new LinkedList<Point>();
+		this.colorSettings = new ShapeColorSettings();
 	}
 	
 	@JsonIgnore
@@ -42,17 +44,6 @@ public abstract class AbstractShape implements Shape{
 		LinkedList<Settings> list = new LinkedList<Settings>();
 		list.add(getColorSettings());
 		return list;
-	}
-	
-	
-
-	public void setPoints(List<? extends Point> points) {
-		this.controlPoints = points;
-	}
-
-	
-	public void addPoint(int x, int y){
-		getControlPoints().add(new Point(x, y));
 	}
 	
 	public void drawControlPoints(Graphics g) {
@@ -92,11 +83,19 @@ public abstract class AbstractShape implements Shape{
 			point.moveWithDelta(deltaX, deltaY);
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public void setPoints(List<? extends Point> points) {
+		this.controlPoints = (List<Point>) points;
+	}
+	
+	public void addPoint(int x, int y){
+		getControlPoints().add(new Point(x, y));
+	}
 
 	@SuppressWarnings("unchecked")
-	@JsonProperty(value = "points")
 	public <T extends Point> List<T> getControlPoints() {
-		return (List<T>) controlPoints;
+		return (List<T>) this.controlPoints;
 	}
 	
 	
