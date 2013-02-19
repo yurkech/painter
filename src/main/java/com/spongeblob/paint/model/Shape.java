@@ -14,7 +14,7 @@ public interface Shape extends Serializable{
 	public void drawControlPoints(Graphics g);
 	
 	
-	public List<Point> getControlPoints();
+	public <T extends Point> List<T> getControlPoints();
 	public Point getClosestControlPointInRadius(Point p, int radius); 
 	public int getClosestControlLineInRadius(Point p, int radius);
 	
