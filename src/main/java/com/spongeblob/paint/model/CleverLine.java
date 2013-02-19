@@ -2,7 +2,6 @@ package com.spongeblob.paint.model;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.LinkedList;
 
 public class CleverLine extends Line{
 
@@ -13,23 +12,22 @@ public class CleverLine extends Line{
 	private static final int RADIOUS = 50;
 	
 	public CleverLine(int x, int y, Color c){
-		controlPoints = new LinkedList<Point>();
-		controlPoints.add(new Point(x, y));
-		controlPoints.add(new Point(x, y));
+		getControlPoints().add(new Point(x, y));
+		getControlPoints().add(new Point(x, y));
 		colorSettings.setColor(c);
 	}
 	
 	public void draw(Graphics g) {
 		g.setColor(colorSettings.getColor());
-     	g.drawLine(controlPoints.get(0).x, controlPoints.get(0).y, controlPoints.get(1).x, controlPoints.get(1).y);
-     	g.drawOval(controlPoints.get(1).x - RADIOUS, controlPoints.get(1).y - RADIOUS, 2 *RADIOUS, 2 * RADIOUS);
+     	g.drawLine(getControlPoints().get(0).x, getControlPoints().get(0).y, getControlPoints().get(1).x, getControlPoints().get(1).y);
+     	g.drawOval(getControlPoints().get(1).x - RADIOUS, getControlPoints().get(1).y - RADIOUS, 2 *RADIOUS, 2 * RADIOUS);
      	
-     	if (!controlPoints.get(0).equals(controlPoints.get(1))){
+     	if (!getControlPoints().get(0).equals(getControlPoints().get(1))){
      	//	if (points.get(0).y != points.get(1).y){
-     			Point [] point = GetKas2(controlPoints.get(0), controlPoints.get(1), RADIOUS);
-	     			g.drawLine(controlPoints.get(0).x, controlPoints.get(0).y, point[0].x, point[0].y);
+     			Point [] point = GetKas2(getControlPoints().get(0), getControlPoints().get(1), RADIOUS);
+	     			g.drawLine(getControlPoints().get(0).x, getControlPoints().get(0).y, point[0].x, point[0].y);
      			System.out.println("x0: " + point[0].x + " y0:" + point[0].y);
-     			g.drawLine(controlPoints.get(0).x, controlPoints.get(0).y, point[1].x, point[1].y);
+     			g.drawLine(getControlPoints().get(0).x, getControlPoints().get(0).y, point[1].x, point[1].y);
      			System.out.println("x1: " + point[1].x + " y1:" + point[1].y);
      	/*	} else{
      			g.drawLine(points.get(0).x, points.get(0).y, 

@@ -37,14 +37,14 @@ public abstract class SolidAbstractShape extends AbstractShape{
 		if (solidSettings.isSolid()){
 			if(solidSettings.isFilled())
 	  	 	{
-				g.fillPolygon(PointUtil.getXs(controlPoints), PointUtil.getYs(controlPoints), controlPoints.size());
+				g.fillPolygon(PointUtil.getXs(getControlPoints()), PointUtil.getYs(getControlPoints()), getControlPoints().size());
 	  	 	}
 	     	else
 	     	{
-	     		g.drawPolygon(PointUtil.getXs(controlPoints), PointUtil.getYs(controlPoints), controlPoints.size());
+	     		g.drawPolygon(PointUtil.getXs(getControlPoints()), PointUtil.getYs(getControlPoints()), getControlPoints().size());
 	     	}
 		} else{
-			g.drawPolyline(PointUtil.getXs(controlPoints), PointUtil.getYs(controlPoints), controlPoints.size());
+			g.drawPolyline(PointUtil.getXs(getControlPoints()), PointUtil.getYs(getControlPoints()), getControlPoints().size());
 		}
 	}
 }
