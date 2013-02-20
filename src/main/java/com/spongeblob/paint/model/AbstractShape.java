@@ -10,89 +10,68 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.spongeblob.paint.settings.Settings;
 import com.spongeblob.paint.settings.ShapeColorSettings;
-import com.spongeblob.paint.settings.ShapePhysicsSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
-public abstract class AbstractShape implements Shape{
+public abstract class AbstractShape<T extends Point> implements Shape<T>{
 	
 	/**
 	 * 
 	 */
-	private static int ID = 0;
-	
 	private static final long serialVersionUID = 7586022119974312143L;
-	protected PhysicsObjectType type;
-	protected String model;
-	protected int id;
-		
-	protected List<Point> points;
-	@JsonProperty("phys")	
-	protected ShapePhysicsSettings physicsSettings;
-	@JsonProperty("color")
-	protected ShapeColorSettings colorSettings;
 	
+	@JsonProperty(value = "points")
+	protected List<T> controlPoints;
+	
+	@JsonProperty("color")
+	private ShapeColorSettings colorSettings;
+	
+	
+	public ShapeColorSettings getColorSettings() {
+		return this.colorSettings;
+	}
+
+	public void setColorSettings(ShapeColorSettings colorSettings) {
+		this.colorSettings = colorSettings;
+	}
+
 	public AbstractShape(){
-		physicsSettings = new ShapePhysicsSettings();
-		colorSettings = new ShapeColorSettings();
-		setType(PhysicsObjectType.BORDERTRACK);
-		id = ID++;
+		this.controlPoints = new LinkedList<T>();
+		this.colorSettings = new ShapeColorSettings();
 	}
 	
 	@JsonIgnore
-	public List<Settings> getAllSettings() {
+	public List<Settings> getSettings() {
 		LinkedList<Settings> list = new LinkedList<Settings>();
-		list.add(physicsSettings);
-		list.add(colorSettings);
+		list.add(getColorSettings());
 		return list;
 	}
 	
-	public List<Point> getPoints() {
-		return points;
-	}
-
-	public void setPoints(List<Point> points) {
-		this.points = points;
-	}
-
-	
-	public void addPoint(int x, int y){
-		points.add(new Point(x, y));
-	}
-	
-	public void drawPathPoints(Graphics g) {
-		g.setColor(colorSettings.getPathPointsColor());
-		for (Point point : points) {
+	public void drawControlPoints(Graphics g) {
+		g.setColor(getColorSettings().getPathPointsColor());
+		for (Point point : getControlPoints()) {
 			PointUtil.paintCircleAroundPoint(g, point);
 		}
 	}
 
 	public void draw(Graphics g) {
-		g.setColor(colorSettings.getColor());
-		g.drawPolyline(PointUtil.getXs(points), PointUtil.getYs(points), points.size());
+		g.setColor(getColorSettings().getColor());
+		g.drawPolyline(PointUtil.getXs(getControlPoints()), PointUtil.getYs(getControlPoints()), getControlPoints().size());
 	}
 	
-	public Point contains(Point p, int radius) {
-		for (Point point : points) {
+	@JsonIgnore
+	public Point getClosestControlPointInRadius(Point p, int radius) {
+		for (Point point : getControlPoints()) {
 			if (PointUtil.isPointInRadius(point, p, radius))
 				return point;
 		}
 		return null;	
 	}
 	
-	public Boolean intersects(Point p, int radius){
-		if (points.size() > 1){
-			for (int i = 0; i < points.size() - 1; i++) {
-				if (PointUtil.isPointIntersectLineInRadius(p, points.get(i), points.get(i + 1), radius))
-					return true;
-			}
-		}
-		return false;
-	}
-	
-	public int intersectionPointIndex(Point p, int radius){
-		if (points.size() > 1){
-			for (int i = 0; i < points.size() - 1; i++) {
-				if (PointUtil.isPointIntersectLineInRadius(p, points.get(i), points.get(i + 1), radius))
+	@JsonIgnore
+	public int getClosestControlLineInRadius(Point p, int radius){
+		if (getControlPoints().size() > 1){
+			for (int i = 0; i < getControlPoints().size() - 1; i++) {
+				if (PointUtil.isPointIntersectLineInRadius(p, getControlPoints().get(i), getControlPoints().get(i + 1), radius))
 					return i;
 			}
 		}
@@ -100,29 +79,17 @@ public abstract class AbstractShape implements Shape{
 	}
 	
 	public void move(int deltaX, int deltaY){
-		for (Point point : points) {
+		for (Point point : getControlPoints()) {
 			point.moveWithDelta(deltaX, deltaY);
 		}
 	}
 	
-	public void setFocus(Boolean flag) {
-		// TODO Auto-generated method stub
-		
+	public List<T> getControlPoints() {
+		return controlPoints;
 	}
 
-	public PhysicsObjectType getType() {
-		return type;
+	public void setControlPoints(List<T> controlPoints) {
+		this.controlPoints = controlPoints;
 	}
-
-	public void setType(PhysicsObjectType type) {
-		this.type = type;
-	}
-
-	public String getModel() {
-		return model;
-	}
-
-	public void setModel(String model) {
-		this.model = model;
-	}
+	
 }

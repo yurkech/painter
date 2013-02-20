@@ -1,28 +1,24 @@
 package com.spongeblob.paint.model;
 
 import java.awt.Color;
-import java.util.LinkedList;
 
-
-public class Polygon extends SolidAbstractShape{
+public class Polygon extends SolidAbstractShape<Point> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2411393086421989720L;
-    
-    public Polygon(){}
-	
-	public Polygon(int x, int y, Color c){
-		points = new LinkedList<Point>();
-		points.add(new Point(x, y));
-		colorSettings.setColor(c);
-		model = "POLYGON";
+
+	public Polygon() {
 	}
-	
-	public Polygon(int x, int y, Color c, Boolean solid){
-		points = new LinkedList<Point>();
-		points.add(new Point(x, y));
-		colorSettings.setColor(c);
+
+	public Polygon(int x, int y, Color c) {
+		getControlPoints().add(new Point(x, y));
+		getColorSettings().setColor(c);
+	}
+
+	public Polygon(int x, int y, Color c, Boolean solid) {
+		getControlPoints().add(new Point(x, y));
+		getColorSettings().setColor(c);
 	}
 }

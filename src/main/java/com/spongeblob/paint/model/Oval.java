@@ -2,47 +2,63 @@ package com.spongeblob.paint.model;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.LinkedList;
 
-
-public class Oval extends SolidAbstractShape{
+public class Oval extends SolidAbstractShape<Point> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2706959802243028105L;
-	public Oval(){}
-	
-	public Oval(int x, int y, Color c){
-		points = new LinkedList<Point>();
-		points.add(new Point(x, y));
-		points.add(new Point(x, y));
-		colorSettings.setColor(c);
-		model = "OVAL";
+
+	public Oval() {
 	}
-	
-	public Oval(int x, int y, Color c, Boolean solid){
-		points = new LinkedList<Point>();
-		points.add(new Point(x, y));
-		points.add(new Point(x, y));
-		colorSettings.setColor(c);
+
+	public Oval(int x, int y, Color c) {
+		getControlPoints().add(new Point(x, y));
+		getControlPoints().add(new Point(x, y));
+		getColorSettings().setColor(c);
 	}
-	
+
+	public Oval(int x, int y, Color c, Boolean solid) {
+		getControlPoints().add(new Point(x, y));
+		getControlPoints().add(new Point(x, y));
+		getColorSettings().setColor(c);
+	}
+
 	public void draw(Graphics g) {
-		g.setColor(colorSettings.getColor());
-		if(solidSettings.isSolid())
-  	 	{
-     		if(points.get(0).x > points.get(1).x || points.get(0).y > points.get(1).y)
-     			g.fillOval(points.get(1).x, points.get(1).y, points.get(0).x - points.get(1).x, points.get(0).y - points.get(1).y);
-     		else	
-     			g.fillOval(points.get(0).x, points.get(0).y, points.get(1).x - points.get(0).x, points.get(1).y - points.get(0).y);
-  	 	}
-     	else
-     	{
-     		if(points.get(0).x > points.get(1).x || points.get(0).y > points.get(1).y)
-     			g.drawOval (points.get(1).x, points.get(1).y, points.get(0).x - points.get(1).x, points.get(0).y - points.get(1).y);
-     		else
-     			g.drawOval (points.get(0).x, points.get(0).y, points.get(1).x - points.get(0).x, points.get(1).y - points.get(0).y);
-     	}
+		g.setColor(getColorSettings().getColor());
+		if (getSolidSettings().isSolid()) {
+			if (getControlPoints().get(0).x > getControlPoints().get(1).x
+					|| getControlPoints().get(0).y > getControlPoints().get(1).y)
+				g.fillOval(getControlPoints().get(1).x,
+						getControlPoints().get(1).y,
+						getControlPoints().get(0).x
+								- getControlPoints().get(1).x,
+						getControlPoints().get(0).y
+								- getControlPoints().get(1).y);
+			else
+				g.fillOval(getControlPoints().get(0).x,
+						getControlPoints().get(0).y,
+						getControlPoints().get(1).x
+								- getControlPoints().get(0).x,
+						getControlPoints().get(1).y
+								- getControlPoints().get(0).y);
+		} else {
+			if (getControlPoints().get(0).x > getControlPoints().get(1).x
+					|| getControlPoints().get(0).y > getControlPoints().get(1).y)
+				g.drawOval(getControlPoints().get(1).x,
+						getControlPoints().get(1).y,
+						getControlPoints().get(0).x
+								- getControlPoints().get(1).x,
+						getControlPoints().get(0).y
+								- getControlPoints().get(1).y);
+			else
+				g.drawOval(getControlPoints().get(0).x,
+						getControlPoints().get(0).y,
+						getControlPoints().get(1).x
+								- getControlPoints().get(0).x,
+						getControlPoints().get(1).y
+								- getControlPoints().get(0).y);
+		}
 	}
 }
