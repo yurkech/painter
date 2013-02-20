@@ -9,7 +9,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 import com.spongeblob.paint.utils.PointUtil;
 
-public class ComplexPolygon extends SolidAbstractShape {
+public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 
 	/**
 	 * 
@@ -27,7 +27,7 @@ public class ComplexPolygon extends SolidAbstractShape {
 	public void addPoint(int x, int y) {
 		getControlPoints().add(new MarkedPoint(x, y));
 	}
-
+	
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(getColorSettings().getColor());

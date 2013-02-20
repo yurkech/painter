@@ -43,7 +43,7 @@ public class PointUtil {
 		
 	}
 	
-	public static int[] getXs(List<Point> points){
+	public static int[] getXs(List<? extends Point> points){
 		int []  xs = new int[points.size()];
 		for (int i = 0; i < points.size(); i++) {
 			xs[i] = points.get(i).x;
@@ -51,7 +51,7 @@ public class PointUtil {
 		return xs;
 	}
 	
-	public static int[] getYs(List<Point> points){
+	public static int[] getYs(List<? extends Point> points){
 		int []  ys = new int[points.size()];
 		for (int i = 0; i < points.size(); i++) {
 			ys[i] = points.get(i).y;

@@ -9,7 +9,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 import com.spongeblob.paint.utils.PointUtil;
 
-public class CurveLine3Points extends SolidAbstractShape {
+public class CurveLine3Points extends SolidAbstractShape<Point> {
 
 	/**
 	 * 

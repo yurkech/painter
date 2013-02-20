@@ -9,12 +9,12 @@ import com.spongeblob.paint.settings.Settings;
  * @author yurkech
  *
  */
-public interface Shape extends Serializable{
+public interface Shape<T extends Point> extends Serializable{
 	public void draw(Graphics g);
 	public void drawControlPoints(Graphics g);
 	
 	
-	public <T extends Point> List<T> getControlPoints();
+	public List<T> getControlPoints();
 	public Point getClosestControlPointInRadius(Point p, int radius); 
 	public int getClosestControlLineInRadius(Point p, int radius);
 	

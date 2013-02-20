@@ -12,15 +12,15 @@ import com.spongeblob.paint.settings.Settings;
 import com.spongeblob.paint.settings.ShapeColorSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
-public abstract class AbstractShape implements Shape{
+public abstract class AbstractShape<T extends Point> implements Shape<T>{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7586022119974312143L;
 	
-	@JsonProperty(value = "points")	
-	private List<Point> controlPoints ;
+	@JsonProperty(value = "points")
+	protected List<T> controlPoints;
 	
 	@JsonProperty("color")
 	private ShapeColorSettings colorSettings;
@@ -35,7 +35,7 @@ public abstract class AbstractShape implements Shape{
 	}
 
 	public AbstractShape(){
-		this.controlPoints = new LinkedList<Point>();
+		this.controlPoints = new LinkedList<T>();
 		this.colorSettings = new ShapeColorSettings();
 	}
 	
@@ -84,19 +84,12 @@ public abstract class AbstractShape implements Shape{
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public void setPoints(List<? extends Point> points) {
-		this.controlPoints = (List<Point>) points;
-	}
-	
-	public void addPoint(int x, int y){
-		getControlPoints().add(new Point(x, y));
+	public List<T> getControlPoints() {
+		return controlPoints;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T extends Point> List<T> getControlPoints() {
-		return (List<T>) this.controlPoints;
+	public void setControlPoints(List<T> controlPoints) {
+		this.controlPoints = controlPoints;
 	}
-	
 	
 }
