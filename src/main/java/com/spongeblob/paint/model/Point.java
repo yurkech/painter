@@ -19,10 +19,7 @@ public class Point implements Serializable{
 		this.y = y;
 	}
 	
-	public void move(int x, int y) {
-		this.x = x;
-		this.y = y;
-    }
+	
 	
 	public int getX() {
 		return x;
@@ -40,6 +37,11 @@ public class Point implements Serializable{
 		this.y = y;
 	}
 
+	public void move(int x, int y) {
+		this.x = x;
+		this.y = y;
+    }
+	
 	void moveWithDelta(int deltaX, int deltaY){
 		this.x = this.x + deltaX;
 		this.y = this.y + deltaY;

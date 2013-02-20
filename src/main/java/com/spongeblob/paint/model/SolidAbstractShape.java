@@ -10,7 +10,7 @@ import com.spongeblob.paint.settings.Settings;
 import com.spongeblob.paint.settings.ShapeSolidSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
-public abstract class SolidAbstractShape extends AbstractShape {
+public abstract class SolidAbstractShape<T extends Point> extends AbstractShape<T> {
 	/**
 	 * 
 	 */

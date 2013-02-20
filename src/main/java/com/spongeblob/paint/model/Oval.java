@@ -3,7 +3,7 @@ package com.spongeblob.paint.model;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Oval extends SolidAbstractShape {
+public class Oval extends SolidAbstractShape<Point> {
 
 	/**
 	 * 

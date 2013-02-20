@@ -2,7 +2,7 @@ package com.spongeblob.paint.model;
 
 import java.awt.Color;
 
-public class Polygon extends SolidAbstractShape {
+public class Polygon extends SolidAbstractShape<Point> {
 
 	/**
 	 * 

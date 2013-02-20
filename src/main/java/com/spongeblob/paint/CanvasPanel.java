@@ -160,7 +160,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 				vObjects.add(selectedObject);
 			}
 			else{
-				((CurveLine3Points)selectedObject.getShape()).addPoint(event.getX(), event.getY());
+				((CurveLine3Points)selectedObject.getShape()).getControlPoints().add(new Point(event.getX(), event.getY()));
 			}
 		}
 		if (drawMode == CURVE_LINE_4P) {
@@ -169,7 +169,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 				vObjects.add(selectedObject);
 			}
 			else{
-				((CurveLine4Points)selectedObject.getShape()).addPoint(event.getX(), event.getY());
+				((CurveLine4Points)selectedObject.getShape()).getControlPoints().add(new Point(event.getX(), event.getY()));
 			}
 		}
 		repaint();
@@ -198,10 +198,10 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			}
 		}
 		if (drawMode == LINE || drawMode == SQUARE || drawMode == OVAL) {
-			selectedObject.getShape().getControlPoints().get(1).move(event.getX(), event.getY());
+			((Point)selectedObject.getShape().getControlPoints().get(1)).move(event.getX(), event.getY());
 		}
 		if (drawMode == FREE_HAND) {
-			((HandLine)selectedObject.getShape()).addPoint(event.getX(), event.getY());
+			((HandLine)selectedObject.getShape()).getControlPoints().add(new Point(event.getX(), event.getY()));
 		}
 		repaint();
 	}
@@ -285,7 +285,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		
 		if (enableTyping){
 			mapper = getObjectMapper();
-			mapper.enableDefaultTyping();
+			mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
 		} else{
 			mapper = getFilteringObjectMapper();
 		}
@@ -294,7 +294,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	
 	public void renderFromJSON(String json) throws JsonParseException, JsonMappingException, IOException{
 		ObjectMapper mapper = getObjectMapper();
-		mapper.enableDefaultTyping();
+		mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
 		
 		Level level = mapper.readValue(json, Level.class);
 		vObjects = level.getObjects();
@@ -379,6 +379,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	
 	public void keyTyped(KeyEvent e) {}
 
+	@SuppressWarnings("unchecked")
 	public void keyPressed(KeyEvent e) {
 		if (drawMode == DRAG) {
 			if (e.getKeyCode() == KeyEvent.VK_F8){

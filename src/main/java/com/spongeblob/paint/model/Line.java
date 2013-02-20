@@ -2,7 +2,7 @@ package com.spongeblob.paint.model;
 
 import java.awt.Color;
 
-public class Line extends AbstractShape {
+public class Line extends AbstractShape<Point> {
 	/**
 	 * 
 	 */
