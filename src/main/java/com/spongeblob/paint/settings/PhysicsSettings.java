@@ -13,7 +13,9 @@ import javax.swing.event.DocumentListener;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-public class ShapePhysicsSettings implements Settings{
+import com.spongeblob.paint.model.PhysicObjectType;
+
+public class PhysicsSettings implements Settings{
 	
 	/**
 	 * 
