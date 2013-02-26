@@ -3,6 +3,7 @@ package com.spongeblob.paint.utils;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -16,6 +17,7 @@ public class FileUtil {
 	public static String VEC = "VEC";
 	public static String JSON = "JSON";
 	
+	private static Preferences prefs = Preferences.userNodeForPackage(FileUtil.class);
 	
 	public static String getFileExtension(File file){
 		String extension = "";
@@ -37,6 +39,7 @@ public class FileUtil {
 		filters.add(new FileNameExtensionFilter(VEC, "vec"));
 		
 		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setCurrentDirectory(new File(prefs.get("LAST_OPEN_DIR", null)));
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		for (FileNameExtensionFilter fileNameExtensionFilter : filters) {
 			fileChooser.addChoosableFileFilter(fileNameExtensionFilter);
@@ -48,9 +51,12 @@ public class FileUtil {
 
 		File vfile = fileChooser.getSelectedFile();
 		
+		
 		if (vfile == null || vfile.getName().equals(""))
 			JOptionPane.showMessageDialog(null, "Invalid File Name", "Painter",
 					JOptionPane.ERROR_MESSAGE);
+		if (vfile != null)
+			prefs.put("LAST_OPEN_DIR", vfile.getAbsolutePath());
 		return vfile;
 	}
 	
@@ -60,6 +66,7 @@ public class FileUtil {
 		filters.add(new FileNameExtensionFilter(JSON, "json"));
 		
 		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setCurrentDirectory(new File(prefs.get("LAST_OPEN_DIR", null)));
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		for (FileNameExtensionFilter fileNameExtensionFilter : filters) {
 			fileChooser.addChoosableFileFilter(fileNameExtensionFilter);
@@ -86,6 +93,8 @@ public class FileUtil {
 			}
 			
 		}
+		if (vFile != null)
+			prefs.put("LAST_OPEN_DIR", vFile.getAbsolutePath());
 		return vFile;
 	}
 }
