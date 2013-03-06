@@ -37,7 +37,6 @@ import com.spongeblob.paint.model.Shape;
 import com.spongeblob.paint.settings.CanvasSettings;
 import com.spongeblob.paint.utils.PropertyFilteringModule;
 
-
 public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		MouseMotionListener, Serializable {
 
@@ -45,18 +44,17 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	 * 
 	 */
 	private static final long serialVersionUID = -3371112021797757444L;
-	
+
 	protected final static int RADIUS = 10;
 	protected final static double SCALE_STEP = 0.05;
-	
+
 	private BufferedImage image;
-	
 
 	private StatusBarPanel statusBarPanel;
 	private SettingsPanel settingsPanel;
-	
-	
-	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4, CURVE_LINE_3P = 5, FREE_HAND = 6, DRAG = 7, CURVE_LINE_4P = 8;
+
+	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4,
+			CURVE_LINE_3P = 5, FREE_HAND = 6, DRAG = 7, CURVE_LINE_4P = 8;
 	protected static LinkedList<PhysicObject> vObjects, redoStack;
 
 	private Color foreGroundColor, backGroundColor;
@@ -67,13 +65,14 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	private Point currentDragPoint;
 	private PhysicObject selectedObject;
 	private int baseX, baseY;
-	
-	public CanvasPanel(StatusBarPanel statusBarPanel, SettingsPanel settingsPanel) {
+
+	public CanvasPanel(StatusBarPanel statusBarPanel,
+			SettingsPanel settingsPanel) {
 		this.statusBarPanel = statusBarPanel;
 		this.settingsPanel = settingsPanel;
-		
+
 		vObjects = new LinkedList<PhysicObject>();
-		
+
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		addKeyListener(this);
@@ -83,7 +82,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		setBackground(backGroundColor);
 
 		redoStack = new LinkedList<PhysicObject>();
-		
+
 		showPathMode = true;
 		setDefaulsSettings();
 	}
@@ -91,7 +90,9 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	public void mousePressed(MouseEvent event) {
 		if (drawMode == DRAG) {
 			for (int i = 0; i < vObjects.size(); i++) {
-				Point p = ((Shape) vObjects.get(i).getShape()).getClosestControlPointInRadius(new Point(event.getX(), event.getY()), RADIUS);
+				Point p = ((Shape) vObjects.get(i).getShape())
+						.getClosestControlPointInRadius(new Point(event.getX(),
+								event.getY()), RADIUS);
 				if (p != null) {
 					selectedObject = vObjects.get(i);
 					currentDragPoint = p;
@@ -99,34 +100,41 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			}
 			if (currentDragPoint == null) {
 				for (int i = 0; i < vObjects.size(); i++) {
-					 if (((Shape) vObjects.get(i).getShape()).getClosestControlLineInRadius(new Point(event.getX(), event.getY()), RADIUS) >= 0){
+					if (((Shape) vObjects.get(i).getShape())
+							.getClosestControlLineInRadius(
+									new Point(event.getX(), event.getY()),
+									RADIUS) >= 0) {
 						selectedObject = vObjects.get(i);
-					 }	
+					}
 				}
-			}	
+			}
 			baseX = event.getX();
-		 	baseY = event.getY();
+			baseY = event.getY();
 		}
 		if (drawMode == FREE_HAND) {
-			selectedObject = new PhysicObject(new HandLine(event.getX(), event.getY(), foreGroundColor));
+			selectedObject = new PhysicObject(new HandLine(event.getX(),
+					event.getY(), foreGroundColor));
 			vObjects.add(selectedObject);
 		}
 		if (drawMode == LINE) {
-			selectedObject = new PhysicObject(new Line(event.getX(), event.getY(), foreGroundColor));
+			selectedObject = new PhysicObject(new Line(event.getX(),
+					event.getY(), foreGroundColor));
 			vObjects.add(selectedObject);
 		}
 		if (drawMode == SQUARE) {
-			selectedObject = new PhysicObject(new Rectangle(event.getX(), event.getY(), foreGroundColor));
+			selectedObject = new PhysicObject(new Rectangle(event.getX(),
+					event.getY(), foreGroundColor));
 			vObjects.add(selectedObject);
 		}
 		if (drawMode == OVAL) {
-			selectedObject = new PhysicObject(new Oval(event.getX(), event.getY(), foreGroundColor));
+			selectedObject = new PhysicObject(new Oval(event.getX(),
+					event.getY(), foreGroundColor));
 			vObjects.add(selectedObject);
 		}
-		if (selectedObject != null){
-				settingsPanel.setSettings(selectedObject.getSettings());
-	 			settingsPanel.repaint();
-		}	
+		if (selectedObject != null) {
+			settingsPanel.setSettings(selectedObject.getSettings());
+			settingsPanel.repaint();
+		}
 	}
 
 	public void mouseClicked(MouseEvent event) {
@@ -144,32 +152,37 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		if (drawMode == FREE_HAND) {
 			selectedObject = null;
 		}
-		
+
 		if (drawMode == POLYGON) {
-			if (selectedObject == null){
-				selectedObject = new PhysicObject(new ComplexPolygon(event.getX(), event.getY(), foreGroundColor));
+			if (selectedObject == null) {
+				selectedObject = new PhysicObject(new ComplexPolygon(
+						event.getX(), event.getY(), foreGroundColor));
 				vObjects.add(selectedObject);
-			}
-			else{
-				((ComplexPolygon)selectedObject.getShape()).addPoint(event.getX(), event.getY());
+			} else {
+				((ComplexPolygon) selectedObject.getShape()).addPoint(
+						event.getX(), event.getY());
 			}
 		}
 		if (drawMode == CURVE_LINE_3P) {
-			if (selectedObject == null){
-				selectedObject = new PhysicObject(new CurveLine3Points(event.getX(), event.getY(), foreGroundColor));
+			if (selectedObject == null) {
+				selectedObject = new PhysicObject(new CurveLine3Points(
+						event.getX(), event.getY(), foreGroundColor));
 				vObjects.add(selectedObject);
-			}
-			else{
-				((CurveLine3Points)selectedObject.getShape()).getControlPoints().add(new Point(event.getX(), event.getY()));
+			} else {
+				((CurveLine3Points) selectedObject.getShape())
+						.getControlPoints().add(
+								new Point(event.getX(), event.getY()));
 			}
 		}
 		if (drawMode == CURVE_LINE_4P) {
-			if (selectedObject == null){
-				selectedObject = new PhysicObject(new CurveLine4Points(event.getX(), event.getY(), foreGroundColor));
+			if (selectedObject == null) {
+				selectedObject = new PhysicObject(new CurveLine4Points(
+						event.getX(), event.getY(), foreGroundColor));
 				vObjects.add(selectedObject);
-			}
-			else{
-				((CurveLine4Points)selectedObject.getShape()).getControlPoints().add(new Point(event.getX(), event.getY()));
+			} else {
+				((CurveLine4Points) selectedObject.getShape())
+						.getControlPoints().add(
+								new Point(event.getX(), event.getY()));
 			}
 		}
 		repaint();
@@ -188,30 +201,31 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		if (drawMode == DRAG) {
 			if (currentDragPoint != null) {
 				currentDragPoint.move(event.getX(), event.getY());
-			} else if (selectedObject != null){
+			} else if (selectedObject != null) {
 				int deltaX = event.getX() - baseX;
 				int deltaY = event.getY() - baseY;
 				selectedObject.getShape().move(deltaX, deltaY);
-				
+
 				baseX = event.getX();
 				baseY = event.getY();
 			}
 		}
 		if (drawMode == LINE || drawMode == SQUARE || drawMode == OVAL) {
-			((Point)selectedObject.getShape().getControlPoints().get(1)).move(event.getX(), event.getY());
+			((Point) selectedObject.getShape().getControlPoints().get(1)).move(
+					event.getX(), event.getY());
 		}
 		if (drawMode == FREE_HAND) {
-			((HandLine)selectedObject.getShape()).getControlPoints().add(new Point(event.getX(), event.getY()));
+			((HandLine) selectedObject.getShape()).getControlPoints().add(
+					new Point(event.getX(), event.getY()));
 		}
 		repaint();
 	}
 
-
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if (image != null){
-			g.drawImage(image, 0, 0, null);             
+		if (image != null) {
+			g.drawImage(image, 0, 0, null);
 		}
 		redrawVectorBuffer(g);
 	}
@@ -270,61 +284,60 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		repaint();
 	}
 
-	
-	public String getJSONView() throws JsonGenerationException, JsonMappingException, IOException{
+	public String getJSONView() throws JsonGenerationException,
+			JsonMappingException, IOException {
 		return getJSONView(true);
 	}
-	
-	public String getJSONView(Boolean enableTyping) throws JsonGenerationException, JsonMappingException, IOException{
+
+	public String getJSONView(Boolean enableTyping)
+			throws JsonGenerationException, JsonMappingException, IOException {
 		ObjectMapper mapper;
 
 		Level level = new Level();
 		level.setObjects(vObjects);
 		level.setWidth(getWidth());
 		level.setHeight(getHeight());
-		
-		if (enableTyping){
+
+		if (enableTyping) {
 			mapper = getObjectMapper();
 			mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-		} else{
+		} else {
 			mapper = getFilteringObjectMapper();
 		}
 		return mapper.writeValueAsString(level);
 	}
-	
-	public void renderFromJSON(String json) throws JsonParseException, JsonMappingException, IOException{
+
+	public void renderFromJSON(String json) throws JsonParseException,
+			JsonMappingException, IOException {
 		ObjectMapper mapper = getObjectMapper();
 		mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-		
+
 		Level level = mapper.readValue(json, Level.class);
 		vObjects = level.getObjects();
 		repaint();
 	}
-	
+
 	public void flushDrawing() {
 		selectedObject = null;
-		
+
 		setDefaulsSettings();
 		repaint();
 	}
 
 	/*
-	private RenderedImage myCreateImage() {
-		BufferedImage bufferedImage = new BufferedImage(1400,800, BufferedImage.TYPE_INT_RGB);
+	 * private RenderedImage myCreateImage() { BufferedImage bufferedImage = new
+	 * BufferedImage(1400,800, BufferedImage.TYPE_INT_RGB);
+	 * 
+	 * Graphics g = bufferedImage.createGraphics(); redrawVectorBuffer(g);
+	 * 
+	 * g.dispose(); return bufferedImage; }
+	 */
 
-		Graphics g = bufferedImage.createGraphics();
-		redrawVectorBuffer(g);
-
-		g.dispose();
-		return bufferedImage;
-	}
-	*/
-	
 	private void redrawVectorBuffer(Graphics g) {
 		for (int i = 0; i < vObjects.size(); i++) {
 			((Shape) vObjects.get(i).getShape()).draw(g);
 			if (isShowPathMode())
-				((Shape)vObjects.get(i).getShape()).drawControlPoints(g);
+				((Shape) vObjects.get(i).getShape()).drawControlPoints(g);
 		}
 	}
 
@@ -337,33 +350,32 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		repaint();
 	}
 
-	public void zoomIn(){
-        /*
-		if(scale > 0.25)
-            scale -= SCALE_STEP;
-        System.out.println(getSize());
-		setSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
-		setPreferredSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
-		*/
-	}
-	
-	public void zoomOut(){
+	public void zoomIn() {
 		/*
-		scale += SCALE_STEP;
-		System.out.println(getSize());	
-		setSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
-		setPreferredSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
-		*/
+		 * if(scale > 0.25) scale -= SCALE_STEP; System.out.println(getSize());
+		 * setSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
+		 * setPreferredSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT *
+		 * scale)));
+		 */
 	}
-	
-	public void setDefaulsSettings(){
+
+	public void zoomOut() {
+		/*
+		 * scale += SCALE_STEP; System.out.println(getSize()); setSize(new
+		 * Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
+		 * setPreferredSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT *
+		 * scale)));
+		 */
+	}
+
+	public void setDefaulsSettings() {
 		CanvasSettings canvasSettings = new CanvasSettings();
 		canvasSettings.setHeight(this.getHeight());
 		canvasSettings.setWidth(this.getWidth());
-		
+
 		settingsPanel.setSettings(canvasSettings);
 	}
-	
+
 	public BufferedImage getImage() {
 		return image;
 	}
@@ -373,120 +385,156 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	}
 
 	public void addNotify() {
-        super.addNotify();
-        requestFocus();
-    }
-	
-	public void keyTyped(KeyEvent e) {}
+		super.addNotify();
+		requestFocus();
+	}
+
+	public void keyTyped(KeyEvent e) {
+	}
 
 	@SuppressWarnings("unchecked")
 	public void keyPressed(KeyEvent e) {
 		if (drawMode == DRAG) {
-			if (e.getKeyCode() == KeyEvent.VK_F8){
-				if (currentDragPoint != null){
-					if (JOptionPane.showConfirmDialog(null, "Really delete this point? Operation can not be undo!") == JOptionPane.OK_OPTION){
-						selectedObject.getShape().getControlPoints().remove(currentDragPoint);
-						if (selectedObject.getShape().getControlPoints().isEmpty()){
+			/*
+			 * Delete point from the shape
+			 */
+			if (e.getKeyCode() == KeyEvent.VK_F8) {
+				if (currentDragPoint != null) {
+					if (JOptionPane
+							.showConfirmDialog(null,
+									"Really delete this point? Operation can not be undo!") == JOptionPane.OK_OPTION) {
+						selectedObject.getShape().getControlPoints()
+								.remove(currentDragPoint);
+						if (selectedObject.getShape().getControlPoints()
+								.isEmpty()) {
 							vObjects.remove(selectedObject);
 						}
 					}
 				}
 			}
-			if (e.getKeyCode() == KeyEvent.VK_F2){
-				Point p = new Point(baseX, baseY);
-				if (currentDragPoint != null){
-					if (selectedObject.getShape() instanceof ComplexPolygon){
-						((MarkedPoint)currentDragPoint).setMarker(Marker.L_POINT);
+			/*
+			 * Delete entire object
+			 */
+			if (e.getKeyCode() == KeyEvent.VK_F9) {
+				if (selectedObject != null) {
+					if (JOptionPane
+							.showConfirmDialog(null,
+									"Really delete this object? Operation can not be undo!") == JOptionPane.OK_OPTION) {
+						vObjects.remove(selectedObject);
 					}
 				}
-				else if (selectedObject != null){
-						int position = selectedObject.getShape().getClosestControlLineInRadius(p, RADIUS);
-						if (position >= 0)
-							if (selectedObject.getShape() instanceof ComplexPolygon)
-								selectedObject.getShape().getControlPoints().add(position + 1, new MarkedPoint(p));
-							else
-								selectedObject.getShape().getControlPoints().add(position + 1, p);
-						else
-							if (selectedObject.getShape() instanceof ComplexPolygon)
-								selectedObject.getShape().getControlPoints().add(new MarkedPoint(p));
-							else
-								selectedObject.getShape().getControlPoints().add(p);
-					} else{	
-						PhysicObject o = vObjects.peekLast();
-						if (o != null){
-							if (o.getShape() instanceof ComplexPolygon)
-								o.getShape().getControlPoints().add(new MarkedPoint(p));
-							else
-								o.getShape().getControlPoints().add(p);
-						}
-					} 
 			}
-			if (e.getKeyCode() == KeyEvent.VK_F3){
+
+			if (e.getKeyCode() == KeyEvent.VK_F2) {
 				Point p = new Point(baseX, baseY);
-				if (currentDragPoint != null){
-					if (selectedObject.getShape() instanceof ComplexPolygon){
-						((MarkedPoint)currentDragPoint).setMarker(Marker.CL3_POINT);
+				if (currentDragPoint != null) {
+					if (selectedObject.getShape() instanceof ComplexPolygon) {
+						((MarkedPoint) currentDragPoint)
+								.setMarker(Marker.L_POINT);
 					}
-				}	
-				else if (selectedObject != null){
-						int position = selectedObject.getShape().getClosestControlLineInRadius(p, RADIUS);
-						if (position >= 0)
-							if (selectedObject.getShape() instanceof ComplexPolygon)
-								selectedObject.getShape().getControlPoints().add(position + 1, new MarkedPoint(p, Marker.CL3_POINT));
+				} else if (selectedObject != null) {
+					int position = selectedObject.getShape()
+							.getClosestControlLineInRadius(p, RADIUS);
+					if (position >= 0)
+						if (selectedObject.getShape() instanceof ComplexPolygon)
+							selectedObject.getShape().getControlPoints()
+									.add(position + 1, new MarkedPoint(p));
 						else
-							if (selectedObject.getShape() instanceof ComplexPolygon)
-								selectedObject.getShape().getControlPoints().add(new MarkedPoint(p, Marker.CL3_POINT));
-					} else{	
-						PhysicObject o = vObjects.peekLast();
-						if (o != null){
-							if (o.getShape() instanceof ComplexPolygon)
-								o.getShape().getControlPoints().add(new MarkedPoint(p, Marker.CL3_POINT));
-						}
-					} 
-			}	
-			if (e.getKeyCode() == KeyEvent.VK_F4){
+							selectedObject.getShape().getControlPoints()
+									.add(position + 1, p);
+					else if (selectedObject.getShape() instanceof ComplexPolygon)
+						selectedObject.getShape().getControlPoints()
+								.add(new MarkedPoint(p));
+					else
+						selectedObject.getShape().getControlPoints().add(p);
+				} else {
+					PhysicObject o = vObjects.peekLast();
+					if (o != null) {
+						if (o.getShape() instanceof ComplexPolygon)
+							o.getShape().getControlPoints()
+									.add(new MarkedPoint(p));
+						else
+							o.getShape().getControlPoints().add(p);
+					}
+				}
+			}
+			if (e.getKeyCode() == KeyEvent.VK_F3) {
 				Point p = new Point(baseX, baseY);
-				if (currentDragPoint != null){
-					if (selectedObject.getShape() instanceof ComplexPolygon){
-						((MarkedPoint)currentDragPoint).setMarker(Marker.CL4_POINT);
+				if (currentDragPoint != null) {
+					if (selectedObject.getShape() instanceof ComplexPolygon) {
+						((MarkedPoint) currentDragPoint)
+								.setMarker(Marker.CL3_POINT);
 					}
-				} 
-				else if (selectedObject != null){
-						int position = selectedObject.getShape().getClosestControlLineInRadius(p, RADIUS);
-						if (position >= 0)
-							if (selectedObject.getShape() instanceof ComplexPolygon)
-								selectedObject.getShape().getControlPoints().add(position + 1, new MarkedPoint(p, Marker.CL4_POINT));
-						else
-							if (selectedObject.getShape() instanceof ComplexPolygon)
-								selectedObject.getShape().getControlPoints().add(new MarkedPoint(p, Marker.CL4_POINT));
-					} else{	
-						PhysicObject o = vObjects.peekLast();
-						if (o != null){
-							if (o.getShape() instanceof ComplexPolygon)
-								o.getShape().getControlPoints().add(new MarkedPoint(p, Marker.CL4_POINT));
-						}
-					} 
-			}	
-		repaint();
+				} else if (selectedObject != null) {
+					int position = selectedObject.getShape()
+							.getClosestControlLineInRadius(p, RADIUS);
+					if (position >= 0)
+						if (selectedObject.getShape() instanceof ComplexPolygon)
+							selectedObject
+									.getShape()
+									.getControlPoints()
+									.add(position + 1,
+											new MarkedPoint(p, Marker.CL3_POINT));
+						else if (selectedObject.getShape() instanceof ComplexPolygon)
+							selectedObject.getShape().getControlPoints()
+									.add(new MarkedPoint(p, Marker.CL3_POINT));
+				} else {
+					PhysicObject o = vObjects.peekLast();
+					if (o != null) {
+						if (o.getShape() instanceof ComplexPolygon)
+							o.getShape().getControlPoints()
+									.add(new MarkedPoint(p, Marker.CL3_POINT));
+					}
+				}
+			}
+			if (e.getKeyCode() == KeyEvent.VK_F4) {
+				Point p = new Point(baseX, baseY);
+				if (currentDragPoint != null) {
+					if (selectedObject.getShape() instanceof ComplexPolygon) {
+						((MarkedPoint) currentDragPoint)
+								.setMarker(Marker.CL4_POINT);
+					}
+				} else if (selectedObject != null) {
+					int position = selectedObject.getShape()
+							.getClosestControlLineInRadius(p, RADIUS);
+					if (position >= 0)
+						if (selectedObject.getShape() instanceof ComplexPolygon)
+							selectedObject
+									.getShape()
+									.getControlPoints()
+									.add(position + 1,
+											new MarkedPoint(p, Marker.CL4_POINT));
+						else if (selectedObject.getShape() instanceof ComplexPolygon)
+							selectedObject.getShape().getControlPoints()
+									.add(new MarkedPoint(p, Marker.CL4_POINT));
+				} else {
+					PhysicObject o = vObjects.peekLast();
+					if (o != null) {
+						if (o.getShape() instanceof ComplexPolygon)
+							o.getShape().getControlPoints()
+									.add(new MarkedPoint(p, Marker.CL4_POINT));
+					}
+				}
+			}
+			repaint();
 		}
 	}
 
-	public void keyReleased(KeyEvent e) {}
-	
-	private static ObjectMapper getObjectMapper() {
-        return new ObjectMapper();
-    }
+	public void keyReleased(KeyEvent e) {
+	}
 
-    private static ObjectMapper getFilteringObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(
-                PropertyFilteringModule.builder("Export Module")
-                        .exclude(MarkedPoint.class, "marker")
-                        .exclude(PhysicObject.class, "id")
-                        .exclude(ComplexPolygon.class, "color")
-                        .exclude(ComplexPolygon.class, "solid")
-                        .build());
-        return mapper;
-    }
+	private static ObjectMapper getObjectMapper() {
+		return new ObjectMapper();
+	}
+
+	private static ObjectMapper getFilteringObjectMapper() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(PropertyFilteringModule.builder("Export Module")
+				.exclude(MarkedPoint.class, "marker")
+				.exclude(PhysicObject.class, "id")
+				.exclude(ComplexPolygon.class, "color")
+				.exclude(ComplexPolygon.class, "solid").build());
+		return mapper;
+	}
 
 }
