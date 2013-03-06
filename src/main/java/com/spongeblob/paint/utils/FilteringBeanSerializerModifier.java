@@ -13,14 +13,17 @@ import java.util.List;
 public final class FilteringBeanSerializerModifier
     extends BeanSerializerModifier
 {
-    private final ImmutableMultimap<Class, String> filters;
+    @SuppressWarnings("rawtypes")
+	private final ImmutableMultimap<Class, String> filters;
 
-    static FilteringBeanSerializerModifier excluding(ImmutableMultimap<Class, String> filters)
+    @SuppressWarnings("rawtypes")
+	static FilteringBeanSerializerModifier excluding(ImmutableMultimap<Class, String> filters)
     {
         return new FilteringBeanSerializerModifier(filters);
     }
 
-    private FilteringBeanSerializerModifier(ImmutableMultimap<Class, String> filters)
+    @SuppressWarnings("rawtypes")
+	private FilteringBeanSerializerModifier(ImmutableMultimap<Class, String> filters)
     {
         this.filters = filters;
     }

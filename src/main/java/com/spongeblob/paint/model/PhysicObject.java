@@ -28,6 +28,7 @@ public class PhysicObject implements Serializable{
 
 	private PhysicObjectType type = PhysicObjectType.BORDERTRACK;
 	
+	@SuppressWarnings("rawtypes")
 	private Shape shape;
 	private PhysicsSettings physicsSettings;
 	
@@ -35,6 +36,7 @@ public class PhysicObject implements Serializable{
 		id = ID++;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public PhysicObject(Shape shape) {
 		id = ID++;
 		this.physicsSettings = new PhysicsSettings();
@@ -47,9 +49,11 @@ public class PhysicObject implements Serializable{
 	public void setType(PhysicObjectType type) {
 		this.type = type;
 	}
+	@SuppressWarnings("rawtypes")
 	public Shape getShape() {
 		return shape;
 	}
+	@SuppressWarnings("rawtypes")
 	public void setShape(Shape shape) {
 		this.shape = shape;
 	}
@@ -63,6 +67,7 @@ public class PhysicObject implements Serializable{
 		this.physicsSettings = physicsSettings;
 	}
 
+	@SuppressWarnings("unchecked")
 	@JsonIgnore
 	public List<Settings> getSettings() {
 		LinkedList<Settings> list = new LinkedList<Settings>();

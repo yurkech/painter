@@ -13,7 +13,6 @@ import javax.swing.event.DocumentListener;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import com.spongeblob.paint.model.PhysicObjectType;
 
 public class PhysicsSettings implements Settings{
 	

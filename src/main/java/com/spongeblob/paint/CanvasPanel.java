@@ -21,6 +21,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.spongeblob.paint.model.Ruler;
 import com.spongeblob.paint.model.ComplexPolygon;
 import com.spongeblob.paint.model.CurveLine3Points;
 import com.spongeblob.paint.model.CurveLine4Points;
@@ -54,7 +55,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	private SettingsPanel settingsPanel;
 
 	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4,
-			CURVE_LINE_3P = 5, FREE_HAND = 6, DRAG = 7, CURVE_LINE_4P = 8;
+			CURVE_LINE_3P = 5, FREE_HAND = 6, DRAG = 7, CURVE_LINE_4P = 8, RULER = 9;
 	protected static LinkedList<PhysicObject> vObjects, redoStack;
 
 	private Color foreGroundColor, backGroundColor;
@@ -87,6 +88,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		setDefaulsSettings();
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void mousePressed(MouseEvent event) {
 		if (drawMode == DRAG) {
 			for (int i = 0; i < vObjects.size(); i++) {
@@ -134,6 +136,10 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		if (selectedObject != null) {
 			settingsPanel.setSettings(selectedObject.getSettings());
 			settingsPanel.repaint();
+		}
+		if (drawMode == RULER) {
+			vObjects.add(new PhysicObject(new Ruler(event.getX(),
+					event.getY(), foreGroundColor)));
 		}
 	}
 
@@ -185,6 +191,9 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 								new Point(event.getX(), event.getY()));
 			}
 		}
+		if (drawMode == RULER) {
+			vObjects.removeLast();
+		}
 		repaint();
 	}
 
@@ -217,6 +226,10 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		if (drawMode == FREE_HAND) {
 			((HandLine) selectedObject.getShape()).getControlPoints().add(
 					new Point(event.getX(), event.getY()));
+		}
+		if (drawMode == RULER) {
+			((Point) vObjects.getLast().getShape().getControlPoints().get(1)).move(
+					event.getX(), event.getY());
 		}
 		repaint();
 	}
@@ -333,6 +346,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	 * g.dispose(); return bufferedImage; }
 	 */
 
+	@SuppressWarnings("rawtypes")
 	private void redrawVectorBuffer(Graphics g) {
 		for (int i = 0; i < vObjects.size(); i++) {
 			((Shape) vObjects.get(i).getShape()).draw(g);

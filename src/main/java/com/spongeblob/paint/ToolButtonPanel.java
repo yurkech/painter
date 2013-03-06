@@ -5,191 +5,134 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-public class ToolButtonPanel extends JPanel
-{
+public class ToolButtonPanel extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7917208796965969921L;
 
-	private JButton dragBtn, lineBtn, polygonBtn, curveLine3PBtn, curveLine4PBtn, 
-			freeHandBtn, undoBtn, redoBtn, zoomInBtn, zoomOutBtn, clearBtn;		
-	
+	private String[] instruments = { "Drag", "Line", "Oval", "Polygon",
+			"CurveLine 3-Points", "CurveLine 4-Points", "Free Hand", "Undo",
+			"Redo", "Zoom In", "Zoom Out", "Clear Canvas", "Ruler"};
+	private String[] instrumentIcons = { "cursor_drag_arrow_icon.png",
+			"stock_draw_line.png", "ovalBtn.gif",
+			"stock_draw_polygon_filled.png", "line.png", "line.png",
+			"stock_draw_freeform_line.png", "undo.png", "redo.png",
+			"zoom_in.png", "zoom_out.png", "eraser.png", "rulers.png"};
+
 	private CanvasPanel canvasPanel;
-	
-	private JButton foreGroundColorBtn,backGroundColorBtn;
+
+	private JButton foreGroundColorBtn, backGroundColorBtn;
 	private Color foreColor, backColor;
-	
-	public ToolButtonPanel(CanvasPanel inCanvasPanel)
-	{
-		canvasPanel = inCanvasPanel;
-		
-/*----------------------------------------------------------------------------*/	
-		java.net.URL imgURL = getClass().getResource("stock_draw_line.png");
-		lineBtn			= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("stock_draw_polygon_filled.png");
-		polygonBtn		= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("line.png");
-		curveLine3PBtn		= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("line.png");
-		curveLine4PBtn		= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("stock_draw_freeform_line.png");
-		freeHandBtn		= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("undo.png");
-		undoBtn			= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("redo.png");
-		redoBtn			= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("zoom_out.png");
-		zoomInBtn			= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("zoom_in.png");
-		zoomOutBtn			= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("eraser.png");
-		clearBtn		= new JButton("",new ImageIcon(imgURL));
-		imgURL = getClass().getResource("cursor_drag_arrow_icon.png");
-		dragBtn			= new JButton("",new ImageIcon(imgURL));
-		
-		lineBtn.addActionListener(new ToolButtonListener());
-		lineBtn.setToolTipText("Line");
-		polygonBtn.addActionListener(new ToolButtonListener());
-		polygonBtn.setToolTipText("Polygon");
-		curveLine3PBtn.addActionListener(new ToolButtonListener());
-		curveLine3PBtn.setToolTipText("CurveLine 3-Points");
-		curveLine4PBtn.addActionListener(new ToolButtonListener());
-		curveLine4PBtn.setToolTipText("CurveLine 4-Points");
-		freeHandBtn.addActionListener(new ToolButtonListener());
-		freeHandBtn.setToolTipText("Free Hand");
-		undoBtn.addActionListener(new ToolButtonListener());
-		undoBtn.setToolTipText("Undo");
-		redoBtn.addActionListener(new ToolButtonListener());
-		redoBtn.setToolTipText("Redo");
-		zoomInBtn.addActionListener(new ToolButtonListener());
-		zoomInBtn.setToolTipText("Zoom In");
-		zoomOutBtn.addActionListener(new ToolButtonListener());
-		zoomOutBtn.setToolTipText("ZoomOut");
-		clearBtn.addActionListener(new ToolButtonListener());
-		clearBtn.setToolTipText("Clear Canvas");
-		dragBtn.addActionListener(new ToolButtonListener());
-		dragBtn.setToolTipText("Drag");
-		
-		
+
+	public ToolButtonPanel(CanvasPanel panel) {
+		this.canvasPanel = panel;
+		this.setLayout(new GridLayout(1, 20));
+
+		for (int i = 0; i < instruments.length; i++) {
+			JButton b = new JButton("", new ImageIcon(getClass().getResource(
+					instrumentIcons[i])));
+			b.setName(instruments[i]);
+			b.setToolTipText(instruments[i]);
+			b.addActionListener(new ToolButtonListener());
+
+			this.add(b);
+		}
+
 		foreGroundColorBtn = new JButton();
 		foreGroundColorBtn.setOpaque(true);
 		foreGroundColorBtn.setBackground(canvasPanel.getForeGroundColor());
-		foreGroundColorBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		foreGroundColorBtn.addActionListener(
-			new ActionListener()
-			{
-				public void actionPerformed(ActionEvent event)
-				{
-					setForeGroundColor();
-				}
+		foreGroundColorBtn.setBorder(BorderFactory
+				.createLineBorder(Color.BLACK));
+		foreGroundColorBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				setForeGroundColor();
 			}
-		);
-		
+		});
+
 		backGroundColorBtn = new JButton();
 		backGroundColorBtn.setOpaque(true);
 		backGroundColorBtn.setBackground(canvasPanel.getBackGroundColor());
-		backGroundColorBtn.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-		backGroundColorBtn.addActionListener(
-			new ActionListener()
-			{
-				public void actionPerformed(ActionEvent event)
-				{
-					setBackGroundColor();
-				}
+		backGroundColorBtn.setBorder(BorderFactory
+				.createLineBorder(Color.WHITE));
+		backGroundColorBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				setBackGroundColor();
 			}
-		);
-	
-		
-/*----------------------------------------------------------------------------*/		
-		this.setLayout(new GridLayout(1,20)); // 9 Buttons & 1 CheckBox
-		this.add(dragBtn);
-		this.add(lineBtn);
-		this.add(polygonBtn);
-		this.add(curveLine3PBtn);
-		this.add(curveLine4PBtn);
-		this.add(freeHandBtn);
-		this.add(undoBtn);
-		this.add(redoBtn);
-		this.add(zoomInBtn);
-		this.add(zoomOutBtn);
-		this.add(clearBtn);
+		});
+
 		this.add(foreGroundColorBtn);
 		this.add(backGroundColorBtn);
 	}
-/*----------------------------------------------------------------------------*/
-	private class ToolButtonListener implements ActionListener
-	{
-		public void actionPerformed(ActionEvent event)
-		{	
+
+	/*----------------------------------------------------------------------------*/
+	private class ToolButtonListener implements ActionListener {
+		public void actionPerformed(ActionEvent event) {
 			canvasPanel.flushDrawing();
 			canvasPanel.addNotify();
-			if(event.getSource() == lineBtn)
-			{
-				canvasPanel.setDrawMode(CanvasPanel.LINE);	
+
+			if (((JButton) event.getSource()).getName().equals("Line")) {
+				canvasPanel.setDrawMode(CanvasPanel.LINE);
 			}
-			if(event.getSource() == polygonBtn)
-			{
+			if (((JButton) event.getSource()).getName().equals("Oval")) {
+				canvasPanel.setDrawMode(CanvasPanel.OVAL);
+			}
+			if (((JButton) event.getSource()).getName().equals("Polygon")) {
 				canvasPanel.setDrawMode(CanvasPanel.POLYGON);
 			}
-			if(event.getSource() == curveLine3PBtn)
-			{
+			if (((JButton) event.getSource()).getName().equals(
+					"CurveLine 3-Points")) {
 				canvasPanel.setDrawMode(CanvasPanel.CURVE_LINE_3P);
 			}
-			if(event.getSource() == curveLine4PBtn)
-			{
+			if (((JButton) event.getSource()).getName().equals(
+					"CurveLine 4-Points")) {
 				canvasPanel.setDrawMode(CanvasPanel.CURVE_LINE_4P);
 			}
-			if(event.getSource() == freeHandBtn)
-			{
+			if (((JButton) event.getSource()).getName().equals("Free Hand")) {
 				canvasPanel.setDrawMode(CanvasPanel.FREE_HAND);
 			}
-			if(event.getSource() == dragBtn)
-			{
+			if (((JButton) event.getSource()).getName().equals("Drag")) {
 				canvasPanel.setDrawMode(CanvasPanel.DRAG);
 			}
-			if(event.getSource() == undoBtn)
-			{
+			if (((JButton) event.getSource()).getName().equals("Undo")) {
 				canvasPanel.undo();
 			}
-			if(event.getSource() == redoBtn)
-			{
+			if (((JButton) event.getSource()).getName().equals("Redo")) {
 				canvasPanel.redo();
 			}
-			if(event.getSource() == zoomInBtn)
-			{
+			if (((JButton) event.getSource()).getName().equals("Zoom In")) {
 				canvasPanel.zoomIn();
 				canvasPanel.repaint();
 			}
-			if(event.getSource() == zoomOutBtn)
-			{
+			if (((JButton) event.getSource()).getName().equals("Zoom Out")) {
 				canvasPanel.zoomOut();
 				canvasPanel.repaint();
 			}
-			if(event.getSource() == clearBtn)
-			{
+			if (((JButton) event.getSource()).getName().equals("Clear Canvas")) {
 				canvasPanel.clearCanvas();
-				
+			}
+			if (((JButton) event.getSource()).getName().equals("Ruler")) {
+				canvasPanel.setDrawMode(CanvasPanel.RULER);
 			}
 		}
 	}
-/*----------------------------------------------------------------------------*/	
-	public void setForeGroundColor()
-	{
-		foreColor = JColorChooser.showDialog(null,"ForeGround Color",foreColor);
-		if(foreColor!=null)
-		{
+
+	/*----------------------------------------------------------------------------*/
+	public void setForeGroundColor() {
+		foreColor = JColorChooser.showDialog(null, "ForeGround Color",
+				foreColor);
+		if (foreColor != null) {
 			foreGroundColorBtn.setBackground(foreColor);
 			canvasPanel.setForeGroundColor(foreColor);
 		}
 	}
-/*----------------------------------------------------------------------------*/
-	public void setBackGroundColor()
-	{
-		backColor = JColorChooser.showDialog(null,"BackGround Color",backColor);
-		if(backColor!=null)
-		{
+
+	/*----------------------------------------------------------------------------*/
+	public void setBackGroundColor() {
+		backColor = JColorChooser.showDialog(null, "BackGround Color",
+				backColor);
+		if (backColor != null) {
 			backGroundColorBtn.setBackground(backColor);
 			canvasPanel.setBackGroundColor(backColor);
 		}
