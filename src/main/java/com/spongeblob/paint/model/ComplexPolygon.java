@@ -27,7 +27,7 @@ public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 	public void addPoint(int x, int y) {
 		getControlPoints().add(new MarkedPoint(x, y));
 	}
-	
+
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(getColorSettings().getColor());
@@ -45,6 +45,10 @@ public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 			g.drawPolyline(PointUtil.getXs(curvePoints),
 					PointUtil.getYs(curvePoints), curvePoints.size());
 		}
+
+		List<Point> parralelCurvePoint = getParallelCurvePoints(curvePoints, 50);
+		g.drawPolyline(PointUtil.getXs(parralelCurvePoint),
+				PointUtil.getYs(parralelCurvePoint), parralelCurvePoint.size());
 	}
 
 	@Override
@@ -155,4 +159,30 @@ public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 		}
 		return pathPoints;
 	}
+
+	@JsonIgnore
+	public List<Point> getParallelCurvePoints(List<Point> curvePoints, int width) {
+		List<Point> parallelCurvePoints = new LinkedList<Point>();
+		for (int i = 0; i < curvePoints.size() - 1; i++) {
+			parallelCurvePoints.addAll(PointUtil.getRect(curvePoints.get(i),
+					curvePoints.get(i + 1), width));
+		}
+		removeIntersections(parallelCurvePoints);
+		return parallelCurvePoints;
+	}
+
+	private void removeIntersections(List<Point> parallelCurvePoints) {
+		for (int i = 0; i < parallelCurvePoints.size() - 3; i++) {
+			Point p = PointUtil.getIntersection(parallelCurvePoints.get(i),
+					parallelCurvePoints.get(i + 1), parallelCurvePoints.get(i + 2),
+					parallelCurvePoints.get(i + 3));
+			if (p != null){
+				parallelCurvePoints.get(i + 1).x = p.x;
+				parallelCurvePoints.get(i + 2).x = p.x;
+				parallelCurvePoints.get(i + 1).y = p.y;
+				parallelCurvePoints.get(i + 2).y = p.y;
+			}
+		}
+	}
+
 }

@@ -1,9 +1,12 @@
-package com.spongeblob.paint.model;
+package com.spongeblob.paint.model.test;
 
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class CleverLine extends Line {
+import com.spongeblob.paint.model.Line;
+import com.spongeblob.paint.model.Point;
+
+public class TestKasLine extends Line {
 
 	/**
 	 * 
@@ -11,7 +14,7 @@ public class CleverLine extends Line {
 	private static final long serialVersionUID = -8837080939140009516L;
 	private static final int RADIOUS = 50;
 
-	public CleverLine(int x, int y, Color c) {
+	public TestKasLine(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
 		getControlPoints().add(new Point(x, y));
 		getColorSettings().setColor(c);
