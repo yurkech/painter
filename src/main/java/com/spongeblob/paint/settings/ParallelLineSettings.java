@@ -24,6 +24,7 @@ public class ParallelLineSettings extends AbstractSettings {
 	private static final long serialVersionUID = 1746012019886679598L;
 	private boolean isEnabled = false;
 	private int width = 0;
+	private int smooth = 0;
 
 	public ParallelLineSettings() {
 	};
@@ -36,7 +37,7 @@ public class ParallelLineSettings extends AbstractSettings {
 	private JCheckBox enableChk;
 
 	@JsonIgnore
-	private JTextField widthText;
+	private JTextField widthText, smoothText;
 
 	@Override
 	public void activate() {
@@ -46,6 +47,7 @@ public class ParallelLineSettings extends AbstractSettings {
 			public void itemStateChanged(ItemEvent event) {
 				isEnabled = enableChk.isSelected();
 				widthText.setEnabled(isEnabled);
+				smoothText.setEditable(isEnabled);
 				getSettingsPanel().updateDrawing();
 			}
 		});
@@ -72,14 +74,39 @@ public class ParallelLineSettings extends AbstractSettings {
 				}
 			}
 		});
+		
+		smoothText = new JTextField(String.valueOf(smooth), SwingConstants.LEFT);
+		smoothText.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+				warn();
+			}
 
-		JPanel panel = new JPanel(new GridLayout(2, 2));
+			public void removeUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void insertUpdate(DocumentEvent e) {
+				warn();
+			}
+
+			public void warn() {
+				try {
+					smooth = Integer.parseInt(smoothText.getText());
+					getSettingsPanel().updateDrawing();
+				} catch (Exception e) {
+				}
+			}
+		});
+
+		JPanel panel = new JPanel(new GridLayout(3, 2));
 		panel.setPreferredSize(new Dimension(200, 100));
 		panel.setBorder(BorderFactory.createTitledBorder(getTitle()));
 		panel.add(enableChk);
 		panel.add(new JPanel());
 		panel.add(new JLabel("Width:", SwingConstants.LEFT));
 		panel.add(widthText);
+		panel.add(new JLabel("Smooth:", SwingConstants.LEFT));
+		panel.add(smoothText);
 
 		getSettingsPanel().add(panel);
 
@@ -99,6 +126,14 @@ public class ParallelLineSettings extends AbstractSettings {
 
 	public void setWidth(int width) {
 		this.width = width;
+	}
+
+	public int getSmooth() {
+		return smooth;
+	}
+
+	public void setSmooth(int smooth) {
+		this.smooth = smooth;
 	}
 
 }

@@ -60,7 +60,7 @@ public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 
 		if (downLine.isEnabled()) {
 			List<Point> parralelCurvePoint = getParallelCurvePoints(
-					curvePoints, downLine.getWidth(), true);
+					curvePoints, downLine.getWidth(), downLine.getSmooth(), true);
 			if (solidSettings.isSolid())
 				g.drawPolygon(PointUtil.getXs(parralelCurvePoint),
 						PointUtil.getYs(parralelCurvePoint),
@@ -72,7 +72,7 @@ public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 		}
 		if (upLine.isEnabled()) {
 			List<Point> parralelCurvePoint = getParallelCurvePoints(
-					curvePoints, upLine.getWidth(), false);
+					curvePoints, upLine.getWidth(), upLine.getSmooth(), false);
 			if (solidSettings.isSolid())
 				g.drawPolygon(PointUtil.getXs(parralelCurvePoint),
 						PointUtil.getYs(parralelCurvePoint),
@@ -195,13 +195,14 @@ public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 
 	@JsonIgnore
 	public List<Point> getParallelCurvePoints(List<Point> curvePoints,
-			int width, boolean isUp) {
+			int width, int smooth, boolean isUp) {
 		List<Point> parallelCurvePoints = new LinkedList<Point>();
 		for (int i = 0; i < curvePoints.size() - 1; i++) {
 			parallelCurvePoints.addAll(PointUtil.getRect(curvePoints.get(i),
 					curvePoints.get(i + 1), width, isUp));
 		}
 		PointUtil.removeIntersections(parallelCurvePoints);
+		PointUtil.applySmooth(parallelCurvePoints, smooth);
 		return parallelCurvePoints;
 	}
 

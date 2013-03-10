@@ -39,7 +39,7 @@ public class Road extends ComplexPolygon {
 		getControlPoints().add(new MarkedPoint(x, y));
 		colorSettings.setColor(c);
 	}
-	
+
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(colorSettings.getColor());
@@ -58,10 +58,10 @@ public class Road extends ComplexPolygon {
 					PointUtil.getYs(curvePoints), curvePoints.size());
 		}
 
-		//draw down line
+		// draw down line
 		if (downLine.isEnabled()) {
 			List<Point> downlineCurvePoint = getParallelCurvePoints(
-					curvePoints, downLine.getWidth(), true);
+					curvePoints, downLine.getWidth(), downLine.getSmooth(), true);
 			if (solidSettings.isSolid())
 				g.drawPolygon(PointUtil.getXs(downlineCurvePoint),
 						PointUtil.getYs(downlineCurvePoint),
@@ -70,11 +70,12 @@ public class Road extends ComplexPolygon {
 				g.drawPolyline(PointUtil.getXs(downlineCurvePoint),
 						PointUtil.getYs(downlineCurvePoint),
 						downlineCurvePoint.size());
-			
-			//draw down line border
-			if(downLineBorder.isEnabled()){
+
+			// draw down line border
+			if (downLineBorder.isEnabled()) {
 				List<Point> downBorderCurvePoint = getParallelCurvePoints(
-						downlineCurvePoint, downLineBorder.getWidth(), true);
+						downlineCurvePoint, downLineBorder.getWidth(),
+						downLineBorder.getSmooth(), true);
 				if (solidSettings.isSolid())
 					g.drawPolygon(PointUtil.getXs(downBorderCurvePoint),
 							PointUtil.getYs(downBorderCurvePoint),
@@ -85,11 +86,11 @@ public class Road extends ComplexPolygon {
 							downBorderCurvePoint.size());
 			}
 		}
-		
-		//draw up line
+
+		// draw up line
 		if (upLine.isEnabled()) {
-			List<Point> uplineCurvePoint = getParallelCurvePoints(
-					curvePoints, upLine.getWidth(), false);
+			List<Point> uplineCurvePoint = getParallelCurvePoints(curvePoints,
+					upLine.getWidth(), upLine.getSmooth(), false);
 			if (solidSettings.isSolid())
 				g.drawPolygon(PointUtil.getXs(uplineCurvePoint),
 						PointUtil.getYs(uplineCurvePoint),
@@ -98,9 +99,10 @@ public class Road extends ComplexPolygon {
 				g.drawPolyline(PointUtil.getXs(uplineCurvePoint),
 						PointUtil.getYs(uplineCurvePoint),
 						uplineCurvePoint.size());
-			if(upLineBorder.isEnabled()){
+			if (upLineBorder.isEnabled()) {
 				List<Point> upBorderCurvePoint = getParallelCurvePoints(
-						uplineCurvePoint, upLineBorder.getWidth(), false);
+						uplineCurvePoint, upLineBorder.getWidth(),
+						upLineBorder.getSmooth(), false);
 				if (solidSettings.isSolid())
 					g.drawPolygon(PointUtil.getXs(upBorderCurvePoint),
 							PointUtil.getYs(upBorderCurvePoint),
@@ -112,7 +114,7 @@ public class Road extends ComplexPolygon {
 			}
 		}
 	}
-	
+
 	@Override
 	@JsonIgnore
 	public Map<String, Settings> getShapeSettings() {

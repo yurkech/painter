@@ -170,8 +170,6 @@ public class PointUtil {
 		return P1;
 	}
 
-	
-
 	public static Point getIntersection(Point p1, Point p2, Point p3, Point p4) {
 		double dx1 = p2.x - p1.x;
 		double dy1 = p2.y - p1.y;
@@ -185,30 +183,42 @@ public class PointUtil {
 		y = (dy2 * x - y) / dx2;
 		if (((p1.x <= x && p2.x >= x) || (p2.x <= x && p1.x >= x))
 				&& ((p3.x <= x && p4.x >= x) || (p4.x <= x && p3.x >= x)))
-			return new Point((int)x, (int)y);
-		return null;	
+			return new Point((int) x, (int) y);
+		return null;
 	}
-	
-	public static void removeIntersections(List<Point> parallelCurvePoints) {
-		for (int i = 0; i < parallelCurvePoints.size() - 3; i++) {
-			Point p = PointUtil.getIntersection(parallelCurvePoints.get(i),
-					parallelCurvePoints.get(i + 1),
-					parallelCurvePoints.get(i + 2),
-					parallelCurvePoints.get(i + 3));
+
+	public static void removeIntersections(List<Point> points) {
+		// remove intersection
+		for (int i = 0; i < points.size() - 3; i++) {
+			Point p = PointUtil.getIntersection(points.get(i),
+					points.get(i + 1),
+					points.get(i + 2),
+					points.get(i + 3));
 			if (p != null) {
-				parallelCurvePoints.get(i + 1).x = p.x;
-				parallelCurvePoints.get(i + 2).x = p.x;
-				parallelCurvePoints.get(i + 1).y = p.y;
-				parallelCurvePoints.get(i + 2).y = p.y;
+				points.get(i + 1).x = p.x;
+				points.get(i + 2).x = p.x;
+				points.get(i + 1).y = p.y;
+				points.get(i + 2).y = p.y;
 			}
 		}
-		System.out.println("Size 1:" + parallelCurvePoints.size());
-		for (int i = 0; i < parallelCurvePoints.size() - 1; ) {
-			if (parallelCurvePoints.get(i).equals(parallelCurvePoints.get(i + 1)))
-				parallelCurvePoints.remove(i);
+		// remove duplicates
+		for (int i = 0; i < points.size() - 1;) {
+			if (points.get(i).equals(
+					points.get(i + 1)))
+				points.remove(i);
 			else
 				i++;
 		}
-		System.out.println("Size 2:" + parallelCurvePoints.size());
+	}
+
+	public static void applySmooth(List<Point> points, int smooth) {
+		// apply smooth
+		for (int i = 0; i < points.size() - 1;) {
+			if (PointUtil.isPointInRadius(points.get(i),
+					points.get(i + 1), smooth))
+				points.remove(i);
+			else
+				i++;
+		}
 	}
 }
