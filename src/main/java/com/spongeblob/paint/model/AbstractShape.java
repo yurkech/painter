@@ -10,12 +10,14 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 	
 
+import com.spongeblob.paint.settings.HideControlsSettings;
 import com.spongeblob.paint.settings.Settings;
 import com.spongeblob.paint.settings.ShapeColorSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
 public abstract class AbstractShape<T extends Point> implements Shape<T>{
 	public static String COLOR_SETTINGS = "COLOR_SETTINGS";
+	public static String HIDE_SETTINGS = "HIDE_SETTINGS";
 	
 	/**
 	 * 
@@ -27,12 +29,16 @@ public abstract class AbstractShape<T extends Point> implements Shape<T>{
 	
 	@JsonProperty("color")
 	protected ShapeColorSettings colorSettings = new ShapeColorSettings("Color");
+	@JsonProperty("hide")
+	protected HideControlsSettings hideSettings = new HideControlsSettings("Hide Control Points");
 
 	public void drawControlPoints(Graphics g) {
-		g.setColor(colorSettings.getPathPointsColor());
-		for (Point point : getControlPoints()) {
-			PointUtil.paintCircleAroundPoint(g, point);
-		}
+		if (!hideSettings.isHide()){
+			g.setColor(colorSettings.getPathPointsColor());
+			for (Point point : getControlPoints()) {
+				PointUtil.paintCircleAroundPoint(g, point);
+			}
+		}	
 	}
 
 	public void draw(Graphics g) {
@@ -74,6 +80,7 @@ public abstract class AbstractShape<T extends Point> implements Shape<T>{
 	public Map<String, Settings> getShapeSettings() {
 		Map<String, Settings> shapeSettings = new HashMap<String, Settings>();
 		shapeSettings.put(COLOR_SETTINGS, colorSettings);
+		shapeSettings.put(HIDE_SETTINGS, hideSettings);
 		return shapeSettings;
 	}
 }

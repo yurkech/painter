@@ -115,21 +115,22 @@ public class Painter extends JFrame
 		mainContainer = getContentPane();
 		
 		statusBarPanel	  = new StatusBarPanel();
-		statusBarPanel.setAlignmentY(30);
+		statusBarPanel.setPreferredSize(new Dimension(1350, 30));
 		settingsPanel	  = new SettingsPanel();
-		settingsPanel.setAlignmentX(200);
+		JScrollPane settingsPanelScroller = new JScrollPane(settingsPanel);
+		settingsPanelScroller.setPreferredSize(new Dimension(250, 600));
 		canvasPanel 	  = new CanvasPanel(statusBarPanel, settingsPanel);
-		JScrollPane scroller = new JScrollPane(canvasPanel);
-        scroller.setPreferredSize(new Dimension(1200, 700));
+		JScrollPane canvasPanelScroller = new JScrollPane(canvasPanel);
+        canvasPanelScroller.setPreferredSize(new Dimension(1100, 600));
 		toolButtonPanel   = new ToolButtonPanel(canvasPanel);
-		toolButtonPanel.setAlignmentY(30);
+		toolButtonPanel.setPreferredSize(new Dimension(1350, 50));;
 
 		
 		
 		mainContainer.add(toolButtonPanel, BorderLayout.NORTH);
-		mainContainer.add(scroller, BorderLayout.CENTER);
+		mainContainer.add(canvasPanelScroller, BorderLayout.CENTER);
 		mainContainer.add(statusBarPanel, BorderLayout.SOUTH);
-		mainContainer.add(settingsPanel, BorderLayout.EAST);
+		mainContainer.add(settingsPanelScroller, BorderLayout.EAST);
 		
 		
 		addWindowListener (

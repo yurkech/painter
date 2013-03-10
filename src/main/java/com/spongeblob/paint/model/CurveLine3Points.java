@@ -25,11 +25,13 @@ public class CurveLine3Points extends SolidAbstractShape<Point> {
 	}
 
 	public void drawControlPoints(Graphics g) {
-		g.setColor(colorSettings.getPathPointsColor());
-		g.drawPolyline(PointUtil.getXs(getControlPoints()),
-				PointUtil.getYs(getControlPoints()), getControlPoints().size());
-		for (Point point : getControlPoints()) {
-			PointUtil.paintCircleAroundPoint(g, point);
+		if (!hideSettings.isHide()) {
+			g.setColor(colorSettings.getPathPointsColor());
+			g.drawPolyline(PointUtil.getXs(getControlPoints()), PointUtil
+					.getYs(getControlPoints()), getControlPoints().size());
+			for (Point point : getControlPoints()) {
+				PointUtil.paintCircleAroundPoint(g, point);
+			}
 		}
 	}
 
