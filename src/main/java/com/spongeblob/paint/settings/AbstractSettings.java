@@ -1,5 +1,7 @@
 package com.spongeblob.paint.settings;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.spongeblob.paint.SettingsPanel;
 
 public abstract class AbstractSettings implements Settings{
@@ -11,6 +13,7 @@ public abstract class AbstractSettings implements Settings{
 
 	public abstract void activate();
 
+	@JsonIgnore
 	public SettingsPanel getSettingsPanel() {
 		return settingsPanel;
 	}

@@ -1,8 +1,13 @@
 package com.spongeblob.paint.model;
 
 import java.awt.Graphics;
+import java.util.Map;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 
+import com.spongeblob.paint.settings.Settings;
 import com.spongeblob.paint.settings.ShapeColorSettings;
 import com.spongeblob.paint.settings.ShapeSolidSettings;
 import com.spongeblob.paint.utils.PointUtil;
@@ -14,10 +19,9 @@ public abstract class SolidAbstractShape<T extends Point> extends AbstractShape<
 	 */
 	private static final long serialVersionUID = -6982632616667148896L;
 
-	public SolidAbstractShape() {
-		this.shapeSettings.put(SOLID_SETTINGS, new ShapeSolidSettings());
-	}
-
+	@JsonProperty("solid")
+	protected ShapeSolidSettings solidSettings = new ShapeSolidSettings();
+	
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getColor());
@@ -33,5 +37,13 @@ public abstract class SolidAbstractShape<T extends Point> extends AbstractShape<
 			g.drawPolyline(PointUtil.getXs(getControlPoints()), PointUtil
 					.getYs(getControlPoints()), getControlPoints().size());
 		}
+	}
+	
+	@Override
+	@JsonIgnore
+	public Map<String, Settings> getShapeSettings() {
+		Map<String, Settings> shapeSettings = super.getShapeSettings();
+		shapeSettings.put(SOLID_SETTINGS, solidSettings);
+		return shapeSettings;
 	}
 }

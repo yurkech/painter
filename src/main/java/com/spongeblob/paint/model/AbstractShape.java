@@ -25,13 +25,9 @@ public abstract class AbstractShape<T extends Point> implements Shape<T>{
 	@JsonProperty(value = "points")
 	protected List<T> controlPoints = new LinkedList<T>();
 	
-	@JsonProperty("settings")
-	protected Map<String, Settings> shapeSettings = new HashMap<String, Settings>();
+	@JsonProperty("color")
+	protected ShapeColorSettings colorSettings = new ShapeColorSettings();
 
-	public AbstractShape(){
-		this.shapeSettings.put(COLOR_SETTINGS, new ShapeColorSettings());
-	}
-	
 	public void drawControlPoints(Graphics g) {
 		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getPathPointsColor());
 		for (Point point : getControlPoints()) {
@@ -74,7 +70,10 @@ public abstract class AbstractShape<T extends Point> implements Shape<T>{
 		return controlPoints;
 	}
 
+	@JsonIgnore
 	public Map<String, Settings> getShapeSettings() {
+		Map<String, Settings> shapeSettings = new HashMap<String, Settings>();
+		shapeSettings.put(COLOR_SETTINGS, colorSettings);
 		return shapeSettings;
 	}
 }

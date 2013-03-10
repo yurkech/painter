@@ -1,7 +1,7 @@
 package com.spongeblob.paint;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -14,21 +14,17 @@ public class SettingsPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 7136804231521726408L;
-	private List<Settings> settings;
+	private Map<String, Settings> settings;
 	private CanvasPanel canvasPanel;
 
-	public List<Settings> getSettings() {
-		return settings;
-	}
-
-	public void setSettings(List<Settings> settings) {
+	public void activateSettings(Map<String, Settings> settings) {
 		this.settings = settings;
 		update();
 	}
 
-	public void setSettings(Settings settings) {
-		this.settings = new LinkedList<Settings>();
-		this.settings.add(settings);
+	public void activateSettings(String key, Settings settings) {
+		this.settings = new HashMap<String, Settings>();
+		this.settings.put(key, settings);
 		update();
 	}
 
@@ -36,7 +32,7 @@ public class SettingsPanel extends JPanel {
 		if (settings != null) {
 			removeAll();
 			this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-			for (Settings item : settings) {
+			for (Settings item : settings.values()) {
 				item.setSettingsPanel(this);
 				item.activate();
 			}

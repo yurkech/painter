@@ -40,6 +40,7 @@ import com.spongeblob.paint.utils.PropertyFilteringModule;
 
 public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		MouseMotionListener, Serializable {
+	public static String CANVAS_SETTINGS = "CANVAS_SETTINGS";
 
 	/**
 	 * 
@@ -135,7 +136,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			vObjects.add(selectedObject);
 		}
 		if (selectedObject != null) {
-			settingsPanel.setSettings(selectedObject.getSettings());
+			settingsPanel.activateSettings(selectedObject.getSettings());
 			settingsPanel.repaint();
 		}
 		if (drawMode == RULER) {
@@ -388,7 +389,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		canvasSettings.setHeight(this.getHeight());
 		canvasSettings.setWidth(this.getWidth());
 
-		settingsPanel.setSettings(canvasSettings);
+		settingsPanel.activateSettings(CANVAS_SETTINGS, canvasSettings);
 	}
 
 	public BufferedImage getImage() {

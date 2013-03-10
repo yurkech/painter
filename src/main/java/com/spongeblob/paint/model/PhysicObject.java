@@ -1,8 +1,8 @@
 package com.spongeblob.paint.model;
 
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -11,6 +11,7 @@ import com.spongeblob.paint.settings.PhysicsSettings;
 import com.spongeblob.paint.settings.Settings;
 
 public class PhysicObject implements Serializable{
+	public static String PHYSIC_SETTINGS = "PHYSIC_SETTINGS";
 	/**
 	 * 
 	 */
@@ -69,10 +70,10 @@ public class PhysicObject implements Serializable{
 
 	@SuppressWarnings("unchecked")
 	@JsonIgnore
-	public List<Settings> getSettings() {
-		LinkedList<Settings> list = new LinkedList<Settings>();
-		list.add(getPhysicsSettings());
-		list.addAll(getShape().getShapeSettings().values());
-		return list;
+	public Map<String, Settings> getSettings() {
+		Map<String, Settings> map = new HashMap<String, Settings>();
+		map.put(PHYSIC_SETTINGS, getPhysicsSettings());
+		map.putAll(getShape().getShapeSettings());
+		return map;
 	}
 }
