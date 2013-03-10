@@ -8,11 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
-
-
-public class CanvasSettings implements Settings{
+public class CanvasSettings extends AbstractSettings{
 
 	/**
 	 * 
@@ -37,8 +33,7 @@ public class CanvasSettings implements Settings{
 		this.width = width;
 	}
 
-	@JsonIgnore
-	public JPanel getSettingsPanel() {
+	public void activate() {
 		JPanel panel = new JPanel(new GridLayout(2,2));
 		panel.setPreferredSize(new Dimension(200, 70));
 		panel.setBorder(BorderFactory.createTitledBorder("Canvas"));
@@ -46,7 +41,7 @@ public class CanvasSettings implements Settings{
 		panel.add(new JLabel(String.valueOf(width),SwingConstants.LEFT));
 		panel.add(new JLabel("Hight:",SwingConstants.LEFT));
 		panel.add(new JLabel(String.valueOf(height),SwingConstants.LEFT));
-		return panel;
+		
+		getSettingsPanel().add(panel);
 	}
-
 }

@@ -16,7 +16,7 @@ import javax.swing.SwingConstants;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-public class ShapeColorSettings implements Settings {
+public class ShapeColorSettings extends AbstractSettings{
 
 	/**
 	 * 
@@ -79,8 +79,8 @@ public class ShapeColorSettings implements Settings {
 		this.color = new Color(Integer.parseInt(color));
 	}
 
-	@JsonIgnore
-	public JPanel getSettingsPanel() {
+	@Override
+	public void activate() {
 		pathPointsColorBtn = new JButton();
 		pathPointsColorBtn.setOpaque(true);
 		pathPointsColorBtn.setBackground(pathPointsColor);
@@ -117,7 +117,9 @@ public class ShapeColorSettings implements Settings {
 		panel.add(pathPointsColorBtn);
 		panel.add(new JLabel("Fill:", SwingConstants.LEFT));
 		panel.add(colorBtn);
-		return panel;
+		
+		getSettingsPanel().add(panel);
+		
 	}
 
 }

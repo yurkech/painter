@@ -14,7 +14,7 @@ import javax.swing.event.DocumentListener;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 
-public class PhysicsSettings implements Settings{
+public class PhysicsSettings extends AbstractSettings{
 	
 	/**
 	 * 
@@ -46,8 +46,8 @@ public class PhysicsSettings implements Settings{
 		this.friction = friction;
 	}
 	
-	@JsonIgnore
-	public JPanel getSettingsPanel() {
+	@Override
+	public void activate() {
 		JPanel panel = new JPanel(new GridLayout(3,2));
 		panel.setPreferredSize(new Dimension(200, 100));
 		panel.setBorder(BorderFactory.createTitledBorder("Physics"));
@@ -117,6 +117,7 @@ public class PhysicsSettings implements Settings{
 			  }
 			});
 		panel.add(textFriction);
-		return panel;
+		
+		getSettingsPanel().add(panel);
 	}
 }

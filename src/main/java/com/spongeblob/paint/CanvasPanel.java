@@ -71,6 +71,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			SettingsPanel settingsPanel) {
 		this.statusBarPanel = statusBarPanel;
 		this.settingsPanel = settingsPanel;
+		this.settingsPanel.setCanvasPanel(this);
 
 		vObjects = new LinkedList<PhysicObject>();
 

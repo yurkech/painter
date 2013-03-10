@@ -2,10 +2,11 @@ package com.spongeblob.paint.settings;
 
 import java.io.Serializable;
 
-import javax.swing.JPanel;
+import com.spongeblob.paint.SettingsPanel;
 
 
 public interface Settings extends Serializable{
 	
-	public JPanel getSettingsPanel();
+	public void activate();
+	public void setSettingsPanel(SettingsPanel sPanel);
 }
