@@ -16,7 +16,7 @@ import javax.swing.SwingConstants;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-public class ShapeColorSettings extends AbstractSettings{
+public class ShapeColorSettings extends AbstractSettings {
 
 	/**
 	 * 
@@ -27,11 +27,16 @@ public class ShapeColorSettings extends AbstractSettings{
 	private Color color;
 
 	public ShapeColorSettings() {
+	};
+
+	public ShapeColorSettings(String title) {
+		setTitle(title);
 		this.pathPointsColor = Color.RED;
 		this.color = Color.BLACK;
 	}
 
-	public ShapeColorSettings(Color color) {
+	public ShapeColorSettings(String title, Color color) {
+		setTitle(title);
 		this.pathPointsColor = Color.RED;
 		this.color = color;
 	}
@@ -117,9 +122,9 @@ public class ShapeColorSettings extends AbstractSettings{
 		panel.add(pathPointsColorBtn);
 		panel.add(new JLabel("Fill:", SwingConstants.LEFT));
 		panel.add(colorBtn);
-		
+
 		getSettingsPanel().add(panel);
-		
+
 	}
 
 }

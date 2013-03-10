@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import com.spongeblob.paint.settings.ShapeColorSettings;
-import com.spongeblob.paint.settings.ShapeSolidSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
 public class CurveLine3Points extends SolidAbstractShape<Point> {
@@ -23,11 +21,11 @@ public class CurveLine3Points extends SolidAbstractShape<Point> {
 
 	public CurveLine3Points(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
-		((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).setColor(c);
+		colorSettings.setColor(c);
 	}
 
 	public void drawControlPoints(Graphics g) {
-		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getPathPointsColor());
+		g.setColor(colorSettings.getPathPointsColor());
 		g.drawPolyline(PointUtil.getXs(getControlPoints()),
 				PointUtil.getYs(getControlPoints()), getControlPoints().size());
 		for (Point point : getControlPoints()) {
@@ -37,11 +35,11 @@ public class CurveLine3Points extends SolidAbstractShape<Point> {
 
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getColor());
+		g.setColor(colorSettings.getColor());
 		List<Point> curvePoints = getCurvePoints();
 
-		if (((ShapeSolidSettings)getShapeSettings().get(SOLID_SETTINGS)).isSolid()) {
-			if (((ShapeSolidSettings)getShapeSettings().get(SOLID_SETTINGS)).isFilled()) {
+		if (solidSettings.isSolid()) {
+			if (solidSettings.isFilled()) {
 				g.fillPolygon(PointUtil.getXs(curvePoints),
 						PointUtil.getYs(curvePoints), curvePoints.size());
 			} else {

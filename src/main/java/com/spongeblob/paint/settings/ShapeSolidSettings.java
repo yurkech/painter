@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-public class ShapeSolidSettings extends AbstractSettings{
+public class ShapeSolidSettings extends AbstractSettings {
 
 	/**
 	 * 
@@ -20,67 +20,61 @@ public class ShapeSolidSettings extends AbstractSettings{
 	private static final long serialVersionUID = -7635818754896749119L;
 	private boolean isSolid = false;
 	private boolean isFilled = false;
-	
+
 	@JsonIgnore
 	private JCheckBox solidChk, fillChk;
-	
-	
-	@JsonProperty(value="isSolid")
+
+	public ShapeSolidSettings() {
+	};
+
+	public ShapeSolidSettings(String title) {
+		setTitle(title);
+	}
+
+	@JsonProperty(value = "isSolid")
 	public boolean isSolid() {
 		return isSolid;
 	}
-
 
 	public void setSolid(boolean isSolid) {
 		this.isSolid = isSolid;
 	}
 
-
-	@JsonProperty(value="isFilled")
+	@JsonProperty(value = "isFilled")
 	public boolean isFilled() {
 		return isFilled;
 	}
-
 
 	public void setFilled(boolean isFilled) {
 		this.isFilled = isFilled;
 	}
 
-
 	@Override
 	public void activate() {
 		solidChk = new JCheckBox("Solid");
 		solidChk.setSelected(isSolid);
-		solidChk.addItemListener(
-			new ItemListener()
-			{
-				public void itemStateChanged(ItemEvent event)
-				{
-					isSolid = solidChk.isSelected();
-					fillChk.setEnabled(isSolid);
-					getSettingsPanel().updateDrawing();
-				}	
+		solidChk.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent event) {
+				isSolid = solidChk.isSelected();
+				fillChk.setEnabled(isSolid);
+				getSettingsPanel().updateDrawing();
 			}
-		);	
+		});
 		fillChk = new JCheckBox("Fill");
 		fillChk.setSelected(isFilled);
 		fillChk.setEnabled(isSolid);
-		fillChk.addItemListener(
-			new ItemListener()
-			{
-				public void itemStateChanged(ItemEvent event)
-				{
-					isFilled = fillChk.isSelected();
-					getSettingsPanel().updateDrawing();
-				}	
+		fillChk.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent event) {
+				isFilled = fillChk.isSelected();
+				getSettingsPanel().updateDrawing();
 			}
-		);	
-		JPanel panel = new JPanel(new GridLayout(2,1));
+		});
+		JPanel panel = new JPanel(new GridLayout(2, 1));
 		panel.setPreferredSize(new Dimension(200, 100));
 		panel.setBorder(BorderFactory.createTitledBorder("Solid"));
 		panel.add(solidChk);
 		panel.add(fillChk);
-		
+
 		getSettingsPanel().add(panel);
 	}
 }

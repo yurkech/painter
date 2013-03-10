@@ -40,7 +40,7 @@ public class PhysicObject implements Serializable{
 	@SuppressWarnings("rawtypes")
 	public PhysicObject(Shape shape) {
 		id = ID++;
-		this.physicsSettings = new PhysicsSettings();
+		this.physicsSettings = new PhysicsSettings("Physics");
 		this.shape = shape;
 	}
 	

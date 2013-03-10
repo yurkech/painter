@@ -3,8 +3,6 @@ package com.spongeblob.paint.model;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import com.spongeblob.paint.settings.ShapeColorSettings;
-import com.spongeblob.paint.settings.ShapeSolidSettings;
 
 public class Oval extends SolidAbstractShape<Point> {
 
@@ -19,18 +17,18 @@ public class Oval extends SolidAbstractShape<Point> {
 	public Oval(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
 		getControlPoints().add(new Point(x, y));
-		((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).setColor(c);
+		colorSettings.setColor(c);
 	}
 
 	public Oval(int x, int y, Color c, Boolean solid) {
 		getControlPoints().add(new Point(x, y));
 		getControlPoints().add(new Point(x, y));
-		((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).setColor(c);
+		colorSettings.setColor(c);
 	}
 
 	public void draw(Graphics g) {
-		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getColor());
-		if (((ShapeSolidSettings)getShapeSettings().get(SOLID_SETTINGS)).isSolid()) {
+		g.setColor(colorSettings.getColor());
+		if (solidSettings.isSolid()) {
 			if (getControlPoints().get(0).x > getControlPoints().get(1).x
 					|| getControlPoints().get(0).y > getControlPoints().get(1).y)
 				g.fillOval(getControlPoints().get(1).x,

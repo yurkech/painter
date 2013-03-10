@@ -36,6 +36,7 @@ import com.spongeblob.paint.model.Point;
 import com.spongeblob.paint.model.Rectangle;
 import com.spongeblob.paint.model.Shape;
 import com.spongeblob.paint.settings.CanvasSettings;
+import com.spongeblob.paint.startrack.model.Road;
 import com.spongeblob.paint.utils.PropertyFilteringModule;
 
 public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
@@ -56,7 +57,8 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	private SettingsPanel settingsPanel;
 
 	protected final static int LINE = 1, SQUARE = 2, OVAL = 3, POLYGON = 4,
-			CURVE_LINE_3P = 5, FREE_HAND = 6, DRAG = 7, CURVE_LINE_4P = 8, RULER = 9;
+			CURVE_LINE_3P = 5, FREE_HAND = 6, DRAG = 7, CURVE_LINE_4P = 8,
+			RULER = 9, ROAD = 10;
 	protected static LinkedList<PhysicObject> vObjects, redoStack;
 
 	private Color foreGroundColor, backGroundColor;
@@ -140,8 +142,8 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			settingsPanel.repaint();
 		}
 		if (drawMode == RULER) {
-			vObjects.add(new PhysicObject(new Ruler(event.getX(),
-					event.getY(), foreGroundColor)));
+			vObjects.add(new PhysicObject(new Ruler(event.getX(), event.getY(),
+					foreGroundColor)));
 		}
 	}
 
@@ -168,6 +170,16 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 				vObjects.add(selectedObject);
 			} else {
 				((ComplexPolygon) selectedObject.getShape()).addPoint(
+						event.getX(), event.getY());
+			}
+		}
+		if (drawMode == ROAD) {
+			if (selectedObject == null) {
+				selectedObject = new PhysicObject(new Road(event.getX(),
+						event.getY(), foreGroundColor));
+				vObjects.add(selectedObject);
+			} else {
+				((Road) selectedObject.getShape()).addPoint(
 						event.getX(), event.getY());
 			}
 		}
@@ -230,8 +242,8 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 					new Point(event.getX(), event.getY()));
 		}
 		if (drawMode == RULER) {
-			((Point) vObjects.getLast().getShape().getControlPoints().get(1)).move(
-					event.getX(), event.getY());
+			((Point) vObjects.getLast().getShape().getControlPoints().get(1))
+					.move(event.getX(), event.getY());
 		}
 		repaint();
 	}

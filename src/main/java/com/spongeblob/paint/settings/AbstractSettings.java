@@ -10,6 +10,7 @@ public abstract class AbstractSettings implements Settings{
 	 */
 	private static final long serialVersionUID = -1258670672266793706L;
 	private SettingsPanel settingsPanel;
+	private String title;
 
 	public abstract void activate();
 
@@ -20,6 +21,14 @@ public abstract class AbstractSettings implements Settings{
 
 	public void setSettingsPanel(SettingsPanel sPanel) {
 		this.settingsPanel = sPanel;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }

@@ -132,11 +132,11 @@ public class PointUtil {
 		return mPoints;
 	}
 
-	public static List<Point> getRect(Point A, Point B, int length) {
+	public static List<Point> getRect(Point A, Point B, int length, boolean isUp) {
 
 		List<Point> mPoints = new LinkedList<Point>();
-		mPoints.add(getOrtPoint(A, B, length, true));
-		mPoints.add(getOrtPoint(B, A, length, false));
+		mPoints.add(getOrtPoint(A, B, length, isUp));
+		mPoints.add(getOrtPoint(B, A, length, !isUp));
 		return mPoints;
 	}
 
@@ -187,5 +187,28 @@ public class PointUtil {
 				&& ((p3.x <= x && p4.x >= x) || (p4.x <= x && p3.x >= x)))
 			return new Point((int)x, (int)y);
 		return null;	
+	}
+	
+	public static void removeIntersections(List<Point> parallelCurvePoints) {
+		for (int i = 0; i < parallelCurvePoints.size() - 3; i++) {
+			Point p = PointUtil.getIntersection(parallelCurvePoints.get(i),
+					parallelCurvePoints.get(i + 1),
+					parallelCurvePoints.get(i + 2),
+					parallelCurvePoints.get(i + 3));
+			if (p != null) {
+				parallelCurvePoints.get(i + 1).x = p.x;
+				parallelCurvePoints.get(i + 2).x = p.x;
+				parallelCurvePoints.get(i + 1).y = p.y;
+				parallelCurvePoints.get(i + 2).y = p.y;
+			}
+		}
+		System.out.println("Size 1:" + parallelCurvePoints.size());
+		for (int i = 0; i < parallelCurvePoints.size() - 1; ) {
+			if (parallelCurvePoints.get(i).equals(parallelCurvePoints.get(i + 1)))
+				parallelCurvePoints.remove(i);
+			else
+				i++;
+		}
+		System.out.println("Size 2:" + parallelCurvePoints.size());
 	}
 }

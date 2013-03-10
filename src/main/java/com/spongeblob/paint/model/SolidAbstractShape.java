@@ -8,7 +8,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 
 import com.spongeblob.paint.settings.Settings;
-import com.spongeblob.paint.settings.ShapeColorSettings;
 import com.spongeblob.paint.settings.ShapeSolidSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
@@ -20,13 +19,13 @@ public abstract class SolidAbstractShape<T extends Point> extends AbstractShape<
 	private static final long serialVersionUID = -6982632616667148896L;
 
 	@JsonProperty("solid")
-	protected ShapeSolidSettings solidSettings = new ShapeSolidSettings();
+	protected ShapeSolidSettings solidSettings = new ShapeSolidSettings("Solid");
 	
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getColor());
-		if (((ShapeSolidSettings)getShapeSettings().get(SOLID_SETTINGS)).isSolid()) {
-			if (((ShapeSolidSettings)getShapeSettings().get(SOLID_SETTINGS)).isFilled()) {
+		g.setColor(colorSettings.getColor());
+		if (solidSettings.isSolid()) {
+			if (solidSettings.isFilled()) {
 				g.fillPolygon(PointUtil.getXs(getControlPoints()), PointUtil
 						.getYs(getControlPoints()), getControlPoints().size());
 			} else {

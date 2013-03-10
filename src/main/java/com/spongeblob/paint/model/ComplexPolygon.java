@@ -4,26 +4,36 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
-import com.spongeblob.paint.settings.ShapeColorSettings;
-import com.spongeblob.paint.settings.ShapeSolidSettings;
+import com.spongeblob.paint.settings.ParallelLineSettings;
+import com.spongeblob.paint.settings.Settings;
 import com.spongeblob.paint.utils.PointUtil;
 
 public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
-
+	public static String UPLINE_SETTINGS = "UPLINE_SETTINGS";
+	public static String DOWNLINE_SETTINGS = "DOWNLINE_SETTINGS";
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -9039556669612238161L;
+
+	@JsonProperty(value = "upline")
+	protected ParallelLineSettings upLine = new ParallelLineSettings("Up Line");
+
+	@JsonProperty(value = "downline")
+	protected ParallelLineSettings downLine = new ParallelLineSettings(
+			"Down Line");
 
 	public ComplexPolygon() {
 	};
 
 	public ComplexPolygon(int x, int y, Color c) {
 		getControlPoints().add(new MarkedPoint(x, y));
-		((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).setColor(c);
+		colorSettings.setColor(c);
 	}
 
 	public void addPoint(int x, int y) {
@@ -32,11 +42,11 @@ public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getColor());
+		g.setColor(colorSettings.getColor());
 		List<Point> curvePoints = getCurvePoints();
 
-		if (((ShapeSolidSettings)getShapeSettings().get(SOLID_SETTINGS)).isSolid()) {
-			if (((ShapeSolidSettings)getShapeSettings().get(SOLID_SETTINGS)).isFilled()) {
+		if (solidSettings.isSolid()) {
+			if (solidSettings.isFilled()) {
 				g.fillPolygon(PointUtil.getXs(curvePoints),
 						PointUtil.getYs(curvePoints), curvePoints.size());
 			} else {
@@ -48,14 +58,35 @@ public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 					PointUtil.getYs(curvePoints), curvePoints.size());
 		}
 
-		List<Point> parralelCurvePoint = getParallelCurvePoints(curvePoints, 50);
-		g.drawPolyline(PointUtil.getXs(parralelCurvePoint),
-				PointUtil.getYs(parralelCurvePoint), parralelCurvePoint.size());
+		if (downLine.isEnabled()) {
+			List<Point> parralelCurvePoint = getParallelCurvePoints(
+					curvePoints, downLine.getWidth(), true);
+			if (solidSettings.isSolid())
+				g.drawPolygon(PointUtil.getXs(parralelCurvePoint),
+						PointUtil.getYs(parralelCurvePoint),
+						parralelCurvePoint.size());
+			else
+				g.drawPolyline(PointUtil.getXs(parralelCurvePoint),
+						PointUtil.getYs(parralelCurvePoint),
+						parralelCurvePoint.size());
+		}
+		if (upLine.isEnabled()) {
+			List<Point> parralelCurvePoint = getParallelCurvePoints(
+					curvePoints, upLine.getWidth(), false);
+			if (solidSettings.isSolid())
+				g.drawPolygon(PointUtil.getXs(parralelCurvePoint),
+						PointUtil.getYs(parralelCurvePoint),
+						parralelCurvePoint.size());
+			else
+				g.drawPolyline(PointUtil.getXs(parralelCurvePoint),
+						PointUtil.getYs(parralelCurvePoint),
+						parralelCurvePoint.size());
+		}
 	}
 
 	@Override
 	public void drawControlPoints(Graphics g) {
-		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getPathPointsColor());
+		g.setColor(colorSettings.getPathPointsColor());
 		for (int i = 0; i < getControlPoints().size() - 1;) {
 			if (((MarkedPoint) getControlPoints().get(i)).marker
 					.equals(Marker.L_POINT)) {
@@ -163,28 +194,26 @@ public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 	}
 
 	@JsonIgnore
-	public List<Point> getParallelCurvePoints(List<Point> curvePoints, int width) {
+	public List<Point> getParallelCurvePoints(List<Point> curvePoints,
+			int width, boolean isUp) {
 		List<Point> parallelCurvePoints = new LinkedList<Point>();
 		for (int i = 0; i < curvePoints.size() - 1; i++) {
 			parallelCurvePoints.addAll(PointUtil.getRect(curvePoints.get(i),
-					curvePoints.get(i + 1), width));
+					curvePoints.get(i + 1), width, isUp));
 		}
-		removeIntersections(parallelCurvePoints);
+		PointUtil.removeIntersections(parallelCurvePoints);
 		return parallelCurvePoints;
 	}
 
-	private void removeIntersections(List<Point> parallelCurvePoints) {
-		for (int i = 0; i < parallelCurvePoints.size() - 3; i++) {
-			Point p = PointUtil.getIntersection(parallelCurvePoints.get(i),
-					parallelCurvePoints.get(i + 1), parallelCurvePoints.get(i + 2),
-					parallelCurvePoints.get(i + 3));
-			if (p != null){
-				parallelCurvePoints.get(i + 1).x = p.x;
-				parallelCurvePoints.get(i + 2).x = p.x;
-				parallelCurvePoints.get(i + 1).y = p.y;
-				parallelCurvePoints.get(i + 2).y = p.y;
-			}
-		}
+	
+
+	@Override
+	@JsonIgnore
+	public Map<String, Settings> getShapeSettings() {
+		Map<String, Settings> shapeSettings = super.getShapeSettings();
+		shapeSettings.put(UPLINE_SETTINGS, upLine);
+		shapeSettings.put(DOWNLINE_SETTINGS, downLine);
+		return shapeSettings;
 	}
 
 }

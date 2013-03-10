@@ -26,17 +26,17 @@ public abstract class AbstractShape<T extends Point> implements Shape<T>{
 	protected List<T> controlPoints = new LinkedList<T>();
 	
 	@JsonProperty("color")
-	protected ShapeColorSettings colorSettings = new ShapeColorSettings();
+	protected ShapeColorSettings colorSettings = new ShapeColorSettings("Color");
 
 	public void drawControlPoints(Graphics g) {
-		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getPathPointsColor());
+		g.setColor(colorSettings.getPathPointsColor());
 		for (Point point : getControlPoints()) {
 			PointUtil.paintCircleAroundPoint(g, point);
 		}
 	}
 
 	public void draw(Graphics g) {
-		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getColor());
+		g.setColor(colorSettings.getColor());
 		g.drawPolyline(PointUtil.getXs(getControlPoints()), PointUtil.getYs(getControlPoints()), getControlPoints().size());
 	}
 	

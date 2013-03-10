@@ -12,14 +12,15 @@ public class ToolButtonPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 7917208796965969921L;
 
-	private String[] instruments = { "Drag", "Line", "Oval", "Polygon",
+	private String[] instruments = { "Drag", "Line", "Oval", "Road", "Polygon",
 			"CurveLine 3-Points", "CurveLine 4-Points", "Free Hand", "Undo",
-			"Redo", "Zoom In", "Zoom Out", "Clear Canvas", "Ruler"};
+			"Redo", "Zoom In", "Zoom Out", "Clear Canvas", "Ruler" };
 	private String[] instrumentIcons = { "cursor_drag_arrow_icon.png",
 			"stock_draw_line.png", "ovalBtn.gif",
-			"stock_draw_polygon_filled.png", "line.png", "line.png",
-			"stock_draw_freeform_line.png", "undo.png", "redo.png",
-			"zoom_in.png", "zoom_out.png", "eraser.png", "rulers.png"};
+			"stock_draw_polygon_filled.png", "stock_draw_polygon_filled.png",
+			"line.png", "line.png", "stock_draw_freeform_line.png", "undo.png",
+			"redo.png", "zoom_in.png", "zoom_out.png", "eraser.png",
+			"rulers.png" };
 
 	private CanvasPanel canvasPanel;
 
@@ -80,6 +81,9 @@ public class ToolButtonPanel extends JPanel {
 			}
 			if (((JButton) event.getSource()).getName().equals("Polygon")) {
 				canvasPanel.setDrawMode(CanvasPanel.POLYGON);
+			}
+			if (((JButton) event.getSource()).getName().equals("Road")) {
+				canvasPanel.setDrawMode(CanvasPanel.ROAD);
 			}
 			if (((JButton) event.getSource()).getName().equals(
 					"CurveLine 3-Points")) {
