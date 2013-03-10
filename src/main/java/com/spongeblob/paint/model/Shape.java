@@ -2,6 +2,7 @@ package com.spongeblob.paint.model;
 import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import com.spongeblob.paint.settings.Settings;
 
@@ -20,5 +21,5 @@ public interface Shape<T extends Point> extends Serializable{
 	
 	public void move(int deltaX, int deltaY);
 	
-	public List<Settings> getSettings();
+	public Map<String, Settings> getShapeSettings();
 }

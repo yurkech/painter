@@ -3,6 +3,7 @@ package com.spongeblob.paint.model;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import com.spongeblob.paint.settings.ShapeColorSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
 public class Ruler extends Line {
@@ -18,11 +19,11 @@ public class Ruler extends Line {
 	public Ruler(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
 		getControlPoints().add(new Point(x, y));
-		getColorSettings().setColor(c);
+		((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).setColor(c);
 	}
 
 	public void drawControlPoints(Graphics g) {
-		g.setColor(getColorSettings().getPathPointsColor());
+		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getPathPointsColor());
 		for (Point point : getControlPoints()) {
 			PointUtil.paintCircleAroundPoint(g, point);
 		}

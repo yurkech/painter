@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.spongeblob.paint.settings.ShapeColorSettings;
+import com.spongeblob.paint.settings.ShapeSolidSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
 public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
@@ -21,7 +23,7 @@ public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 
 	public ComplexPolygon(int x, int y, Color c) {
 		getControlPoints().add(new MarkedPoint(x, y));
-		getColorSettings().setColor(c);
+		((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).setColor(c);
 	}
 
 	public void addPoint(int x, int y) {
@@ -30,11 +32,11 @@ public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(getColorSettings().getColor());
+		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getColor());
 		List<Point> curvePoints = getCurvePoints();
 
-		if (getSolidSettings().isSolid()) {
-			if (getSolidSettings().isFilled()) {
+		if (((ShapeSolidSettings)getShapeSettings().get(SOLID_SETTINGS)).isSolid()) {
+			if (((ShapeSolidSettings)getShapeSettings().get(SOLID_SETTINGS)).isFilled()) {
 				g.fillPolygon(PointUtil.getXs(curvePoints),
 						PointUtil.getYs(curvePoints), curvePoints.size());
 			} else {
@@ -53,7 +55,7 @@ public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 
 	@Override
 	public void drawControlPoints(Graphics g) {
-		g.setColor(getColorSettings().getPathPointsColor());
+		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getPathPointsColor());
 		for (int i = 0; i < getControlPoints().size() - 1;) {
 			if (((MarkedPoint) getControlPoints().get(i)).marker
 					.equals(Marker.L_POINT)) {

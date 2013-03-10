@@ -1,8 +1,10 @@
 package com.spongeblob.paint.model;
 
 import java.awt.Graphics;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -13,6 +15,7 @@ import com.spongeblob.paint.settings.ShapeColorSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
 public abstract class AbstractShape<T extends Point> implements Shape<T>{
+	public static String COLOR_SETTINGS = "COLOR_SETTINGS";
 	
 	/**
 	 * 
@@ -20,41 +23,24 @@ public abstract class AbstractShape<T extends Point> implements Shape<T>{
 	private static final long serialVersionUID = 7586022119974312143L;
 	
 	@JsonProperty(value = "points")
-	protected List<T> controlPoints;
+	protected List<T> controlPoints = new LinkedList<T>();
 	
-	@JsonProperty("color")
-	private ShapeColorSettings colorSettings;
-	
-	
-	public ShapeColorSettings getColorSettings() {
-		return this.colorSettings;
-	}
-
-	public void setColorSettings(ShapeColorSettings colorSettings) {
-		this.colorSettings = colorSettings;
-	}
+	@JsonProperty("settings")
+	protected Map<String, Settings> shapeSettings = new HashMap<String, Settings>();
 
 	public AbstractShape(){
-		this.controlPoints = new LinkedList<T>();
-		this.colorSettings = new ShapeColorSettings();
-	}
-	
-	@JsonIgnore
-	public List<Settings> getSettings() {
-		LinkedList<Settings> list = new LinkedList<Settings>();
-		list.add(getColorSettings());
-		return list;
+		this.shapeSettings.put(COLOR_SETTINGS, new ShapeColorSettings());
 	}
 	
 	public void drawControlPoints(Graphics g) {
-		g.setColor(getColorSettings().getPathPointsColor());
+		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getPathPointsColor());
 		for (Point point : getControlPoints()) {
 			PointUtil.paintCircleAroundPoint(g, point);
 		}
 	}
 
 	public void draw(Graphics g) {
-		g.setColor(getColorSettings().getColor());
+		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getColor());
 		g.drawPolyline(PointUtil.getXs(getControlPoints()), PointUtil.getYs(getControlPoints()), getControlPoints().size());
 	}
 	
@@ -88,8 +74,7 @@ public abstract class AbstractShape<T extends Point> implements Shape<T>{
 		return controlPoints;
 	}
 
-	public void setControlPoints(List<T> controlPoints) {
-		this.controlPoints = controlPoints;
+	public Map<String, Settings> getShapeSettings() {
+		return shapeSettings;
 	}
-	
 }

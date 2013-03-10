@@ -2,6 +2,8 @@ package com.spongeblob.paint.model;
 
 import java.awt.Color;
 
+import com.spongeblob.paint.settings.ShapeColorSettings;
+
 public class Polygon extends SolidAbstractShape<Point> {
 
 	/**
@@ -14,11 +16,11 @@ public class Polygon extends SolidAbstractShape<Point> {
 
 	public Polygon(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
-		getColorSettings().setColor(c);
+		((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).setColor(c);
 	}
 
 	public Polygon(int x, int y, Color c, Boolean solid) {
 		getControlPoints().add(new Point(x, y));
-		getColorSettings().setColor(c);
+		((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).setColor(c);
 	}
 }

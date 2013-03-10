@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.spongeblob.paint.settings.ShapeColorSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
 public class CurveLine4Points extends CurveLine3Points {
@@ -20,7 +21,7 @@ public class CurveLine4Points extends CurveLine3Points {
 
 	public CurveLine4Points(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
-		getColorSettings().setColor(c);
+		((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).setColor(c);
 	}
 
 	@JsonIgnore

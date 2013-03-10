@@ -5,6 +5,7 @@ import java.awt.Graphics;
 
 import com.spongeblob.paint.model.Line;
 import com.spongeblob.paint.model.Point;
+import com.spongeblob.paint.settings.ShapeColorSettings;
 
 public class TestKasLine extends Line {
 
@@ -17,11 +18,11 @@ public class TestKasLine extends Line {
 	public TestKasLine(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
 		getControlPoints().add(new Point(x, y));
-		getColorSettings().setColor(c);
+		((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).setColor(c);
 	}
 
 	public void draw(Graphics g) {
-		g.setColor(getColorSettings().getColor());
+		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getColor());
 		g.drawLine(getControlPoints().get(0).x, getControlPoints().get(0).y,
 				getControlPoints().get(1).x, getControlPoints().get(1).y);
 		g.drawOval(getControlPoints().get(1).x - RADIOUS, getControlPoints()

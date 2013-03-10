@@ -72,7 +72,7 @@ public class PhysicObject implements Serializable{
 	public List<Settings> getSettings() {
 		LinkedList<Settings> list = new LinkedList<Settings>();
 		list.add(getPhysicsSettings());
-		list.addAll(getShape().getSettings());
+		list.addAll(getShape().getShapeSettings().values());
 		return list;
 	}
 }

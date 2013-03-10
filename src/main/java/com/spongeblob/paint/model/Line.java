@@ -2,6 +2,8 @@ package com.spongeblob.paint.model;
 
 import java.awt.Color;
 
+import com.spongeblob.paint.settings.ShapeColorSettings;
+
 public class Line extends AbstractShape<Point> {
 	/**
 	 * 
@@ -14,6 +16,6 @@ public class Line extends AbstractShape<Point> {
 	public Line(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
 		getControlPoints().add(new Point(x, y));
-		getColorSettings().setColor(c);
+		((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).setColor(c);
 	}
 }

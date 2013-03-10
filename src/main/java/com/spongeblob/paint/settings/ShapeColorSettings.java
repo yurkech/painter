@@ -16,27 +16,26 @@ import javax.swing.SwingConstants;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
-
-public class ShapeColorSettings implements Settings{
+public class ShapeColorSettings implements Settings {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5130774767133682455L;
-	
+
 	private Color pathPointsColor;
 	private Color color;
-	
-	public ShapeColorSettings(){
+
+	public ShapeColorSettings() {
 		this.pathPointsColor = Color.RED;
 		this.color = Color.BLACK;
 	}
-	
-	public ShapeColorSettings(Color color){
+
+	public ShapeColorSettings(Color color) {
 		this.pathPointsColor = Color.RED;
 		this.color = color;
 	}
-	
+
 	@JsonIgnore
 	private JButton pathPointsColorBtn, colorBtn;
 
@@ -44,8 +43,8 @@ public class ShapeColorSettings implements Settings{
 	public Color getPathPointsColor() {
 		return pathPointsColor;
 	}
-	
-	@JsonProperty(value="pathPointsColor")
+
+	@JsonProperty(value = "pathPointsColor")
 	public String getPathPointsColorAsString() {
 		return String.valueOf(pathPointsColor.getRGB());
 	}
@@ -54,8 +53,8 @@ public class ShapeColorSettings implements Settings{
 	public void setPathPointsColor(Color pathPointsColor) {
 		this.pathPointsColor = pathPointsColor;
 	}
-	
-	@JsonProperty(value="pathPointsColor")
+
+	@JsonProperty(value = "pathPointsColor")
 	public void setPathPointsColor(String pathPointsColor) {
 		this.pathPointsColor = new Color(Integer.parseInt(pathPointsColor));
 	}
@@ -64,7 +63,7 @@ public class ShapeColorSettings implements Settings{
 	public Color getColor() {
 		return color;
 	}
-	
+
 	@JsonProperty(value = "color")
 	public String getColorAsString() {
 		return String.valueOf(color.getRGB());
@@ -74,7 +73,7 @@ public class ShapeColorSettings implements Settings{
 	public void setColor(Color color) {
 		this.color = color;
 	}
-	
+
 	@JsonProperty(value = "color")
 	public void setColorFromStrin(String color) {
 		this.color = new Color(Integer.parseInt(color));
@@ -85,46 +84,38 @@ public class ShapeColorSettings implements Settings{
 		pathPointsColorBtn = new JButton();
 		pathPointsColorBtn.setOpaque(true);
 		pathPointsColorBtn.setBackground(pathPointsColor);
-		pathPointsColorBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		pathPointsColorBtn.addActionListener(
-			new ActionListener()
-			{
-				public void actionPerformed(ActionEvent event)
-				{
-					Color tColor = JColorChooser.showDialog(null,"Path Points Color", pathPointsColor);
-					if(tColor!=null)
-					{
-						pathPointsColor = tColor;
-						pathPointsColorBtn.setBackground(pathPointsColor);
-					}
+		pathPointsColorBtn.setBorder(BorderFactory
+				.createLineBorder(Color.BLACK));
+		pathPointsColorBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				Color tColor = JColorChooser.showDialog(null,
+						"Path Points Color", pathPointsColor);
+				if (tColor != null) {
+					pathPointsColor = tColor;
+					pathPointsColorBtn.setBackground(pathPointsColor);
 				}
 			}
-		);
-		
+		});
+
 		colorBtn = new JButton();
 		colorBtn.setOpaque(true);
 		colorBtn.setBackground(color);
 		colorBtn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		colorBtn.addActionListener(
-			new ActionListener()
-			{
-				public void actionPerformed(ActionEvent event)
-				{
-					Color tColor = JColorChooser.showDialog(null,"Color", color);
-					if(tColor!=null)
-					{
-						color = tColor;
-						colorBtn.setBackground(color);
-					}
+		colorBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				Color tColor = JColorChooser.showDialog(null, "Color", color);
+				if (tColor != null) {
+					color = tColor;
+					colorBtn.setBackground(color);
 				}
 			}
-		);
-		JPanel panel = new JPanel(new GridLayout(2,2));
+		});
+		JPanel panel = new JPanel(new GridLayout(2, 2));
 		panel.setPreferredSize(new Dimension(200, 100));
 		panel.setBorder(BorderFactory.createTitledBorder("Color"));
-		panel.add(new JLabel("Points:", SwingConstants.LEFT));
+		panel.add(new JLabel("Control Points:", SwingConstants.LEFT));
 		panel.add(pathPointsColorBtn);
-		panel.add(new JLabel("Shape:", SwingConstants.LEFT));
+		panel.add(new JLabel("Fill:", SwingConstants.LEFT));
 		panel.add(colorBtn);
 		return panel;
 	}

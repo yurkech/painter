@@ -5,6 +5,8 @@ import java.awt.Graphics;
 
 import com.spongeblob.paint.model.Point;
 import com.spongeblob.paint.model.Polygon;
+import com.spongeblob.paint.settings.ShapeColorSettings;
+import com.spongeblob.paint.settings.ShapeSolidSettings;
 import com.spongeblob.paint.utils.PointUtil;
 
 public class TestIntersectionPolygon extends Polygon {
@@ -19,19 +21,19 @@ public class TestIntersectionPolygon extends Polygon {
 
 	public TestIntersectionPolygon(int x, int y, Color c) {
 		getControlPoints().add(new Point(x, y));
-		getColorSettings().setColor(c);
+		((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).setColor(c);
 	}
 
 	public TestIntersectionPolygon(int x, int y, Color c, Boolean solid) {
 		getControlPoints().add(new Point(x, y));
-		getColorSettings().setColor(c);
+		((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).setColor(c);
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(getColorSettings().getColor());
-		if (getSolidSettings().isSolid()) {
-			if (getSolidSettings().isFilled()) {
+		g.setColor(((ShapeColorSettings)getShapeSettings().get(COLOR_SETTINGS)).getColor());
+		if (((ShapeSolidSettings)getShapeSettings().get(SOLID_SETTINGS)).isSolid()) {
+			if (((ShapeSolidSettings)getShapeSettings().get(SOLID_SETTINGS)).isFilled()) {
 				g.fillPolygon(PointUtil.getXs(getControlPoints()), PointUtil
 						.getYs(getControlPoints()), getControlPoints().size());
 			} else {
