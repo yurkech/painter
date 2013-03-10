@@ -9,4 +9,5 @@ public interface Settings extends Serializable{
 	
 	public void activate();
 	public void setSettingsPanel(SettingsPanel sPanel);
+	public String getTitle();
 }

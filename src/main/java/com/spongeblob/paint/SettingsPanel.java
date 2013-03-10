@@ -1,6 +1,10 @@
 package com.spongeblob.paint;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.BoxLayout;
@@ -32,7 +36,15 @@ public class SettingsPanel extends JPanel {
 		if (settings != null) {
 			removeAll();
 			this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-			for (Settings item : settings.values()) {
+			List<Settings> list = new LinkedList<Settings>();
+			list.addAll(settings.values());
+			Collections.sort(list, new Comparator<Settings>() {
+
+				public int compare(Settings o1, Settings o2) {
+					return o1.getTitle().compareTo(o2.getTitle());
+				}
+			});
+			for (Settings item : list) {
 				item.setSettingsPanel(this);
 				item.activate();
 			}
@@ -47,8 +59,8 @@ public class SettingsPanel extends JPanel {
 	public void setCanvasPanel(CanvasPanel canvasPanel) {
 		this.canvasPanel = canvasPanel;
 	}
-	
-	public void updateDrawing(){
+
+	public void updateDrawing() {
 		this.canvasPanel.repaint();
 	}
 }
