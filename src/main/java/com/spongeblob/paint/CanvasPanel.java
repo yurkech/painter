@@ -2,13 +2,14 @@ package com.spongeblob.paint;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -49,9 +50,9 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	private static final long serialVersionUID = -3371112021797757444L;
 
 	protected final static int RADIUS = 10;
-	protected final static double SCALE_STEP = 0.05;
+	protected final static double SCALE_STEP = 0.1;
 
-	private BufferedImage image;
+	private Image image;
 
 	private StatusBarPanel statusBarPanel;
 	private SettingsPanel settingsPanel;
@@ -69,6 +70,21 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	private Point currentDragPoint;
 	private PhysicObject selectedObject;
 	private int baseX, baseY;
+	private float scale = 1;
+	private boolean zoomIn, zoomOut = false;
+
+	private int canvasWidth;
+	private int canvasHeight;
+	
+	public float getScale() {
+		return scale;
+	}
+
+	public void setScale(float scale) {
+		this.scale = scale;
+	}
+
+	private Dimension canvasDimension;
 
 	public CanvasPanel(StatusBarPanel statusBarPanel,
 			SettingsPanel settingsPanel) {
@@ -89,7 +105,6 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 		redoStack = new LinkedList<PhysicObject>();
 
 		showPathMode = true;
-		setDefaulsSettings();
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -179,8 +194,8 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 						event.getY(), foreGroundColor));
 				vObjects.add(selectedObject);
 			} else {
-				((Road) selectedObject.getShape()).addPoint(
-						event.getX(), event.getY());
+				((Road) selectedObject.getShape()).addPoint(event.getX(),
+						event.getY());
 			}
 		}
 		if (drawMode == CURVE_LINE_3P) {
@@ -252,9 +267,17 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if (image != null) {
+			if (zoomIn || zoomOut) {
+				Image scaledImage = image.getScaledInstance((int) (getCanvasWidth() * scale),
+						(int) (getCanvasHeight() * scale),
+						Image.SCALE_FAST);
+				setImage(scaledImage);
+			}
 			g.drawImage(image, 0, 0, null);
 		}
 		redrawVectorBuffer(g);
+		zoomIn = false;
+		zoomOut = false;
 	}
 
 	public void setDrawMode(int mode) {
@@ -347,7 +370,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	public void flushDrawing() {
 		selectedObject = null;
 
-		setDefaulsSettings();
+		activateDefaulsSettings();
 		repaint();
 	}
 
@@ -363,6 +386,12 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	@SuppressWarnings("rawtypes")
 	private void redrawVectorBuffer(Graphics g) {
 		for (int i = 0; i < vObjects.size(); i++) {
+			if (zoomIn){
+				((Shape) vObjects.get(i).getShape()).scale(1 + SCALE_STEP, 1 + SCALE_STEP);
+			}
+			if (zoomOut){
+				((Shape) vObjects.get(i).getShape()).scale(1 - SCALE_STEP, 1 - SCALE_STEP);
+			}
 			((Shape) vObjects.get(i).getShape()).draw(g);
 			if (isShowPathMode())
 				((Shape) vObjects.get(i).getShape()).drawControlPoints(g);
@@ -379,36 +408,40 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	}
 
 	public void zoomIn() {
-		/*
-		 * if(scale > 0.25) scale -= SCALE_STEP; System.out.println(getSize());
-		 * setSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
-		 * setPreferredSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT *
-		 * scale)));
-		 */
+		scale += SCALE_STEP;
+		System.out.println(getSize());
+		setSize(new Dimension((int) (getCanvasWidth() * scale),
+				(int) (getCanvasHeight() * scale)));
+		setPreferredSize(new Dimension((int) (getCanvasWidth() * scale),
+				(int) (getCanvasHeight() * scale)));
+		zoomIn = true;
 	}
 
 	public void zoomOut() {
-		/*
-		 * scale += SCALE_STEP; System.out.println(getSize()); setSize(new
-		 * Dimension((int)(WIDTH * scale), (int)(HEIGHT * scale)));
-		 * setPreferredSize(new Dimension((int)(WIDTH * scale), (int)(HEIGHT *
-		 * scale)));
-		 */
+		if (scale > 0.1) {
+			scale -= SCALE_STEP;
+			System.out.println(getSize());
+			setSize(new Dimension((int) (getCanvasWidth() * scale),
+					(int) (getCanvasHeight() * scale)));
+			setPreferredSize(new Dimension(
+					(int) (getCanvasWidth() * scale), (int) (getCanvasHeight() * scale)));
+			zoomOut = true;
+		}
 	}
 
-	public void setDefaulsSettings() {
+	public void activateDefaulsSettings() {
 		CanvasSettings canvasSettings = new CanvasSettings();
-		canvasSettings.setHeight(this.getHeight());
-		canvasSettings.setWidth(this.getWidth());
-
+		canvasSettings.setHeight(this.getCanvasHeight());
+		canvasSettings.setWidth(this.getCanvasWidth());
+		
 		settingsPanel.activateSettings(CANVAS_SETTINGS, canvasSettings);
 	}
 
-	public BufferedImage getImage() {
+	public Image getImage() {
 		return image;
 	}
 
-	public void setImage(BufferedImage image) {
+	public void setImage(Image image) {
 		this.image = image;
 	}
 
@@ -423,6 +456,14 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	@SuppressWarnings("unchecked")
 	public void keyPressed(KeyEvent e) {
 		if (drawMode == DRAG) {
+			/*
+			 * Copy shape
+			 */
+			if (e.getKeyCode() == KeyEvent.VK_F5) {
+				if (selectedObject != null) {
+					// TODO clone
+				}
+			}
 			/*
 			 * Delete point from the shape
 			 */
@@ -563,6 +604,30 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 				.exclude(ComplexPolygon.class, "color")
 				.exclude(ComplexPolygon.class, "solid").build());
 		return mapper;
+	}
+
+	public Dimension getCanvasDimension() {
+		return canvasDimension;
+	}
+
+	public void setCanvasDimension(Dimension canvasDimension) {
+		this.canvasDimension = canvasDimension;
+	}
+
+	public int getCanvasWidth() {
+		return canvasWidth;
+	}
+
+	public void setCanvasWidth(int canvasWidth) {
+		this.canvasWidth = canvasWidth;
+	}
+
+	public int getCanvasHeight() {
+		return canvasHeight;
+	}
+
+	public void setCanvasHeight(int canvasHeight) {
+		this.canvasHeight = canvasHeight;
 	}
 
 }
