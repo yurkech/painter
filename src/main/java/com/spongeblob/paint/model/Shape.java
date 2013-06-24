@@ -13,7 +13,7 @@ import com.spongeblob.paint.settings.Settings;
 public interface Shape<T extends Point> extends Serializable, Cloneable{
 	public void draw(Graphics g);
 	public void drawControlPoints(Graphics g);
-	public void scale(float dX, float dY);
+	public void scale(double d, double e);
 	
 	public List<T> getControlPoints();
 	public Point getClosestControlPointInRadius(Point p, int radius); 

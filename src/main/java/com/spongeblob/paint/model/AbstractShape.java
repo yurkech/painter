@@ -43,7 +43,7 @@ public abstract class AbstractShape<T extends Point> implements Shape<T>{
 		}	
 	}
 
-	public void scale(float dX, float dY){
+	public void scale(double dX, double dY){
 		for (Point point : getControlPoints()) {
 			point.scale(dX, dY);
 		}

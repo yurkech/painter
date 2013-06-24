@@ -71,7 +71,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	private PhysicObject selectedObject;
 	private int baseX, baseY;
 	private float scale = 1;
-	private boolean doScale = false;
+	private boolean zoomIn, zoomOut = false;
 
 	private int canvasWidth;
 	private int canvasHeight;
@@ -267,7 +267,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if (image != null) {
-			if (doScale) {
+			if (zoomIn || zoomOut) {
 				Image scaledImage = image.getScaledInstance((int) (getCanvasWidth() * scale),
 						(int) (getCanvasHeight() * scale),
 						Image.SCALE_FAST);
@@ -276,7 +276,8 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			g.drawImage(image, 0, 0, null);
 		}
 		redrawVectorBuffer(g);
-		doScale = false;
+		zoomIn = false;
+		zoomOut = false;
 	}
 
 	public void setDrawMode(int mode) {
@@ -385,8 +386,11 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 	@SuppressWarnings("rawtypes")
 	private void redrawVectorBuffer(Graphics g) {
 		for (int i = 0; i < vObjects.size(); i++) {
-			if (doScale){
-				((Shape) vObjects.get(i).getShape()).scale(scale, scale);
+			if (zoomIn){
+				((Shape) vObjects.get(i).getShape()).scale(1 + SCALE_STEP, 1 + SCALE_STEP);
+			}
+			if (zoomOut){
+				((Shape) vObjects.get(i).getShape()).scale(1 - SCALE_STEP, 1 - SCALE_STEP);
 			}
 			((Shape) vObjects.get(i).getShape()).draw(g);
 			if (isShowPathMode())
@@ -410,7 +414,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 				(int) (getCanvasHeight() * scale)));
 		setPreferredSize(new Dimension((int) (getCanvasWidth() * scale),
 				(int) (getCanvasHeight() * scale)));
-		doScale = true;
+		zoomIn = true;
 	}
 
 	public void zoomOut() {
@@ -421,7 +425,7 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 					(int) (getCanvasHeight() * scale)));
 			setPreferredSize(new Dimension(
 					(int) (getCanvasWidth() * scale), (int) (getCanvasHeight() * scale)));
-			doScale = true;
+			zoomOut = true;
 		}
 	}
 

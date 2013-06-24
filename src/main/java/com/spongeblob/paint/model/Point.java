@@ -40,7 +40,7 @@ public class Point implements Serializable {
 		this.y = y;
 	}
 
-	public void scale(float dX, float dY) {
+	public void scale(double dX, double dY) {
 		this.x = (int) (x * dX);
 		this.y = (int) (y * dY);
 	}
@@ -74,5 +74,4 @@ public class Point implements Serializable {
 			return false;
 		return true;
 	}
-
 }
