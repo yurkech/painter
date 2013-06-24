@@ -40,6 +40,11 @@ public class Point implements Serializable {
 		this.y = y;
 	}
 
+	public void scale(float dX, float dY) {
+		this.x = (int) (x * dX);
+		this.y = (int) (y * dY);
+	}
+	
 	void moveWithDelta(int deltaX, int deltaY) {
 		this.x = this.x + deltaX;
 		this.y = this.y + deltaY;

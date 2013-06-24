@@ -120,6 +120,8 @@ public class Painter extends JFrame
 		JScrollPane settingsPanelScroller = new JScrollPane(settingsPanel);
 		settingsPanelScroller.setPreferredSize(new Dimension(250, 600));
 		canvasPanel 	  = new CanvasPanel(statusBarPanel, settingsPanel);
+		canvasPanel.setCanvasWidth(1100);
+		canvasPanel.setCanvasHeight(600);
 		JScrollPane canvasPanelScroller = new JScrollPane(canvasPanel);
         canvasPanelScroller.setPreferredSize(new Dimension(1100, 600));
 		toolButtonPanel   = new ToolButtonPanel(canvasPanel);
@@ -131,6 +133,8 @@ public class Painter extends JFrame
 		mainContainer.add(canvasPanelScroller, BorderLayout.CENTER);
 		mainContainer.add(statusBarPanel, BorderLayout.SOUTH);
 		mainContainer.add(settingsPanelScroller, BorderLayout.EAST);
+		
+		canvasPanel.activateDefaulsSettings();
 		
 		
 		addWindowListener (
@@ -159,6 +163,7 @@ public class Painter extends JFrame
 			if(event.getSource() == newMenuItem || event.getSource() == closeMenuItem)
 			{
 				canvasPanel.clearCanvas();
+				canvasPanel.setScale(1);
 				canvasPanel.setDrawMode(0);
 				canvasPanel.setForeGroundColor(Color.BLACK);
 				canvasPanel.setBackGroundColor(Color.WHITE);
@@ -215,16 +220,23 @@ public class Painter extends JFrame
 									JOptionPane.ERROR_MESSAGE);
 						}
 					} else{
+						BufferedImage image = null;
 						try {
-							BufferedImage image = ImageIO.read(vFile);
-							canvasPanel.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
-							canvasPanel.setImage(image);
-							canvasPanel.revalidate();
+							image = ImageIO.read(vFile);
+							
 						} catch (IOException e) {
 							e.printStackTrace();
 							JOptionPane.showMessageDialog(null, e, "Painter",
 									JOptionPane.ERROR_MESSAGE);
 						}
+						
+						canvasPanel.setSize(new Dimension(image.getWidth(), image.getHeight()));
+						canvasPanel.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+						canvasPanel.setCanvasWidth(image.getWidth());
+						canvasPanel.setCanvasHeight(image.getHeight());
+						canvasPanel.setImage(image);
+						canvasPanel.setScale(1);
+						canvasPanel.revalidate();
 					}
 				}	
 				

@@ -10,10 +10,10 @@ import com.spongeblob.paint.settings.Settings;
  * @author yurkech
  *
  */
-public interface Shape<T extends Point> extends Serializable{
+public interface Shape<T extends Point> extends Serializable, Cloneable{
 	public void draw(Graphics g);
 	public void drawControlPoints(Graphics g);
-	
+	public void scale(float dX, float dY);
 	
 	public List<T> getControlPoints();
 	public Point getClosestControlPointInRadius(Point p, int radius); 

@@ -1,6 +1,7 @@
 package com.spongeblob.paint.model;
 
 import java.awt.Graphics;
+import java.awt.geom.AffineTransform;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,7 @@ public abstract class AbstractShape<T extends Point> implements Shape<T>{
 	
 	@JsonProperty(value = "points")
 	protected List<T> controlPoints = new LinkedList<T>();
+	protected AffineTransform scaleMatrix;
 	
 	@JsonProperty("color")
 	protected ShapeColorSettings colorSettings = new ShapeColorSettings("Color");
@@ -41,6 +43,12 @@ public abstract class AbstractShape<T extends Point> implements Shape<T>{
 		}	
 	}
 
+	public void scale(float dX, float dY){
+		for (Point point : getControlPoints()) {
+			point.scale(dX, dY);
+		}
+	}
+	
 	public void draw(Graphics g) {
 		g.setColor(colorSettings.getColor());
 		g.drawPolyline(PointUtil.getXs(getControlPoints()), PointUtil.getYs(getControlPoints()), getControlPoints().size());
