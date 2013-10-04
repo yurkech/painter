@@ -116,7 +116,7 @@ public abstract class AbstractShape<T extends Point> implements Shape<T> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractShape other = (AbstractShape) obj;
+		AbstractShape<?> other = (AbstractShape<?>) obj;
 		if (colorSettings == null) {
 			if (other.colorSettings != null)
 				return false;

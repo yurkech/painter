@@ -13,57 +13,50 @@ import javax.swing.event.DocumentListener;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.spongeblob.paint.model.PhysicObject;
+
 public class PhysicsSettings extends AbstractSettings {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 22598357548211343L;
-	private double density = 1.0;
-	private int restriction = 0;
-	private int friction = 0;
+	private static final String TITLE = "Physics";
+
+	private PhysicObject object;
 
 	@JsonIgnore
-	private JTextField textDensity, textRestriction, textFriction;
+	private JTextField textDensity, textRestriction, textFriction, textId,
+			textType;
 
-	public PhysicsSettings() {
+	public PhysicsSettings(PhysicObject object) {
+		setObject(object);
+		setTitle(TITLE);
 	};
 
-	public PhysicsSettings(String title) {
+	public PhysicsSettings(PhysicObject object, String title) {
+		setObject(object);
 		setTitle(title);
-	}
-
-	public double getDensity() {
-		return density;
-	}
-
-	public void setDensity(double density) {
-		this.density = density;
-	}
-
-	public int getRestriction() {
-		return restriction;
-	}
-
-	public void setRestriction(int restriction) {
-		this.restriction = restriction;
-	}
-
-	public int getFriction() {
-		return friction;
-	}
-
-	public void setFriction(int friction) {
-		this.friction = friction;
 	}
 
 	@Override
 	public void activate() {
-		JPanel panel = new JPanel(new GridLayout(3, 2));
-		panel.setPreferredSize(new Dimension(200, 100));
+		JPanel panel = new JPanel(new GridLayout(5, 2));
+		panel.setPreferredSize(new Dimension(200, 150));
 		panel.setBorder(BorderFactory.createTitledBorder("Physics"));
+		
+		panel.add(new JLabel("ID:", SwingConstants.LEFT));
+		textId = new JTextField(String.valueOf(getObject()
+				.getId()), SwingConstants.LEFT);
+		panel.add(textId);
+		
+		panel.add(new JLabel("Type:", SwingConstants.LEFT));
+		textType = new JTextField(String.valueOf(getObject()
+				.getType()), SwingConstants.LEFT);
+		panel.add(textType);
+		
 		panel.add(new JLabel("Density:", SwingConstants.LEFT));
-		textDensity = new JTextField(String.valueOf(density),
+		textDensity = new JTextField(String.valueOf(getObject().getDensity()),
 				SwingConstants.LEFT);
 		textDensity.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
@@ -80,15 +73,16 @@ public class PhysicsSettings extends AbstractSettings {
 
 			public void warn() {
 				try {
-					density = Double.parseDouble(textDensity.getText());
+					getObject().setDensity(
+							Double.parseDouble(textDensity.getText()));
 				} catch (Exception e) {
 				}
 			}
 		});
 		panel.add(textDensity);
 		panel.add(new JLabel("Restriction:", SwingConstants.LEFT));
-		textRestriction = new JTextField(String.valueOf(restriction),
-				SwingConstants.LEFT);
+		textRestriction = new JTextField(String.valueOf(getObject()
+				.getRestriction()), SwingConstants.LEFT);
 		textRestriction.getDocument().addDocumentListener(
 				new DocumentListener() {
 					public void changedUpdate(DocumentEvent e) {
@@ -105,16 +99,18 @@ public class PhysicsSettings extends AbstractSettings {
 
 					public void warn() {
 						try {
-							restriction = Integer.parseInt(textRestriction
-									.getText());
+							getObject()
+									.setRestriction(
+											Integer.parseInt(textRestriction
+													.getText()));
 						} catch (Exception e) {
 						}
 					}
 				});
 		panel.add(textRestriction);
 		panel.add(new JLabel("Friction:", SwingConstants.LEFT));
-		textFriction = new JTextField(String.valueOf(friction),
-				SwingConstants.LEFT);
+		textFriction = new JTextField(
+				String.valueOf(getObject().getFriction()), SwingConstants.LEFT);
 		textFriction.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 				warn();
@@ -130,7 +126,8 @@ public class PhysicsSettings extends AbstractSettings {
 
 			public void warn() {
 				try {
-					friction = Integer.parseInt(textFriction.getText());
+					getObject().setFriction(
+							Integer.parseInt(textFriction.getText()));
 				} catch (Exception e) {
 				}
 			}
@@ -140,15 +137,26 @@ public class PhysicsSettings extends AbstractSettings {
 		getSettingsPanel().add(panel);
 	}
 
+	/**
+	 * @return the object
+	 */
+	public PhysicObject getObject() {
+		return object;
+	}
+
+	/**
+	 * @param object
+	 *            the object to set
+	 */
+	public void setObject(PhysicObject object) {
+		this.object = object;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		long temp;
-		temp = Double.doubleToLongBits(density);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + friction;
-		result = prime * result + restriction;
+		result = prime * result + ((object == null) ? 0 : object.hashCode());
 		return result;
 	}
 
@@ -161,12 +169,10 @@ public class PhysicsSettings extends AbstractSettings {
 		if (getClass() != obj.getClass())
 			return false;
 		PhysicsSettings other = (PhysicsSettings) obj;
-		if (Double.doubleToLongBits(density) != Double
-				.doubleToLongBits(other.density))
-			return false;
-		if (friction != other.friction)
-			return false;
-		if (restriction != other.restriction)
+		if (object == null) {
+			if (other.object != null)
+				return false;
+		} else if (!object.equals(other.object))
 			return false;
 		return true;
 	}

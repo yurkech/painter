@@ -19,6 +19,9 @@ public class PhysicObject implements Serializable {
 	private static int ID = 0;
 
 	private int id;
+	private double density = 1.0;
+	private int restriction = 0;
+	private int friction = 0;
 
 	public int getId() {
 		return id;
@@ -36,13 +39,19 @@ public class PhysicObject implements Serializable {
 
 	public PhysicObject() {
 		id = ID++;
+		this.physicsSettings = new PhysicsSettings(this);
+	}
+	
+	public void refreshId(){
+		id = ID++;
 	}
 
 	@SuppressWarnings("rawtypes")
 	public PhysicObject(Shape shape) {
 		id = ID++;
-		this.physicsSettings = new PhysicsSettings("Physics");
 		this.shape = shape;
+
+		this.physicsSettings = new PhysicsSettings(this);
 	}
 
 	public PhysicObjectType getType() {
@@ -81,13 +90,61 @@ public class PhysicObject implements Serializable {
 		return map;
 	}
 
+	/**
+	 * @return the density
+	 */
+	public double getDensity() {
+		return density;
+	}
+
+	/**
+	 * @param density
+	 *            the density to set
+	 */
+	public void setDensity(double density) {
+		this.density = density;
+	}
+
+	/**
+	 * @return the restriction
+	 */
+	public int getRestriction() {
+		return restriction;
+	}
+
+	/**
+	 * @param restriction
+	 *            the restriction to set
+	 */
+	public void setRestriction(int restriction) {
+		this.restriction = restriction;
+	}
+
+	/**
+	 * @return the friction
+	 */
+	public int getFriction() {
+		return friction;
+	}
+
+	/**
+	 * @param friction
+	 *            the friction to set
+	 */
+	public void setFriction(int friction) {
+		this.friction = friction;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(density);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + friction;
 		result = prime * result + id;
-		result = prime * result
-				+ ((physicsSettings == null) ? 0 : physicsSettings.hashCode());
+		result = prime * result + restriction;
 		result = prime * result + ((shape == null) ? 0 : shape.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
@@ -102,12 +159,14 @@ public class PhysicObject implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		PhysicObject other = (PhysicObject) obj;
+		if (Double.doubleToLongBits(density) != Double
+				.doubleToLongBits(other.density))
+			return false;
+		if (friction != other.friction)
+			return false;
 		if (id != other.id)
 			return false;
-		if (physicsSettings == null) {
-			if (other.physicsSettings != null)
-				return false;
-		} else if (!physicsSettings.equals(other.physicsSettings))
+		if (restriction != other.restriction)
 			return false;
 		if (shape == null) {
 			if (other.shape != null)
@@ -118,4 +177,5 @@ public class PhysicObject implements Serializable {
 			return false;
 		return true;
 	}
+
 }

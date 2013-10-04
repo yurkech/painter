@@ -38,6 +38,7 @@ import com.spongeblob.paint.model.Rectangle;
 import com.spongeblob.paint.model.Shape;
 import com.spongeblob.paint.settings.CanvasSettings;
 import com.spongeblob.paint.startrack.model.Road;
+import com.spongeblob.paint.utils.CloneObjectUtil;
 import com.spongeblob.paint.utils.PropertyFilteringModule;
 
 public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
@@ -461,7 +462,12 @@ public class CanvasPanel extends JPanel implements MouseListener, KeyListener,
 			 */
 			if (e.getKeyCode() == KeyEvent.VK_F5) {
 				if (selectedObject != null) {
-					// TODO clone
+					PhysicObject copy = CloneObjectUtil.clone(selectedObject);
+					//just a little shift to see new object on canvas
+					copy.getShape().move(10, 10);
+					//refresh id to avoid id duplications
+					copy.refreshId();
+					vObjects.add(copy);
 				}
 			}
 			/*

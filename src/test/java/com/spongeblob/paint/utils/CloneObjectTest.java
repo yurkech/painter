@@ -25,7 +25,7 @@ public class CloneObjectTest {
     public void testObjectClone(){
 		PhysicObject po = new PhysicObject();
 		po.setType(PhysicObjectType.BORDERTRACK);
-		po.setPhysicsSettings(new PhysicsSettings());
+		po.setPhysicsSettings(new PhysicsSettings(po));
 		po.setShape(new Polygon(0, 0, Color.BLACK));
 		
 		PhysicObject copy = CloneObjectUtil.clone(po);

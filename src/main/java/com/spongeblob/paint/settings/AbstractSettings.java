@@ -3,6 +3,7 @@ package com.spongeblob.paint.settings;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import com.spongeblob.paint.SettingsPanel;
+import com.spongeblob.paint.model.PhysicObject;
 
 public abstract class AbstractSettings implements Settings {
 
@@ -12,7 +13,8 @@ public abstract class AbstractSettings implements Settings {
 	private static final long serialVersionUID = -1258670672266793706L;
 	private SettingsPanel settingsPanel;
 	private String title;
-
+	private PhysicObject object;
+	
 	public abstract void activate();
 
 	@JsonIgnore
