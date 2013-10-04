@@ -74,7 +74,7 @@ public class ParallelLineSettings extends AbstractSettings {
 				}
 			}
 		});
-		
+
 		smoothText = new JTextField(String.valueOf(smooth), SwingConstants.LEFT);
 		smoothText.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
@@ -134,6 +134,34 @@ public class ParallelLineSettings extends AbstractSettings {
 
 	public void setSmooth(int smooth) {
 		this.smooth = smooth;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (isEnabled ? 1231 : 1237);
+		result = prime * result + smooth;
+		result = prime * result + width;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ParallelLineSettings other = (ParallelLineSettings) obj;
+		if (isEnabled != other.isEnabled)
+			return false;
+		if (smooth != other.smooth)
+			return false;
+		if (width != other.width)
+			return false;
+		return true;
 	}
 
 }

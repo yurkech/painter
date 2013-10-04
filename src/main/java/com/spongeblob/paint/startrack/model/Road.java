@@ -61,7 +61,8 @@ public class Road extends ComplexPolygon {
 		// draw down line
 		if (downLine.isEnabled()) {
 			List<Point> downlineCurvePoint = getParallelCurvePoints(
-					curvePoints, downLine.getWidth(), downLine.getSmooth(), true);
+					curvePoints, downLine.getWidth(), downLine.getSmooth(),
+					true);
 			if (solidSettings.isSolid())
 				g.drawPolygon(PointUtil.getXs(downlineCurvePoint),
 						PointUtil.getYs(downlineCurvePoint),
@@ -123,4 +124,38 @@ public class Road extends ComplexPolygon {
 		shapeSettings.put(DOWNLINE_BORDER_SETTINGS, downLineBorder);
 		return shapeSettings;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((downLineBorder == null) ? 0 : downLineBorder.hashCode());
+		result = prime * result
+				+ ((upLineBorder == null) ? 0 : upLineBorder.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Road other = (Road) obj;
+		if (downLineBorder == null) {
+			if (other.downLineBorder != null)
+				return false;
+		} else if (!downLineBorder.equals(other.downLineBorder))
+			return false;
+		if (upLineBorder == null) {
+			if (other.upLineBorder != null)
+				return false;
+		} else if (!upLineBorder.equals(other.upLineBorder))
+			return false;
+		return true;
+	}
+
 }

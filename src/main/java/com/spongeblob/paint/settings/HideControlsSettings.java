@@ -57,4 +57,27 @@ public class HideControlsSettings extends AbstractSettings {
 		this.hide = hide;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (hide ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		HideControlsSettings other = (HideControlsSettings) obj;
+		if (hide != other.hide)
+			return false;
+		return true;
+	}
+
+	
 }

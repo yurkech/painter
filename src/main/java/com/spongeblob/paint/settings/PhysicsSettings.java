@@ -139,4 +139,36 @@ public class PhysicsSettings extends AbstractSettings {
 
 		getSettingsPanel().add(panel);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		long temp;
+		temp = Double.doubleToLongBits(density);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + friction;
+		result = prime * result + restriction;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PhysicsSettings other = (PhysicsSettings) obj;
+		if (Double.doubleToLongBits(density) != Double
+				.doubleToLongBits(other.density))
+			return false;
+		if (friction != other.friction)
+			return false;
+		if (restriction != other.restriction)
+			return false;
+		return true;
+	}
+
 }

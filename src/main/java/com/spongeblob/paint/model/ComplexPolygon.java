@@ -222,4 +222,36 @@ public class ComplexPolygon extends SolidAbstractShape<MarkedPoint> {
 		return shapeSettings;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((downLine == null) ? 0 : downLine.hashCode());
+		result = prime * result + ((upLine == null) ? 0 : upLine.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ComplexPolygon other = (ComplexPolygon) obj;
+		if (downLine == null) {
+			if (other.downLine != null)
+				return false;
+		} else if (!downLine.equals(other.downLine))
+			return false;
+		if (upLine == null) {
+			if (other.upLine != null)
+				return false;
+		} else if (!upLine.equals(other.upLine))
+			return false;
+		return true;
+	}
+
 }

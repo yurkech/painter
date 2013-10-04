@@ -1,7 +1,7 @@
 package com.spongeblob.paint.model;
 
 public enum PhysicObjectType {
-	BORDERTRACK; 
+	BORDERTRACK, CHECKPOINT; 
 	
 	@Override 
 	public String toString() {
