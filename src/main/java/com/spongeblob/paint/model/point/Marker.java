@@ -1,4 +1,4 @@
-package com.spongeblob.paint.model;
+package com.spongeblob.paint.model.point;
 
 public enum Marker {
 	L_POINT, CL3_POINT, CL4_POINT;  

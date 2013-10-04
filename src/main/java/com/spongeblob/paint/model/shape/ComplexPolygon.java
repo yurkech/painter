@@ -1,4 +1,4 @@
-package com.spongeblob.paint.model;
+package com.spongeblob.paint.model.shape;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -9,6 +9,9 @@ import java.util.Map;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import com.spongeblob.paint.model.point.MarkedPoint;
+import com.spongeblob.paint.model.point.Marker;
+import com.spongeblob.paint.model.point.Point;
 import com.spongeblob.paint.settings.ParallelLineSettings;
 import com.spongeblob.paint.settings.Settings;
 import com.spongeblob.paint.utils.PointUtil;

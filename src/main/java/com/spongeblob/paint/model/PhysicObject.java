@@ -7,6 +7,7 @@ import java.util.Map;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import com.spongeblob.paint.model.shape.Shape;
 import com.spongeblob.paint.settings.PhysicsSettings;
 import com.spongeblob.paint.settings.Settings;
 
@@ -73,6 +74,7 @@ public class PhysicObject implements Serializable {
 	}
 
 	@JsonProperty(value = "phys")
+	@JsonIgnore
 	public PhysicsSettings getPhysicsSettings() {
 		return physicsSettings;
 	}

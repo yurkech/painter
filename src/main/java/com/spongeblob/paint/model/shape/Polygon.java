@@ -1,6 +1,8 @@
-package com.spongeblob.paint.model;
+package com.spongeblob.paint.model.shape;
 
 import java.awt.Color;
+
+import com.spongeblob.paint.model.point.Point;
 
 
 public class Polygon extends SolidAbstractShape<Point> {

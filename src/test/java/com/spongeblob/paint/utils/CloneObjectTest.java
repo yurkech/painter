@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.spongeblob.paint.model.PhysicObject;
 import com.spongeblob.paint.model.PhysicObjectType;
-import com.spongeblob.paint.model.Polygon;
+import com.spongeblob.paint.model.shape.Polygon;
 import com.spongeblob.paint.settings.PhysicsSettings;
 
 /**

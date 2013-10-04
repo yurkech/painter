@@ -1,4 +1,4 @@
-package com.spongeblob.paint.model;
+package com.spongeblob.paint.model.shape;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.spongeblob.paint.model.point.Point;
 import com.spongeblob.paint.utils.PointUtil;
 
 public class CurveLine3Points extends SolidAbstractShape<Point> {

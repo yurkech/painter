@@ -5,10 +5,10 @@ import java.awt.Graphics;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.spongeblob.paint.model.MarkedPoint;
-import com.spongeblob.paint.model.Marker;
-import com.spongeblob.paint.model.Point;
-import com.spongeblob.paint.model.Vector;
+import com.spongeblob.paint.model.point.MarkedPoint;
+import com.spongeblob.paint.model.point.Marker;
+import com.spongeblob.paint.model.point.Point;
+import com.spongeblob.paint.model.shape.Vector;
 
 public class PointUtil {
 	protected final static int MARKER_RADIUS = 10;

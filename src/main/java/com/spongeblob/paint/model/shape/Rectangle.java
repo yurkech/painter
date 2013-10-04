@@ -1,7 +1,9 @@
-package com.spongeblob.paint.model;
+package com.spongeblob.paint.model.shape;
 
 import java.awt.Color;
 import java.awt.Graphics;
+
+import com.spongeblob.paint.model.point.Point;
 
 public class Rectangle extends SolidAbstractShape<Point> {
 

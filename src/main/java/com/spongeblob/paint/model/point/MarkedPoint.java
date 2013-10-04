@@ -1,4 +1,5 @@
-package com.spongeblob.paint.model;
+package com.spongeblob.paint.model.point;
+
 
 public class MarkedPoint extends Point {
 

@@ -1,6 +1,8 @@
-package com.spongeblob.paint.model;
+package com.spongeblob.paint.model.shape;
 
 import java.io.Serializable;
+
+import com.spongeblob.paint.model.point.Point;
 
 public class Vector implements Serializable {
 

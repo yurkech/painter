@@ -3,8 +3,8 @@ package com.spongeblob.paint.model.test;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import com.spongeblob.paint.model.Point;
-import com.spongeblob.paint.model.Polygon;
+import com.spongeblob.paint.model.point.Point;
+import com.spongeblob.paint.model.shape.Polygon;
 import com.spongeblob.paint.settings.ShapeColorSettings;
 import com.spongeblob.paint.settings.ShapeSolidSettings;
 import com.spongeblob.paint.utils.PointUtil;

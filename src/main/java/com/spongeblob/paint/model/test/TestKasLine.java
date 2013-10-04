@@ -3,8 +3,8 @@ package com.spongeblob.paint.model.test;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import com.spongeblob.paint.model.Line;
-import com.spongeblob.paint.model.Point;
+import com.spongeblob.paint.model.point.Point;
+import com.spongeblob.paint.model.shape.Line;
 import com.spongeblob.paint.settings.ShapeColorSettings;
 
 public class TestKasLine extends Line {

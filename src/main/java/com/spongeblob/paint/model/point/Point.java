@@ -1,4 +1,4 @@
-package com.spongeblob.paint.model;
+package com.spongeblob.paint.model.point;
 
 import java.io.Serializable;
 
@@ -45,7 +45,7 @@ public class Point implements Serializable {
 		this.y = (int) (y * dY);
 	}
 	
-	void moveWithDelta(int deltaX, int deltaY) {
+	public void moveWithDelta(int deltaX, int deltaY) {
 		this.x = this.x + deltaX;
 		this.y = this.y + deltaY;
 	}
